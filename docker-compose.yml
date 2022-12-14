@@ -62,6 +62,17 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
+  client:
+    image: node:18.0.0-alpine
+    user: node
+    working_dir: /home/node
+    tty: true
+    stdin_open: true
+    ports:
+      - 8000:8000
+    volumes:
+      - ./client:/home/node
+
   database:
     image: postgres:${POSTGRES_VERSION:-13}-alpine
     environment:
@@ -74,6 +85,12 @@ services:
       # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./api/docker/db/data:/var/lib/postgresql/data:rw
 
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
+    depends_on:
+      - database
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
