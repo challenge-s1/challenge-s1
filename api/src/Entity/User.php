@@ -15,18 +15,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
-    // operations: [
-    //     new GetCollection(),
-    //     new Post(processor: UserPasswordHasher::class),
-    //     new Get(),
-    //     new Put(processor: UserPasswordHasher::class),
-    //     new Patch(processor: UserPasswordHasher::class),
-    //     new Delete(),
-    // ],
+    operations: [
+        new GetCollection(),
+        new Post(processor: UserPasswordHasher::class),
+        new Get(),
+        new Put(processor: UserPasswordHasher::class),
+        new Patch(processor: UserPasswordHasher::class),
+        new Delete(),
+    ],
     // normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
@@ -41,7 +42,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column]
+
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
@@ -50,6 +52,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:create', 'user:update'])]
     #[ORM\Column]
     private ?string $password = null;
+
+    #[Assert\NotBlank(groups: ['user:create'])]
+    #[Groups(['user:create', 'user:update'])]
+    private ?string $plainPassword = null;
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
@@ -119,6 +126,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $painPassword): self
+    {
+        $this->plainPassword = $painPassword;
 
         return $this;
     }
