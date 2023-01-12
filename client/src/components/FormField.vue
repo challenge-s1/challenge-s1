@@ -17,20 +17,19 @@ const props = defineProps(
         type: {
             type: String,
             required: false
+        },
+        class: {
+            type: String,
+            required: false
         }
-    }   
+    }
 );
 </script>
 
 <template>
-    <div >
-        <component 
-        :is="as" 
-        :name="name" 
-        :type="type"
-        :placeholder="placeholder"
-        @input="$emit('update:modelValue', $event.target.value)"
-        >
+    <div>
+        <component :is="as" :name="name" :type="type" :placeholder="placeholder" :class="class"
+            @input="$emit('update:modelValue', $event.target.value)">
             <slot />
         </component>
     </div>

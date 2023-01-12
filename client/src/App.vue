@@ -1,10 +1,13 @@
 <template>
-    <UserProviderVue>
-        <NavBarVue />
-        <main class="ml-16 main">
-          <router-view />
-        </main>
-    </UserProviderVue>
+  <UserProviderVue>
+    <div class=" bg-gray-100  overflow-hidden">
+      <NavBarVue />
+      <main>
+        <router-view />
+      </main>
+
+    </div>
+  </UserProviderVue>
   <!-- <RouterView /> -->
 </template>
 
@@ -17,11 +20,7 @@ import UserProviderVue from './components/providers/UserProvider.vue';
 </script>
 
 <style scoped>
-  #app{
-    display: block;
-  }
-  .main{
-    margin-top: 5rem;
-  }
-
+.main {
+  margin-top: 5rem;
+}
 </style>

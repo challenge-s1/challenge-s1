@@ -1,6 +1,6 @@
 <script setup>
 
-import {user as UserProvierKeys} from '@/components/providers/UserProviderKeys.js';
+import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import { inject } from 'vue';
 const user = inject(UserProvierKeys);
 
@@ -10,9 +10,15 @@ const user = inject(UserProvierKeys);
 <template>
     <!-- Header -->
     <div>
-        <nav class="fixed w-full pl-16 flex  bg-slite-700">
+        <nav class="fixed w-full pl-16 flex justify-between items-center bg-gray-700">
             <div class="flex items-center flex-shrink-0 text-white mr-6">
                 <a class="text-3xl font-bold leading-none" href="#">
+                    <div class="p-3" style="overflow: hidden;">
+
+                        Logo
+
+                    </div>
+
                     <!-- <img src="@/assets/img/Motobike_ESGI.png" class="" style="overflow: hidden;" width="150"
                         height="150" alt="" /> -->
                 </a>
@@ -26,62 +32,77 @@ const user = inject(UserProvierKeys);
                 </button>
             </div>
             <ul
-                class="hidden absolute lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
+                class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto  lg:items-center lg:w-auto lg:space-x-6">
                 <li>
-                    <router-link  class="text-sm text-gray-400 hover:text-gray-500"
+                    <router-link class="text-sm text-gray-400 hover:text-gray-500"
                         :to="{ name: 'Home' }">Accueil</router-link>
                 </li>
-                <li  v-if="user" class="text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                        class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-               
-                </li>
                 <li>
-                    <router-link v-if="user" class="text-sm text-gray-400 hover:text-gray-500"
-                        :to="{ name: 'Login' }">Logout</router-link>
-
+                    <a class="text-sm text-gray-400 hover:text-gray-500" href="#">Contact
+                    </a>
                 </li>
-               
-                <li class="text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                        class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                </li>
-                <li><a class="text-sm text-gray-400 hover:text-gray-500" href="#">A propos</a></li>
-              
-                <li class="text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                        class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                </li>
-                <li><a class="text-sm text-gray-400 hover:text-gray-500" href="#">Contact</a></li>
-                <li v-if="!user" class="text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                        class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                </li>
-                <li v-if="!user"><router-link class="text-sm text-gray-400 hover:text-gray-500" :to="{name:'Login'}">Connexion</router-link></li>
-                <li v-if="!user" class="text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
-                        class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                </li>
-                <li v-if="!user"><router-link class="text-sm text-gray-400 hover:text-gray-500" :to="{name:'Register'}">Register</router-link></li>
             </ul>
+            <span class="hidden mr-6 lg:flex">
 
+                <div v-if="!user" class="mr-8">
+                    <a class=" lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200"
+                        href="#">
+                        <router-link :to="{ name: 'Login' }">Connexion</router-link>
+                    </a>
+                    <a class=" lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
+                        href="#">
+                        <router-link :to="{ name: 'Register' }">
+                            S'inscrire
+                        </router-link>
+                    </a>
+                </div>
+            </span>
         </nav>
+        <div class="navbar-menu relative z-50 hidden">
+            <div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
+            <nav
+                class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
+                <div class="flex items-center mb-8">
+                    <a class="mr-auto text-3xl font-bold leading-none" href="#">
+                        <img src="@/assets/img/Motobike_ESGI 2.png" class="" style="overflow: hidden;" width="50%"
+                            height="50%" alt="" />
+                    </a>
+                    <button class="navbar-close">
+                        <svg class="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div>
 
+                    <div v-if="!user" class="mb-2">
+                        <a class="mr-5 lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-300 hover:bg-gray-400 text-sm text-gray-900 font-bold  rounded-xl transition duration-200"
+                            href="#">
+                            <router-link :to="{ name: 'Login' }">Connexion</router-link>
+                        </a>
+                        <a class="lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
+                            href="#">
+                            <router-link :to="{ name: 'Register' }">
+                                S'inscrire
+                            </router-link>
+                        </a>
+                    </div>
+                    <ul>
+                        <li class="mb-1">
+                            <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                                href="#"><router-link :to="{ name: 'Home' }">Accueil</router-link></a>
+                        </li>
+                        <li class="mb-1">
+                            <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                                href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
     </div>
+
 </template>
 

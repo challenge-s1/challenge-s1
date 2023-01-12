@@ -51,54 +51,42 @@ const onSubmit = function () {
 
 <template>
 
-    <div class="flex flex-col h-screen mt-10">
-        <!-- Auth Card Container -->
-        <div class="grid place-items-center mx-2 my-20 sm:my-auto">
-            <!-- Auth Card -->
-            <div class="bg-white rounded-lg shadow-md lg:shadow-lg">
+    <div class="container px-6 mt-20 mb-5 p-4 ">
+        <div class="flex justify-center self-center  z-10">
 
-                <!-- Card Title -->
-                <h2 class="text-center font-semibold text-3xl lg:text-4xl text-gray-800">
-                    Register
+            <div class="p-12 bg-white mx-auto rounded-2xl w-2/5 ">
+                <h2 class="text-2xl font-bold text-gray-800 text-left mb-5">
+                    Création du compte
                 </h2>
                 <UserFormVue @submit="onSubmit">
-                    <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase">FisrtName</label>
-                    <FormField id="firstName" as="input" type="text" name="firstName" placeholder="FirstName"
-                        v-model="UserData.firstName" class="block w-full py-3 px-1 mt-2 
-                        text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
-                        focus:text-gray-500 focus:outline-none focus:border-gray-200" />
-                    <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase">LastName</label>
-                    <FormField id="lastName" as="input" type="text" name="lastName" placeholder="LastName"
-                        v-model="UserData.lastName" class="block w-full py-3 px-1 mt-2 
-                        text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
-                        focus:text-gray-500 focus:outline-none focus:border-gray-200" />
-                    <label for="email" class="block text-xs font-semibold text-gray-600 uppercase">E-mail</label>
-                    <FormField id="email" as="input" type="email" name="email" placeholder="email"
-                        v-model="UserData.email" class="block w-full py-3 px-1 mt-2 
-                        text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
-                        focus:text-gray-500 focus:outline-none focus:border-gray-200" />
-                    <label for="password"
-                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label>
-                    <FormField id="password" as="input" type="password" name="password" placeholder="password"
-                        v-model="UserData.password" class="block w-full py-3 px-1 mt-2 
-                        text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
-                        focus:text-gray-500 focus:outline-none focus:border-gray-200" />
-                    <label for="plainPassword"
-                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">plainPassword</label>
+                    <!-- <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase">FisrtName</label> -->
+                    <FormField id="firstName" as="input" type="text" name="firstName" placeholder="Prénom"
+                        v-model="UserData.firstName"
+                        class=" mb-3 w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                    <!-- <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase">LastName</label> -->
+                    <FormField id="lastName" as="input" type="text" name="lastName" placeholder="Nom"
+                        v-model="UserData.lastName"
+                        class=" mb-3 w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                    <!-- <label for="email" class="block text-xs font-semibold text-gray-600 uppercase">E-mail</label> -->
+                    <FormField id="email" as="input" type="email" name="email" placeholder="Email"
+                        v-model="UserData.email"
+                        class=" mb-3 w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                    <!-- <label for="password"
+                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label> -->
+                    <FormField id="password" as="input" type="password" name="password" placeholder="Mot de passe"
+                        v-model="UserData.password"
+                        class=" mb-3 w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                    <!-- <label for="plainPassword"
+                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">plainPassword</label> -->
                     <FormField id="plainPassword" as="input" type="password" name="plainPassword"
-                        placeholder="plainPassword" v-model="UserData.plainPassword" class="block w-full py-3 px-1 mt-2 
-                        text-gray-800 appearance-none 
-                        border-b-2 border-gray-100
-                        focus:text-gray-500 focus:outline-none focus:border-gray-200" />
-                    <button type="submit" class="w-full py-3 mt-10 bg-teal-700 rounded-sm
+                        placeholder="Confirmer le mot de passe " v-model="UserData.plainPassword"
+                        class=" w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                    <div class="flex flex-row justify-around">
+                        <button type="submit" class=" flex   p-5 mt-10 bg-teal-700 rounded-xl
                         font-medium text-white uppercase
-                        focus:outline-none hover:bg-teal-800 hover:shadow-none">Register</button>
+                        focus:outline-none hover:bg-teal-800 hover:shadow-none">S'inscrire</button>
+                    </div>
                 </UserFormVue>
-
             </div>
         </div>
     </div>
