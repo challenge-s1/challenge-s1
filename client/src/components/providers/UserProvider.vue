@@ -31,6 +31,7 @@ const login = async function (userData) {
                 error: error.response.data.message
             };
         });
+
     if (token.error) {
         return token.error;
     }
@@ -44,6 +45,9 @@ const login = async function (userData) {
     router.push({ name: "Home" })
 
 
+    console.log(user.value);
+    router.push({name:"Home"})
+    
 
 }
 
