@@ -5,7 +5,7 @@ import UserFormVue from '../components/UserForm.vue';
 import { user as UserProvierKeys } from '../components/providers/UserProviderKeys.js';
 import FormField from '../components/FormField.vue';
 
-import { inject, provide, reactive } from 'vue';
+import { inject, provide, ref, reactive } from 'vue';
 const login = inject('userProvider:login');
 const props = defineProps(
     {
@@ -24,8 +24,12 @@ const UserData = reactive({
     email: props.email,
     password: props.password
 })
+const error = ref('');
+
 const onSubmit = function () {
-    login(UserData);
+    login(UserData).then((response) => {
+        error.value = response;
+    });
 }
 
 
@@ -50,10 +54,14 @@ const onSubmit = function () {
                     <FormField id="password" as="input" type="password" name="password" placeholder="Mot de passe "
                         v-model="UserData.password"
                         class="  w-full appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg" />
+                        <div class="text-red-500 text-sm">
+                            {{ error }}
+                        </div>
                     <button type="submit"
                         class="  mt-10 
                         font-medium  uppercase
                         focus:outline-none hover:bg-green-800 hover:shadow-none w-full py-4 bg-green-600 rounded-lg text-green-100">Connexion</button>
+
                     <div class="sm:flex sm:flex-wrap mt-8 sm:mb-4 text-sm text-center">
                         <a href="forgot-password" class="flex-2 underline">
                             Mot de passe oublié?

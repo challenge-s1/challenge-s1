@@ -15,8 +15,19 @@ const router = useRouter();
 const user = ref();
 const login = async function(userData){
     console.log(userData);
-    const token = await axios.post('https://localhost/authentication_token',userData)
-    user.value = token.data.token
+    const token = await axios.post('https://localhost/authentication_token',userData).
+    then((response)=>{
+        return response.data;
+    }).
+    catch((error)=>{
+        return {
+            error: error.response.data.message
+        };
+    });
+    if (token.error) {
+        return token.error;
+    }
+    user.value = token.token
     console.log(user.value);
     router.push({name:"Home"})
     

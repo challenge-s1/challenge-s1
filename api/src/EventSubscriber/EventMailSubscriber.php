@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelEvents;
 use ApiPlatform\Symfony\EventListener\EventPriorities;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 final class EventMailSubscriber implements EventSubscriberInterface
 {
    /* private $mailer;
