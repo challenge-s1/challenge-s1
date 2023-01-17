@@ -24,9 +24,10 @@ use ApiPlatform\Metadata\Link;
 #[ApiResource(
     operations: [
         new GetCollection(),
-        new Post(processor: UserPasswordHasher::class),
+        new Post(
+            processor: UserPasswordHasher::class,
+        ),
         new Get(),
-        new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
         new put(
@@ -49,8 +50,9 @@ use ApiPlatform\Metadata\Link;
         // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:create', 'user:update']],
+    denormalizationContext: ['groups' => ['user_write']],
 )]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -58,10 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user_write'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
-
 
     #[ORM\Column(type: 'json')]
     private array $roles = [];
@@ -69,29 +70,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user_write'])]
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['user:create'])]
-    #[Groups(['user:create', 'user:update'])]
+    #[Assert\NotBlank(groups: ['user_write'])]
+    #[Groups(['user_write'])]
     private ?string $plainPassword = null;
 
     #[Groups(['user:active'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user_write'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user_write'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
+
 
     #[Groups(['user:create', 'user:update'])]
     #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private ?bool $is_Active = false;
+
+    #[Groups(['user_write'])]
+    #[ORM\Column(length: 255)]
+    private ?string $city = null;
+
+    #[Groups(['user_write'])]
+    #[ORM\Column]
+    private ?int $postalcode = null;
+
+    #[Groups(['user_write'])]
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
+    #[Groups(['user_write'])]
+    #[ORM\Column(length: 255)]
+    private ?string $country = null;
+
 
     public function getId(): ?int
     {
@@ -211,6 +230,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
     public function isIsActive(): ?bool
     {
         return $this->is_Active;
@@ -219,6 +239,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $is_Active): self
     {
         $this->is_Active = $is_Active;
+        return $this;
+    }
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPostalcode(): ?int
+    {
+        return $this->postalcode;
+    }
+
+    public function setPostalcode(int $postalcode): self
+    {
+        $this->postalcode = $postalcode;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }
