@@ -14,12 +14,8 @@ import { useStore } from 'vuex';
 const store = useStore();
 const router = useRouter();
 
-// const user = ref();
-// const login = async function (userData) {
-
 const user = ref(store.state.user);
-const login = async function (userData) {
-
+const login = async function(userData){
     console.log(userData);
 
     const token = await axios.post('https://localhost/authentication_token', userData).
@@ -43,11 +39,6 @@ const login = async function (userData) {
 
     store.commit('addToken', token);
     router.push({ name: "Home" })
-
-
-    console.log(user.value);
-    router.push({name:"Home"})
-    
 
 }
 
@@ -75,10 +66,7 @@ const register = async function (userData) {
 
 }
 
-// const logout = function () {
-//     user.value = null
-
-const logout = function () {
+const logout = function(){
     user.value = null;
     store.commit('removeUser');
 }
