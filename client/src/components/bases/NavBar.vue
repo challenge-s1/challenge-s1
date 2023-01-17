@@ -3,7 +3,7 @@
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import { inject } from 'vue';
 const user = inject(UserProvierKeys);
-
+const logout = inject('userProvider:logout');
 
 </script>
    
@@ -55,6 +55,13 @@ const user = inject(UserProvierKeys);
                             S'inscrire
                         </router-link>
                     </a>
+                </div>
+                <div v-else>
+                    <a class=" lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200"
+                        href="#" @click="logout">
+                        Logout
+                    </a>
+
                 </div>
             </span>
         </nav>
