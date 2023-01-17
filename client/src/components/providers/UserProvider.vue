@@ -36,6 +36,19 @@ const login = async function(userData){
 
 const register = async function(userData){
     const user = await axios.post('https://localhost/users',userData)
+    then((response)=>{
+        console.log(response);
+        return response.data;
+    }).
+    catch((error)=>{
+        console.log(error);
+        return {
+            error: error.response.data.message
+        };
+    });
+    if (user.error) {
+        return user.error;
+    }
     router.push({name:"Login"})
 }
 const logout = function(){

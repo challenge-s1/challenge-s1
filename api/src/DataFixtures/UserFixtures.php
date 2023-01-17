@@ -24,6 +24,10 @@ class UserFixtures extends Fixture
             $user->setPassword($password);
             $user->setFirstName('User' . $i);
             $user->setLastName('User' . $i);
+            $user->setAddress('Address' . $i);
+            $user->setCity('City' . $i);
+            $user->setPostalCode($i);
+            $user->setCountry('Paris');
             $manager->persist($user);
         }
         $manager->flush();
