@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import Activate from '../views/Activate.vue'
 
 
 const router = createRouter({
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/account/activate/:token',
+      name: 'Activate',
+      component:  Activate
     },
     // {
     //   path: '/about',

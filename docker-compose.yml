@@ -62,16 +62,16 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-  client:
-    image: node:18.0.0-alpine
-    user: node
-    working_dir: /home/node
-    tty: true
-    stdin_open: true
-    ports:
-      - 8000:8000
-    volumes:
-      - ./client:/home/node
+  # client:
+  #   image: node:18.0.0-alpine
+  #   user: node
+  #   working_dir: /home/node
+  #   tty: true
+  #   stdin_open: true
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - ./client:/home/node
 
   database:
     image: postgres:${POSTGRES_VERSION:-13}-alpine
@@ -91,6 +91,13 @@ services:
       - 8081:8080
     depends_on:
       - database
+  
+  mailer:
+    image: schickling/mailcatcher
+    ports:
+      - "1025:25"
+      - "1080:1080"
+
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

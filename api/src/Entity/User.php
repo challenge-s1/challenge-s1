@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\Activatecount;
+use ApiPlatform\Metadata\Link;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -27,6 +29,24 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
+        new put(
+            uriTemplate: '/account/activate',
+            controller: Activatecount::class,
+            name: 'user_active',
+            denormalizationContext: ['groups' => ['user:active']],
+
+        )
+        // new Post(
+        //     uriTemplate: '/register',
+        //     controller: UserActive::class,
+        //     name: 'register',
+        // ),
+        // new Post(
+        //     path: '/users/active/{id}',
+        //     controller: 'App\Controller\UserActive',
+        //     normalizationContext: ['groups' => ['user:read']],
+        //     denormalizationContext: ['groups' => ['user:active']],
+        // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
@@ -57,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:create', 'user:update'])]
     private ?string $plainPassword = null;
 
-
+    #[Groups(['user:active'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
@@ -68,6 +88,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:create', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
+
+    #[Groups(['user:create', 'user:update'])]
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
+    private ?bool $is_Active = false;
 
     public function getId(): ?int
     {
@@ -183,6 +207,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->is_Active;
+    }
+
+    public function setIsActive(bool $is_Active): self
+    {
+        $this->is_Active = $is_Active;
 
         return $this;
     }
