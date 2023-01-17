@@ -69,8 +69,7 @@ use ApiPlatform\Metadata\Link;
         // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
-    // denormalizationContext: ['groups' => ['user:create', 'user:update']],
-
+    denormalizationContext: ['groups' => ['user_write']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -91,8 +90,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-
-
     #[Groups(['user_write', 'user:update', 'user:update-password'])]
     #[ORM\Column]
     private ?string $password = null;
@@ -152,6 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ordereds = new ArrayCollection();
         $this->reservations = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
