@@ -30,7 +30,7 @@ use ApiPlatform\Metadata\Link;
         new Get(),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
-        new put(
+        new Put(
             uriTemplate: '/account/activate',
             controller: Activatecount::class,
             name: 'user_active',
@@ -50,7 +50,7 @@ use ApiPlatform\Metadata\Link;
         // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user_write']],
+    denormalizationContext: ['groups' => ['user_write', 'user:update']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -70,44 +70,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column]
     private ?string $password = null;
 
     #[Assert\NotBlank(groups: ['user_write'])]
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     private ?string $plainPassword = null;
 
     #[Groups(['user:active'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private ?bool $is_Active = false;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column]
     private ?int $postalcode = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
