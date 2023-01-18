@@ -40,6 +40,10 @@ class UserFixtures extends Fixture
         $admin->setIsActive(true);
         $admin->setFirstName('Admin');
         $admin->setLastName('Admin');
+        $admin->setAddress('Address');
+        $admin->setCity('City');
+        $admin->setPostalCode(75012);
+        $admin->setCountry('Paris');
         $manager->persist($admin);
 
         for ($i = 1; $i < 5; $i++) {
@@ -51,6 +55,10 @@ class UserFixtures extends Fixture
             $patissier->setIsActive(true);
             $patissier->setFirstName('Patissier' . $i);
             $patissier->setLastName('Patissier' . $i);
+            $patissier->setAddress('Address' . $i);
+            $patissier->setCity('City' . $i);
+            $patissier->setPostalCode($i);
+            $patissier->setCountry('Paris');
             $manager->persist($patissier);
         }
 
