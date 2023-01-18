@@ -139,6 +139,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[Groups(['user_write', 'user:update'])]
+    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
+    private ?bool $is_Active = false;
+
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pastrie::class)]
     private Collection $pastries;
 

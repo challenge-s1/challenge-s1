@@ -29,7 +29,9 @@ const error = ref('');
 const onSubmit = function () {
     login(UserData).then((response) => {
         error.value = response;
-    });
+    }).catch((er) => {
+        error.value = er;
+    })
 }
 
 
