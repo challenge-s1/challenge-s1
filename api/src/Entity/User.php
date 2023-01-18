@@ -168,7 +168,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -190,14 +189,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
         return $this;
     }
 
@@ -212,7 +209,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -224,7 +220,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $painPassword): self
     {
         $this->plainPassword = $painPassword;
-
         return $this;
     }
 
@@ -245,7 +240,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setToken(?string $token): self
     {
         $this->token = $token;
-
         return $this;
     }
 
@@ -257,7 +251,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -269,7 +262,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -301,7 +293,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPostalcode(int $postalcode): self
     {
         $this->postalcode = $postalcode;
-
         return $this;
     }
 
@@ -325,6 +316,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->country = $country;
         return $this;
     }
+
     /**
      * @return Collection<int, Pastrie>
      */
@@ -339,7 +331,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->pastries->add($pastry);
             $pastry->setOwner($this);
         }
-
         return $this;
     }
 
@@ -351,7 +342,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $pastry->setOwner(null);
             }
         }
-
         return $this;
     }
 
@@ -369,7 +359,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->masterClasses->add($masterClass);
             $masterClass->setOwner($this);
         }
-
         return $this;
     }
 
@@ -382,7 +371,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $masterClass->setOwner(null);
             }
         }
-
         return $this;
     }
 
@@ -400,7 +388,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->ordereds->add($ordered);
             $ordered->setOwner($this);
         }
-
         return $this;
     }
 
@@ -412,8 +399,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $ordered->setOwner(null);
             }
         }
-
-
         return $this;
     }
 

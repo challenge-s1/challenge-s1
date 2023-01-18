@@ -57,7 +57,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
   // const publicPages = ['/login', '/register','/account/activate/:token'];
-  const publicPages = ['Login', 'Register','Activate'];
+  const publicPages = ['Login', 'Register','Activate','ResetPassword','ForgotPassword'];
   const authRequired = !publicPages.includes(to.name);
   const store = JSON.parse(localStorage.getItem('store'));
   const user = store.user;
