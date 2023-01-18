@@ -64,7 +64,7 @@ const onSubmit = function () {
 
                     <div class="sm:flex sm:flex-wrap mt-8 sm:mb-4 text-sm text-center">
                         <a href="forgot-password" class="flex-2 underline">
-                            Mot de passe oublié?
+                            <router-link :to="{ name: 'ForgotPassword' }">Mot de passe oublié?</router-link>
                         </a>
 
                         <p class="flex-1 text-gray-500 text-md mx-4 my-1 sm:my-auto">
