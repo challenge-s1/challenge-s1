@@ -9,8 +9,12 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\ResetPasswordController;
+use App\Controller\UpdatePasswordController;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,6 +32,21 @@ use ApiPlatform\Metadata\Link;
             processor: UserPasswordHasher::class,
         ),
         new Get(),
+        new Put(processor: UserPasswordHasher::class),
+        new Post(
+            name: 'reset_password',
+            uriTemplate: '/users/reset-password',
+            controller: ResetPasswordController::class,
+            denormalizationContext: ['groups' => ['user:reset-password']],
+        ),
+        new Post(
+            // processor: UserPasswordHasher::class,
+            name: 'update_password',
+            uriTemplate: '/users/update-password',
+            controller: UpdatePasswordController::class,
+            denormalizationContext: ['groups' => ['user:update-password']],
+
+        ),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
         new put(
@@ -50,17 +69,18 @@ use ApiPlatform\Metadata\Link;
         // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user_write']],
+    // denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[Groups(['user_write'])]
+    #[Groups(['user:reset-password'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -70,47 +90,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user_write'])]
+    #[Groups(['user:update-password'])]
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['user_write'])]
-    #[Groups(['user_write'])]
+    // #[Assert\NotBlank(groups: ['user:create'])]
+    // #[Groups(['user:create', 'user:update'])]
     private ?string $plainPassword = null;
 
-    #[Groups(['user:active'])]
+    #[Groups(['user:update-password'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write'])]
+    // #[Groups(['user:create', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write'])]
+    // #[Groups(['user:create', 'user:update'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pastrie::class)]
+    private Collection $pastries;
 
-    #[Groups(['user:create', 'user:update'])]
-    #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
-    private ?bool $is_Active = false;
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: MasterClass::class)]
+    private Collection $masterClasses;
 
-    #[Groups(['user_write'])]
-    #[ORM\Column(length: 255)]
-    private ?string $city = null;
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ordered::class)]
+    private Collection $ordereds;
 
-    #[Groups(['user_write'])]
-    #[ORM\Column]
-    private ?int $postalcode = null;
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Reservation::class)]
+    private Collection $reservations;
 
-    #[Groups(['user_write'])]
-    #[ORM\Column(length: 255)]
-    private ?string $address = null;
-
-    #[Groups(['user_write'])]
-    #[ORM\Column(length: 255)]
-    private ?string $country = null;
-
+    public function __construct()
+    {
+        $this->pastries = new ArrayCollection();
+        $this->masterClasses = new ArrayCollection();
+        $this->ordereds = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -230,6 +248,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Pastrie>
+     */
+    public function getPastries(): Collection
+    {
+        return $this->pastries;
+    }
+
+    public function addPastry(Pastrie $pastry): self
+    {
+        if (!$this->pastries->contains($pastry)) {
+            $this->pastries->add($pastry);
+            $pastry->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePastry(Pastrie $pastry): self
+    {
+        if ($this->pastries->removeElement($pastry)) {
+            // set the owning side to null (unless already changed)
+            if ($pastry->getOwner() === $this) {
+                $pastry->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MasterClass>
+     */
+    public function getMasterClasses(): Collection
+    {
+        return $this->masterClasses;
+    }
+
+    public function addMasterClass(MasterClass $masterClass): self
+    {
+        if (!$this->masterClasses->contains($masterClass)) {
+            $this->masterClasses->add($masterClass);
+            $masterClass->setOwner($this);
+        }
 
     public function isIsActive(): ?bool
     {
@@ -253,6 +315,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removeMasterClass(MasterClass $masterClass): self
+    {
+        if ($this->masterClasses->removeElement($masterClass)) {
+            // set the owning side to null (unless already changed)
+            if ($masterClass->getOwner() === $this) {
+                $masterClass->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ordered>
+     */
+    public function getOrdereds(): Collection
+    {
+        return $this->ordereds;
+    }
+
+    public function addOrdered(Ordered $ordered): self
+    {
+        if (!$this->ordereds->contains($ordered)) {
+            $this->ordereds->add($ordered);
+            $ordered->setOwner($this);
+        }
     public function getPostalcode(): ?int
     {
         return $this->postalcode;
@@ -265,6 +353,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removeOrdered(Ordered $ordered): self
+    {
+        if ($this->ordereds->removeElement($ordered)) {
+            // set the owning side to null (unless already changed)
+            if ($ordered->getOwner() === $this) {
+                $ordered->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): self
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): self
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getUserId() === $this) {
+                $reservation->setUserId(null);
+            }
+        }
     public function getAddress(): ?string
     {
         return $this->address;
