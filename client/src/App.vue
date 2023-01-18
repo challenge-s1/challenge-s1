@@ -17,6 +17,11 @@ import NavBarVue from './components/bases/NavBar.vue';
 import UserProviderVue from './components/providers/UserProvider.vue';
 // import LoginVue from "./views/Login.vue";
 // import HomeVue from "./views/Home.vue";
+import { useStore } from 'vuex';
+const store = useStore();
+
+store.commit('loadStore');
+
 </script>
 
 <style scoped>

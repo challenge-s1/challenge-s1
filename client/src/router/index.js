@@ -55,4 +55,22 @@ const router = createRouter({
   ]
 })
 
+router.beforeEach(async (to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const store = JSON.parse(localStorage.getItem('store'));
+  const user = store.user;
+  const loggedIn = user && user.token;
+  if (authRequired && !loggedIn) {
+      return next('/login');
+  }
+  if (!authRequired && loggedIn) {
+      return next('/');
+  }
+  next();
+})
+router.afterEach((to) => {
+  document.title = to.meta.title;
+})
 export default router
