@@ -50,8 +50,6 @@ jobs:
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data.
         run: |
-          php bin/console doctrine:database:drop --if-exists --force
-          php bin/console doctrine:database:create
           php bin/console doctrine:schema:update --force
         # Environment variables used by the `client.js` script to create a new PostgreSQL table.
         env:
