@@ -47,7 +47,11 @@ use ApiPlatform\Metadata\Link;
             denormalizationContext: ['groups' => ['user:update-password']],
 
         ),
-        new Patch(processor: UserPasswordHasher::class),
+
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"
+        ),
         new Delete(),
         new Put(
             uriTemplate: '/account/activate',

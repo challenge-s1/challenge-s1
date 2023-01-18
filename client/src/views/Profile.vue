@@ -1,29 +1,26 @@
 <script setup>
-
-import UserFormVue from '../components/UserForm.vue';
+import { ref, inject, reactive } from 'vue';
+import Modal from '../components/Modal.vue';
 import FormField from '../components/FormField.vue';
-import { inject, reactive, ref } from 'vue';
+import UserForm from '../components/UserForm.vue';
 
-const register = inject('userProvider:register');
+const updateProfile = () => {
+    console.log('updateProfile');
+}
 
-const UserData = reactive({
+const userData = reactive({
     firstName: '',
     lastName: '',
     email: '',
-    password: '',
-    plainPassword: '',
     city: '',
     address: '',
     postalcode: '',
     country: '',
 })
-
 const errors = ref({
     firstName: '',
     lastName: '',
     email: '',
-    password: '',
-    plainPassword: '',
     city: '',
     address: '',
     postalcode: '',
@@ -32,129 +29,92 @@ const errors = ref({
 });
 
 const validate = () => {
-    if (!UserData.email) {
+    if (!userData.email) {
         errors.value.email = 'Required';
     } else if (
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(UserData.email)
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(userData.email)
     ) {
         errors.value.email = 'Invalid email address';
     }
-    if (!UserData.password) {
-        errors.value.password = 'Required';
-    } else if (UserData.password.length < 8 && UserData.password != 'azerty') {
-        errors.value.password = 'Must be 8 characters or more';
-    }
-    if (!UserData.lastName) {
+    if (!userData.lastName) {
         errors.value.lastName = 'Required';
-    } else if( !UserData.firstName) {
+    } else if( !userData.firstName) {
         errors.value.firstName = 'Required';
     }
-    if (!UserData.plainPassword) {
-        errors.value.plainPassword = 'Required';
-    } else if (UserData.plainPassword != UserData.password) {
-        errors.value.plainPassword = 'Passwords must match';
-    }
-    if (!UserData.city) {
+    if (!userData.city) {
         errors.value.city = 'Required';
     }
-    if (!UserData.address) {
+    if (!userData.address) {
         errors.value.address = 'Required';
     }
-    if (!UserData.postalcode) {
+    if (!userData.postalcode) {
         errors.value.postalcode = 'Required';
     }
-    if (!UserData.country) {
+    if (!userData.country) {
         errors.value.country = 'Required';
     }
-
-    return Object.keys(errors.value).length == 0;
 }
-
-const onSubmit = function () {
-    if (!validate()) {
-        return;
-    }
-    console.log(UserData);
-    register(UserData).then((response) => {
-        errors.value.general = response;
-    });
-}
-
 </script>
-
 <template>
+    <UserForm @submit="updateProfile">
 
-    <div class="container  ">
-        <div class="flex justify-center self-center  z-10">
-
-            <div class="p-12 bg-white mx-auto rounded min-w-[50%] bg-orange-500/[.1]	">
-                <div class="mb-25">
-                    <h1 class=" text-5xl mt-2 mb-5">
-                        Register
-                    </h1>
-                    <h2 class="font-serif text-4xl	">
-                        Made from your own hands or buy yumee cakes
-                    </h2>
-                </div>
-                <h2 class="text-2xl font-bold text-orange-400 text-left mb-5">
-                    Let's cake together
-                </h2>
-                <UserFormVue @submit="onSubmit">
+        <Modal class="w-10/12">
+            <template #activator="{ toggleModal }">
+                <button type="button" @click="toggleModal">
+                    Open Modal
+                </button>
+            </template>
+            <template v-slot:title>
+                <h1>Update profile</h1>
+            </template>
+            <template #default class="w-full">
+                <div class="w-full">
                     <!-- <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase">FisrtName</label> -->
                     <FormField id="firstName" as="input" type="text" name="firstName" placeholder="Prénom"
-                        v-model="UserData.firstName"
+                        v-model="userData.firstName"
                         class=" mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.firstName }}</div>
                     <!-- <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase">LastName</label> -->
                     <FormField id="lastName" as="input" type="text" name="lastName" placeholder="Nom"
-                        v-model="UserData.lastName"
+                        v-model="userData.lastName"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.lastName }}</div>
 
                     <!-- <label for="email" class="block text-xs font-semibold text-gray-600 uppercase">E-mail</label> -->
                     <FormField id="email" as="input" type="email" name="email" placeholder="Email"
-                        v-model="UserData.email"
+                        v-model="userData.email"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.email }}</div>
-                    <FormField id="city" as="input" type="text" name="city" placeholder="City" v-model="UserData.city"
+                    <FormField id="city" as="input" type="text" name="city" placeholder="City" v-model="userData.city"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.city }}</div>
                     <FormField id="address" as="input" type="text" name="text" placeholder="Address"
-                        v-model="UserData.address"
+                        v-model="userData.address"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.address }}</div>
                     <FormField id="postalcode" as="input" type="number" name="email" placeholder="postal code"
-                        v-model="UserData.postalcode"
+                        v-model="userData.postalcode"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.postalcode }}</div>
                     <FormField id="country" as="input" type="text" name="country" placeholder="Country"
-                        v-model="UserData.country"
+                        v-model="userData.country"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.country }}</div>
-                    <!-- <label for="password"
-                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password</label> -->
-                    <FormField id="password" as="input" type="password" name="password" placeholder="Mot de passe"
-                        v-model="UserData.password"
-                        class=" mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
-                    <div class=" text-red-500 text-xs italic">{{ errors.password }}</div>
-                    <!-- <label for="plainPassword"
-                        class="block mt-2 text-xs font-semibold text-gray-600 uppercase">plainPassword</label> -->
-                    <FormField id="plainPassword" as="input" type="password" name="plainPassword"
-                        placeholder="Confirmer le mot de passe " v-model="UserData.plainPassword"
-                        class=" mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
-                    <div class=" text-red-500 text-xs italic">{{ errors.plainPassword }}</div>
                     <div class="flex flex-row justify-around text-center">
                         <div class="text-red-500 text-sm">
                             {{ errors.general }}
                         </div>
-                        <button type="submit" class=" flex p-5 mt-10 bg-black
-                        font-medium text-white uppercase 
-                        focus:outline-none justify-center hover:bg-orange-400 w-full hover:shadow-none">Registration</button>
+
                     </div>
-                </UserFormVue>
-            </div>
-        </div>
-    </div>
+                </div>
+            </template>
+            <template #footer>
+                <button type="submit" class=" flex p-4 bg-black
+                        font-medium justify-center text-white uppercase 
+                        focus:outline-none hover:bg-orange-400 w-full hover:shadow-none">Update</button>
+            </template>
+        </Modal>
+    </UserForm>
 
 
 </template>
