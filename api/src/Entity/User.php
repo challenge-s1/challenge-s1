@@ -20,13 +20,17 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\Activatecount;
+use ApiPlatform\Metadata\Link;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
         new GetCollection(),
-        new Post(processor: UserPasswordHasher::class),
+        new Post(
+            processor: UserPasswordHasher::class,
+        ),
         new Get(),
         new Put(processor: UserPasswordHasher::class),
         new Post(
@@ -45,10 +49,29 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
+        new put(
+            uriTemplate: '/account/activate',
+            controller: Activatecount::class,
+            name: 'user_active',
+            denormalizationContext: ['groups' => ['user:active']],
+
+        )
+        // new Post(
+        //     uriTemplate: '/register',
+        //     controller: UserActive::class,
+        //     name: 'register',
+        // ),
+        // new Post(
+        //     path: '/users/active/{id}',
+        //     controller: 'App\Controller\UserActive',
+        //     normalizationContext: ['groups' => ['user:read']],
+        //     denormalizationContext: ['groups' => ['user:active']],
+        // ),
     ],
     // normalizationContext: ['groups' => ['user:read']],
     // denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
@@ -60,7 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:reset-password'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
-
 
     #[ORM\Column(type: 'json')]
     private array $roles = [];
@@ -271,6 +293,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $masterClass->setOwner($this);
         }
 
+    public function isIsActive(): ?bool
+    {
+        return $this->is_Active;
+    }
+
+    public function setIsActive(bool $is_Active): self
+    {
+        $this->is_Active = $is_Active;
+        return $this;
+    }
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
         return $this;
     }
 
@@ -300,6 +341,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->ordereds->add($ordered);
             $ordered->setOwner($this);
         }
+    public function getPostalcode(): ?int
+    {
+        return $this->postalcode;
+    }
+
+    public function setPostalcode(int $postalcode): self
+    {
+        $this->postalcode = $postalcode;
 
         return $this;
     }
@@ -342,6 +391,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $reservation->setUserId(null);
             }
         }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }
