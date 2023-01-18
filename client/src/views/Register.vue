@@ -14,7 +14,7 @@ const UserData = reactive({
     plainPassword: '',
     city: '',
     address: '',
-    postalcode: '',
+    postalcode: null,
     country: '',
 })
 
@@ -32,6 +32,7 @@ const errors = ref({
 });
 
 const validate = () => {
+    errors.value = {};
     if (!UserData.email) {
         errors.value.email = 'Required';
     } else if (
@@ -66,8 +67,11 @@ const validate = () => {
     if (!UserData.country) {
         errors.value.country = 'Required';
     }
-
-    return Object.keys(errors.value).length == 0;
+    console.log(errors.value);
+    console.log(Object.values(errors.value));
+    console.log(Object.values(errors.value).length);
+    console.log(Object.keys(errors.value).length);
+    return Object.values(errors.value).length == 0;
 }
 
 const onSubmit = function () {
@@ -76,7 +80,12 @@ const onSubmit = function () {
     }
     console.log(UserData);
     register(UserData).then((response) => {
+        console.log(response);
         errors.value.general = response;
+    }).catch((error) => {
+        errors.value.general = error.message;
+
+        console.log(error);
     });
 }
 
@@ -87,7 +96,7 @@ const onSubmit = function () {
     <div class="container  ">
         <div class="flex justify-center self-center  z-10">
 
-            <div class="p-12 bg-white mx-auto rounded-2xl min-w-[50%] bg-orange-100	">
+            <div class="p-12 bg-white mx-auto rounded min-w-[50%] bg-orange-500/[.1]	">
                 <div class="mb-25">
                     <h1 class=" text-5xl mt-2 mb-5">
                         Register
@@ -123,7 +132,7 @@ const onSubmit = function () {
                         v-model="UserData.address"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.address }}</div>
-                    <FormField id="postalcode" as="input" type="number" name="email" placeholder="postal code"
+                    <FormField id="postalcode" as="input" type="number" name="postalcode" placeholder="Postal Code"
                         v-model="UserData.postalcode"
                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                     <div class=" text-red-500 text-xs italic">{{ errors.postalcode }}</div>
@@ -147,9 +156,12 @@ const onSubmit = function () {
                         <div class="text-red-500 text-sm">
                             {{ errors.general }}
                         </div>
+                    </div>
+                    <div class="flex flex-row justify-around text-center">
+
                         <button type="submit" class=" flex p-5 mt-10 bg-black
                         font-medium text-white uppercase 
-                        focus:outline-none hover:bg-orange-400 w-full hover:shadow-none">Registration</button>
+                        focus:outline-none justify-center hover:bg-orange-400 w-full hover:shadow-none">Registration</button>
                     </div>
                 </UserFormVue>
             </div>

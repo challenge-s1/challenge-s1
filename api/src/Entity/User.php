@@ -2,12 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\ResetPasswordController;
 use App\Controller\UpdatePasswordController;
@@ -15,13 +10,19 @@ use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Controller\GetUser;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Controller\Activatecount;
 use ApiPlatform\Metadata\Link;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -47,7 +48,18 @@ use ApiPlatform\Metadata\Link;
             denormalizationContext: ['groups' => ['user:update-password']],
 
         ),
-        new Patch(processor: UserPasswordHasher::class),
+
+        new Get(
+            name: 'user_profile', 
+            uriTemplate: 'user/profile',
+            read: false,
+            controller: GetUser::class,
+
+        ),
+        new Patch(
+            processor: UserPasswordHasher::class,
+            security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"
+        ),
         new Delete(),
         new Put(
             uriTemplate: '/account/activate',
@@ -68,12 +80,8 @@ use ApiPlatform\Metadata\Link;
         //     denormalizationContext: ['groups' => ['user:active']],
         // ),
     ],
-    // normalizationContext: ['groups' => ['user:read']],
-
-    denormalizationContext: ['groups' => ['user_write', 'user:update']],
-
-    // denormalizationContext: ['groups' => ['user:create', 'user:update']],
-
+    normalizationContext: ['groups' => ['user_read']],
+    denormalizationContext: ['groups' => ['user_write']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -88,13 +96,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+    #[Groups(['user_read'])]
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-
     #[Groups(['user_write', 'user:update', 'user:update-password'])]
     #[ORM\Column]
     private ?string $password = null;
@@ -107,33 +115,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user:update'])]
+    #[Groups(['user_write', 'user_read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write', 'user:update'])]
+    #[Groups(['user_write', 'user_read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
+
+    #[Groups(['user_write', 'user_read'])]
+    #[ORM\Column(length: 255)]
+    private ?string $city = null;
+
+    #[Groups(['user_write', 'user_read'])]
+    #[ORM\Column]
+    private ?int $postalcode = null;
+
+    #[Groups(['user_write', 'user_read'])]
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
+    #[Groups(['user_write', 'user_read'])]
+    #[ORM\Column(length: 255)]
+    private ?string $country = null;
 
     #[Groups(['user_write', 'user:update'])]
     #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private ?bool $is_Active = false;
-
-    #[Groups(['user_write', 'user:update'])]
-    #[ORM\Column(length: 255)]
-    private ?string $city = null;
-
-    #[Groups(['user_write', 'user:update'])]
-    #[ORM\Column]
-    private ?int $postalcode = null;
-
-    #[Groups(['user_write', 'user:update'])]
-    #[ORM\Column(length: 255)]
-    private ?string $address = null;
-
-    #[Groups(['user_write', 'user:update'])]
-    #[ORM\Column(length: 255)]
-    private ?string $country = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pastrie::class)]
     private Collection $pastries;
@@ -154,6 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ordereds = new ArrayCollection();
         $this->reservations = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {

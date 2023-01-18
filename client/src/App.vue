@@ -2,7 +2,7 @@
   <UserProviderVue>
     <div class=" bg-gray-100  overflow-hidden">
       <NavBarVue />
-      <main class="px-6 mt-20 mb-5 p-4">
+      <main class="px-6 pt-40 mb-5 p-4 bg-white">
         <router-view />
       </main>
 

@@ -96,7 +96,6 @@ services:
     ports:
       - "1025:25"
       - "1080:1080"
-
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

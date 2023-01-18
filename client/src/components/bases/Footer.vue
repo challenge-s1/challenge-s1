@@ -1,17 +1,7 @@
-<script setup>
-
-import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-import { inject } from 'vue';
-const user = inject(UserProvierKeys);
-const logout = inject('userProvider:logout');
-//<!-- style="background-image: url('src/assets/img/cupcaks.png')" -->
-
-</script>
-   
 <template>
-    <!-- Header -->
-    <div>
-        <nav class="fixed w-full pl-16 flex justify-between items-center bg-white/[.6] backdrop-blur border-b-2 border-spacing-1" >
+
+<div>
+        <nav class=" w-full pl-16 flex justify-between items-center bg-[url('@/assets/img/footer-bg.jpg')]">
             <div class="flex items-center flex-shrink-0 text-white mr-6">
                 <a class="text-3xl font-bold leading-none" href="#">
                     <div class="p-3" style="overflow: hidden;">
@@ -106,9 +96,6 @@ const logout = inject('userProvider:logout');
                     </ul>
                 </div>
             </nav>
-            
         </div>
     </div>
-
 </template>
-
