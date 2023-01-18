@@ -44,6 +44,7 @@
         "symfony/maker-bundle": "^1.44",
         "symfony/phpunit-bridge": "6.1.*",
         "symfony/stopwatch": "6.1.*",
+        "symfony/test-pack": "*",
         "symfony/var-dumper": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
     },
@@ -80,6 +81,12 @@
         "symfony/polyfill-php71": "*"
     },
     "scripts": {
+        "prepare": [
+            "php bin/console doctrine:database:drop --if-exists --force",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:schema:update --force"
+        ],
+
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
