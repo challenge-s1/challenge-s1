@@ -6,11 +6,10 @@ import { useRoute, useRouter } from 'vue-router';
 const $route = useRoute();
 const router = useRouter();
 
-onMounted(() => {
-    console.log("mounted");
+const activate = async () => {
     const token = $route.params.token;
     console.log($route.params.token);
-    axios.put('https://localhost/account/activate', { token: token })
+    await axios.put('https://localhost/account/activate', { token: token })
         .then((response) => {
             console.log(response);
             router.push({ name: "Login" })
@@ -18,5 +17,8 @@ onMounted(() => {
         .catch((error) => {
             console.log(error);
         })
-})
+}
+activate();
+
+
 </script>
