@@ -2,13 +2,13 @@ name: CI/CD
 
 on:
   push:
+    paths:
+      - "**.php"
+      - "**.vue"
+      - "**.js"
+      - "**ci.yml"
   pull_request: ~
   workflow_dispatch: ~
-  paths:
-    - "**.php"
-    - "**.vue"
-    - "**.js"
-    - "**ci.yml"
 
 jobs:
   apiPlatform-tests:
