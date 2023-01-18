@@ -5,8 +5,10 @@ on:
   pull_request: ~
   workflow_dispatch: ~
 
+permissions:
+  contents: read
 jobs:
-  tests:
+  apiPlatform-tests:
     name: Tests
     runs-on: ubuntu-latest
     steps:
@@ -16,10 +18,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
-          extensions: bcmath, iconv, mbstring, xml, zip
+          php-version: "8.1"
 
       - name: Install Composer dependencies
+        working-directory: api
         run: composer install
 
       # - name: Run PHPUnit tests
