@@ -17,6 +17,7 @@ jobs:
           php-version: "8.0"
 
       - name: Install dependencies
+        working-directory: api
         run: composer install --no-dev --optimize-autoloader
 
       # - name: Run PHPUnit tests
