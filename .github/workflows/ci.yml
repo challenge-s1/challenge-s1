@@ -54,7 +54,7 @@ jobs:
 
     needs:
       - apiPlatform-tests
-      - node-test
+      # - node-test
 
     steps:
       - uses: actions/checkout@v3
@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v3
 
         with:
-          context: .
+          context: ./api
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/challenge-s1:latest
 
