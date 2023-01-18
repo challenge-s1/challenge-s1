@@ -4,14 +4,20 @@ on:
   push:
   pull_request: ~
   workflow_dispatch: ~
+  paths:
+    - "**.php"
+    - "**.vue"
+    - "**.js"
+    - "**ci.yml"
 
 jobs:
   apiPlatform-tests:
-    name: Tests
+    name: Tests API PALTFORM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -23,6 +29,13 @@ jobs:
 
       # - name: Run PHPUnit tests
       #   run: vendor/bin/phpunit
+
+  node-test:
+    name: Tests Node
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -54,9 +67,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v3
+
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/challenge:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/challenge-s1:latest
 
   # build:
   #   runs-on: ubuntu-latest
