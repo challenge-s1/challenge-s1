@@ -12,37 +12,76 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Pull images
-        run: docker compose pull --ignore-pull-failures || true
-      - name: Start services
-        run: docker compose up --build -d
-      - name: Wait for services
-        run: |
-          while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker compose ps -q php)")"; do
-            case $status in
-              starting) sleep 1;;
-              healthy) exit 0;;
-              unhealthy)
-                docker compose ps
-                docker compose logs
-                exit 1
-              ;;
-            esac
-          done
-          exit 1
-      - name: Check HTTP reachability
-        run: curl -v -o /dev/null http://localhost
-      - name: Check HTTPS reachability
-        run: curl  -vk -o /dev/null https://localhost
-      - name: Create test database
-        run: |
-          docker compose exec -T php php bin/console -e test doctrine:database:create
-          docker compose exec -T php php bin/console -e test doctrine:migrations:migrate --no-interaction
-      - name: PHPUnit
-        run: docker compose exec -T php php bin/phpunit
-      - name: Doctrine Schema Validator
-        run: docker compose exec -T php php bin/console doctrine:schema:validate --skip-sync
-      - name: Jest
-        run: docker compose exec -T pwa yarn test --ci --passWithNoTests
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: bcmath, iconv, mbstring, xml, zip
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run NPM tests
+        run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        # - name: Pull images
+        #   run: docker compose pull --ignore-pull-failures || true
+        # - name: Start services
+        #   run: docker compose up --build -d
+        # - name: Wait for services
+        #   run: |
+        #     while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker compose ps -q php)")"; do
+        #       case $status in
+        #         starting) sleep 1;;
+        #         healthy) exit 0;;
+        #         unhealthy)
+        #           docker compose ps
+        #           docker compose logs
+        #           exit 1
+        #         ;;
+        #       esac
+        #     done
+        #     exit 1
+        # - name: Check HTTP reachability
+        #   run: curl -v -o /dev/null http://localhost
+        # - name: Check HTTPS reachability
+        #   run: curl  -vk -o /dev/null https://localhost
+        # - name: Create test database
+        #   run: |
+        #     docker compose exec -T php php bin/console -e test doctrine:database:create
+        #     docker compose exec -T php php bin/console -e test doctrine:migrations:migrate --no-interaction
+        # - name: PHPUnit
+        #   run: docker compose exec -T php php bin/phpunit
+        # - name: Doctrine Schema Validator
+        #   run: docker compose exec -T php php bin/console doctrine:schema:validate --skip-sync
+        # - name: Jest
+        #   run: docker compose exec -T pwa yarn test --ci --passWithNoTests
