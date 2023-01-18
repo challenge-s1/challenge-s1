@@ -4,6 +4,9 @@ import Modal from '../components/ModalForm.vue';
 import FormField from '../components/FormField.vue';
 import UserForm from '../components/UserForm.vue';
 import axios from 'axios';
+import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
+
+const token = inject(UserProvierKeys);
 const updateProfile = () => {
     axios.put('https://localhost/user/profile', userData)
         .then((response) => {
@@ -61,7 +64,13 @@ const validate = () => {
     }
 }
 const getUserData = async () => {
-    await axios.get('/api/user/profile')
+    console.log(token.value.token.token);
+    await axios.get('https://localhost/user/profile', {
+            headers: {
+                authorization: 'Bearer ' + token.value.token.token
+
+            }
+    })
         .then((response) => {
             userData.firstName = response.data.firstName;
             userData.lastName = response.data.lastName;
@@ -185,15 +194,16 @@ getUserData();
                         </div>
                         <div class="text-center mt-12">
                             <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                                Jenna Stones
+                                {{ userData.firstName }} {{ userData.lastName }}
                             </h3>
                             <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                                 <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                                Los Angeles, California
+                                {{ userData.city }}, {{ userData.country }}
+                                {{ userData.address }}, {{ userData.postalcode }}
                             </div>
                             <div class="mb-2 text-blueGray-600 mt-10">
-                                <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>Solution Manager -
-                                Creative Tim Officer
+                                <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
+                                {{ userData.roles }}
                             </div>
                             <div class="mb-2 text-blueGray-600">
                                 <i class="fas fa-university mr-2 text-lg text-blueGray-400"></i>University of Computer
