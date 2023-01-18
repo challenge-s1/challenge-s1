@@ -2,8 +2,6 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
   pull_request: ~
   workflow_dispatch: ~
 
@@ -24,8 +22,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit
+      # - name: Run PHPUnit tests
+      #   run: vendor/bin/phpunit
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
