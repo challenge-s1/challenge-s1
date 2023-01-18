@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: api
-        run: composer install --no-dev --optimize-autoloader
+        run: composer install
 
       # - name: Run PHPUnit tests
       #   run: composer test-unit
