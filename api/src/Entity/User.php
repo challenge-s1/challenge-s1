@@ -2,25 +2,26 @@
 
 namespace App\Entity;
 
+use App\Controller\GetUser;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
-use App\Controller\ResetPasswordController;
-use App\Controller\UpdatePasswordController;
-use App\Repository\UserRepository;
-use App\State\UserPasswordHasher;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
+use App\Controller\UpdateUser;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
-use App\Controller\GetUser;
+use App\Controller\Activatecount;
+use App\State\UserPasswordHasher;
+use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\ResetPasswordController;
+use Doctrine\Common\Collections\Collection;
+use App\Controller\UpdatePasswordController;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Controller\Activatecount;
-use ApiPlatform\Metadata\Link;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -50,11 +51,16 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         ),
 
         new Get(
-            name: 'user_profile', 
+            name: 'user_profile',
             uriTemplate: 'user/profile',
             read: false,
             controller: GetUser::class,
 
+        ),
+        new Post(
+            name: 'user_profile_update',
+            uriTemplate: 'user/profile',
+            controller: UpdateUser::class,
         ),
         new Patch(
             processor: UserPasswordHasher::class,

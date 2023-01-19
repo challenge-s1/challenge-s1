@@ -6,18 +6,41 @@ import UserForm from '../components/UserForm.vue';
 import axios from 'axios';
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 
-const token = inject(UserProvierKeys);
-const updateProfile = () => {
-    axios.put('https://localhost/user/profile', userData)
+const userToken = inject(UserProvierKeys);
+const updateProfile = async(handleClose) => {
+    console.log("updateProfile");
+    if (!validate()) {
+        return;
+    }
+    await axios.post('https://localhost/user/profile', userData.value,
+        {
+            headers: {
+                authorization: 'Bearer ' + userToken.value.token.token
+            }
+        })
         .then((response) => {
+            user.firstName = response.data.firstName;
+            user.lastName = response.data.lastName;
+            user.city = response.data.city;
+            user.address = response.data.address;
+            user.postalcode = response.data.postalcode;
+            user.country = response.data.country;
+            userData.value.firstName = response.data.firstName;
+            userData.value.lastName = response.data.lastName;
+            userData.value.city = response.data.city;
+            userData.value.address = response.data.address;
+            userData.value.postalcode = response.data.postalcode;
+            userData.value.country = response.data.country;
             console.log(response);
+            handleClose();
         })
         .catch((error) => {
+            errors.value.general = error.response.data.message;
             console.log(error);
         });
 }
 
-const userData = reactive({
+const user = reactive({
     firstName: '',
     lastName: '',
     email: '',
@@ -26,6 +49,8 @@ const userData = reactive({
     postalcode: '',
     country: '',
 })
+
+const userData = ref({});
 const errors = ref({
     firstName: '',
     lastName: '',
@@ -38,52 +63,55 @@ const errors = ref({
 });
 
 const validate = () => {
-    if (!userData.email) {
-        errors.value.email = 'Required';
-    } else if (
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(userData.email)
-    ) {
-        errors.value.email = 'Invalid email address';
-    }
-    if (!userData.lastName) {
+    errors.value = {};
+    if (!userData.value.lastName) {
         errors.value.lastName = 'Required';
-    } else if (!userData.firstName) {
+    } else if (!userData.value.firstName) {
         errors.value.firstName = 'Required';
     }
-    if (!userData.city) {
+    if (!userData.value.city) {
         errors.value.city = 'Required';
     }
-    if (!userData.address) {
+    if (!userData.value.address) {
         errors.value.address = 'Required';
     }
-    if (!userData.postalcode) {
+    if (!userData.value.postalcode) {
         errors.value.postalcode = 'Required';
     }
-    if (!userData.country) {
+    if (!userData.value.country) {
         errors.value.country = 'Required';
     }
+    return Object.values(errors.value).length == 0;
 }
 const getUserData = async () => {
-    console.log(token.value.token.token);
     await axios.get('https://localhost/user/profile', {
             headers: {
-                authorization: 'Bearer ' + token.value.token.token
+                authorization: 'Bearer ' + userToken.value.token.token
 
             }
     })
         .then((response) => {
-            userData.firstName = response.data.firstName;
-            userData.lastName = response.data.lastName;
-            userData.email = response.data.email;
-            userData.city = response.data.city;
-            userData.address = response.data.address;
-            userData.postalcode = response.data.postalcode;
-            userData.country = response.data.country;
+            console.log(response.data);
+            user.firstName = response.data.firstName;
+            user.lastName = response.data.lastName;
+            user.email = response.data.email;
+            user.city = response.data.city;
+            user.address = response.data.address;
+            user.postalcode = response.data.postalcode;
+            user.country = response.data.country;
+            user.roles = response.data.roles;
+            userData.value.firstName = response.data.firstName;
+            userData.value.lastName = response.data.lastName;
+            userData.value.city = response.data.city;
+            userData.value.address = response.data.address;
+            userData.value.postalcode = response.data.postalcode;
+            userData.value.country = response.data.country;
+            console.log("userData", userData.value);
         })
         .catch((error) => {
             console.log(error);
         });
-        console.log(userData   );
+        console.log(user   );
 }
 getUserData();
 
@@ -92,20 +120,13 @@ getUserData();
     <div
         style="background-image: url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=2710&amp;q=80');">
         <div class=" py-16 bg-blueGray-200">
-            <div class="container mx-auto px-4 inline-block">
-                <div class=" flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+            <div class="container mx-auto px-4 inline-block flex">
+                <div class=" flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg ">
                     <div class="px-6">
                         <div class="flex flex-wrap justify-center">
-                            <div class="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                                <div class="relative">
-                                    <img alt="..."
-                                        src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg"
-                                        class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px">
-                                </div>
-                            </div>
                             <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                                 <div class="py-6 px-3 mt-32 sm:mt-0">
-                                    <UserForm @submit="updateProfile">
+                                    <UserForm>
 
                                         <Modal class="w-10/12">
                                             <template #activator="{ toggleModal }">
@@ -119,37 +140,39 @@ getUserData();
                                             </template>
                                             <template #default class="w-full">
                                                 <div class="w-full">
-                                                    <!-- <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase">FisrtName</label> -->
+                                                    <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase text-left">FisrtName</label> 
                                                     <FormField id="firstName" as="input" type="text" name="firstName"
                                                         placeholder="Prénom" v-model="userData.firstName"
                                                         class=" mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.firstName }}
                                                     </div>
-                                                    <!-- <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase">LastName</label> -->
+                                                    <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase text-left">LastName</label> 
                                                     <FormField id="lastName" as="input" type="text" name="lastName"
                                                         placeholder="Nom" v-model="userData.lastName"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.lastName }}
                                                     </div>
 
-                                                    <!-- <label for="email" class="block text-xs font-semibold text-gray-600 uppercase">E-mail</label> -->
-                                                    <FormField id="email" as="input" type="email" name="email"
-                                                        placeholder="Email" v-model="userData.email"
-                                                        class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
-                                                    <div class=" text-red-500 text-xs italic">{{ errors.email }}</div>
+                                                    <label for="email" class="block text-xs font-semibold text-gray-600 uppercase text-left">City</label> 
+                                                   
                                                     <FormField id="city" as="input" type="text" name="city"
                                                         placeholder="City" v-model="userData.city"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.city }}</div>
+
+                                                    <label for="adress" class="block text-xs font-semibold text-gray-600 uppercase text-left">Adress</label> 
+
                                                     <FormField id="address" as="input" type="text" name="text"
                                                         placeholder="Address" v-model="userData.address"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.address }}</div>
-                                                    <FormField id="postalcode" as="input" type="number" name="email"
+                                                    <label for="postalcode" class="block text-xs font-semibold text-gray-600 uppercase text-left">Postal Code</label>
+                                                    <FormField id="postalcode" as="input" type="number" name="postalcode"
                                                         placeholder="postal code" v-model="userData.postalcode"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.postalcode }}
                                                     </div>
+                                                    <label for="country" class="block text-xs font-semibold text-gray-600 uppercase text-left">Country</label>
                                                     <FormField id="country" as="input" type="text" name="country"
                                                         placeholder="Country" v-model="userData.country"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
@@ -162,10 +185,10 @@ getUserData();
                                                     </div>
                                                 </div>
                                             </template>
-                                            <template #footer>
+                                            <template #footer="{ handleClose }">
                                                 <button type="submit" class=" flex p-4 bg-black
                 font-medium justify-center text-white uppercase 
-                focus:outline-none hover:bg-orange-400 w-full hover:shadow-none">Update</button>
+                focus:outline-none hover:bg-orange-400 w-full hover:shadow-none" @click="updateProfile(handleClose)">Update</button>
                                             </template>
                                         </Modal>
                                     </UserForm>
@@ -174,19 +197,14 @@ getUserData();
                             </div>
                             <div class="w-full lg:w-4/12 px-4 lg:order-1">
                                 <div class="flex justify-center py-4 lg:pt-4 pt-8">
-                                    <div class="mr-4 p-3 text-center">
+                                    <div class="mr-4 p-3 text-center" v-if="user.roles && user.roles[0] == 'ROLE_PATISSIER'">
                                         <span
-                                            class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span><span
-                                            class="text-sm text-blueGray-400">Friends</span>
-                                    </div>
-                                    <div class="mr-4 p-3 text-center">
-                                        <span
-                                            class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">10</span><span
-                                            class="text-sm text-blueGray-400">Photos</span>
+                                            class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">TODO</span><span
+                                            class="text-sm text-blueGray-400">Subscriber</span>
                                     </div>
                                     <div class="lg:mr-4 p-3 text-center">
                                         <span
-                                            class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">89</span><span
+                                            class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">TODO</span><span
                                             class="text-sm text-blueGray-400">Comments</span>
                                     </div>
                                 </div>
@@ -194,33 +212,25 @@ getUserData();
                         </div>
                         <div class="text-center mt-12">
                             <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                                {{ userData.firstName }} {{ userData.lastName }}
+                                {{ user.firstName }} {{ user.lastName }}
                             </h3>
                             <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                                 <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                                {{ userData.city }}, {{ userData.country }}
-                                {{ userData.address }}, {{ userData.postalcode }}
+                                {{ user.city }}, {{ user.country }}
+                                {{ user.address }}, {{ user.postalcode }}
                             </div>
-                            <div class="mb-2 text-blueGray-600 mt-10">
+                            <div class="mb-2 text-blueGray-600 mt-10" v-show="user.roles">
                                 <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                                {{ userData.roles }}
-                            </div>
-                            <div class="mb-2 text-blueGray-600">
-                                <i class="fas fa-university mr-2 text-lg text-blueGray-400"></i>University of Computer
-                                Science
+                                {{ user.roles[0] }}
                             </div>
                         </div>
                         <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
                             <div class="flex flex-wrap justify-center">
                                 <div class="w-full lg:w-9/12 px-4">
                                     <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                                        An artist of considerable range, Jenna the name taken by
-                                        Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                                        performs and records all of his own music, giving it a
-                                        warm, intimate feel with a solid groove structure. An
-                                        artist of considerable range.
+                                        Well you like to eat because you like to bake or you like to bake because you like to eat?
+                                         Either way, you're in the right place.
                                     </p>
-                                    <a href="#pablo" class="font-normal text-pink-500">Show more</a>
                                 </div>
                             </div>
                         </div>
