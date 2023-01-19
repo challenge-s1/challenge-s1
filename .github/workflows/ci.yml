@@ -24,8 +24,7 @@ jobs:
         # Provide the password for postgres
         # ${{ env.APP_SECRET }}
         env:
-          context: ./api
-          POSTGRES_PASSWORD: changeme
+          POSTGRES_PASSWORD: ${{DB_PASSWORD}}
           POSTGRES_DB: api
           POSTGRES_USER: api-platform
         # Set health checks to wait until postgres has started
@@ -66,7 +65,8 @@ jobs:
           POSTGRES_PORT: 5432
 
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit
+        working-directory: api
+        run: php bin/phpunit
 
   node-test:
     name: Tests Node
