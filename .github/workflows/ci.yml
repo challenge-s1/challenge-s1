@@ -23,7 +23,8 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: ChangeMe
+          context: ./api
+          POSTGRES_PASSWORD: { { env.APP_SECRET } }
           POSTGRES_DB: api
           POSTGRES_USER: api-platform
         # Set health checks to wait until postgres has started
