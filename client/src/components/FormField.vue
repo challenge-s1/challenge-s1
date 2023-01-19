@@ -21,6 +21,10 @@ const props = defineProps(
         class: {
             type: String,
             required: false
+        },
+        modelValue: {
+            type: [String, Object],
+            default: ''
         }
     }
 );
@@ -29,7 +33,7 @@ const props = defineProps(
 <template>
     <div>
         <component :is="as" :name="name" :type="type" :placeholder="placeholder" :class="class"
-            @input="$emit('update:modelValue', $event.target.value)">
+            @input="$emit('update:modelValue', $event.target.value)" :value="modelValue">
             <slot />
         </component>
     </div>
