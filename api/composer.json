@@ -38,6 +38,9 @@
         "api-platform/schema-generator": "^4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.20",
+        "hautelook/alice-bundle": "^2.11",
+        "justinrainbow/json-schema": "^5.2",
+        "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.1.*",
         "symfony/css-selector": "6.1.*",
         "symfony/debug-bundle": "6.1.*",
@@ -80,6 +83,12 @@
         "symfony/polyfill-php71": "*"
     },
     "scripts": {
+        "prepare": [
+            "php bin/console doctrine:database:drop --if-exists --force",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:schema:update --force"
+        ],
+
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
