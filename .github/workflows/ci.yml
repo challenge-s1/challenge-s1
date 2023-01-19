@@ -25,7 +25,7 @@ jobs:
         # ${{ env.APP_SECRET }}
 
         env:
-          POSTGRES_PASSWORD: ${{ env.APP_SECRET }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: api
           POSTGRES_USER: api-platform
         # Set health checks to wait until postgres has started
