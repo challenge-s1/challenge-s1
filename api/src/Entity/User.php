@@ -28,12 +28,14 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
+    security: "is_granted('ROLE_ADMIN') or object == user",
+)]
+#[ApiResource(
     operations: [
         new GetCollection(),
         new Post(
             processor: UserPasswordHasher::class,
-        ),
-        new Get(),
+        ),        
         new Put(processor: UserPasswordHasher::class),
         new Post(
             name: 'reset_password',
@@ -49,24 +51,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
             denormalizationContext: ['groups' => ['user:update-password']],
 
         ),
-
-        new Get(
-            name: 'user_profile',
-            uriTemplate: 'user/profile',
-            read: false,
-            controller: GetUser::class,
-
-        ),
-        new Post(
-            name: 'user_profile_update',
-            uriTemplate: 'user/profile',
-            controller: UpdateUser::class,
-        ),
         new Patch(
-            processor: UserPasswordHasher::class,
-            security: "is_granted('ROLE_ADMIN') or object.getOwner() == user"
+            security: "is_granted('ROLE_ADMIN') or object.getOwner() == user",
+            denormalizationContext: ['groups' => ['user_update']]
         ),
-        new Delete(),
         new Put(
             uriTemplate: '/account/activate',
             controller: Activatecount::class,
@@ -96,9 +84,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['user_read'])]
     private ?int $id = null;
 
-    #[Groups(['user_write', 'user:update', 'user:reset-password'])]
+    #[Groups(['user_write', 'user:reset-password', 'user_cart'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -109,43 +98,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user_write', 'user:update', 'user:update-password'])]
+    #[Groups(['user_write','user:update-password'])]
     #[ORM\Column]
     private ?string $password = null;
 
     #[Assert\NotBlank(groups: ['user_write'])]
-    #[Groups(['user_write', 'user:update'])]
+    #[Groups(['user_write'])]
     private ?string $plainPassword = null;
 
     #[Groups(['user:active', 'user:update-password'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update'])]
     #[ORM\Column]
     private ?int $postalcode = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read' , 'user_update'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[Groups(['user_write', 'user:update'])]
+    #[Groups(['user_write'])]
     #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private ?bool $is_Active = false;
 
@@ -161,12 +150,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Reservation::class)]
     private Collection $reservations;
 
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Cart::class, orphanRemoval: true)]
+    #[Groups(['user_cart'])]
+    private Collection $cartItems;
+
     public function __construct()
     {
         $this->pastries = new ArrayCollection();
         $this->masterClasses = new ArrayCollection();
         $this->ordereds = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
     }
 
 
@@ -441,6 +435,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUserId() === $this) {
                 $reservation->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(Cart $cartItem): self
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(Cart $cartItem): self
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getClient() === $this) {
+                $cartItem->setClient(null);
             }
         }
 

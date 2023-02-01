@@ -5,7 +5,7 @@ import Register from '../views/Register.vue'
 import Activate from '../views/Activate.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ForgotPassword from '../views/PasswordForgot.vue'
-
+import Cart from '../views/Cart.vue'
 import Profile from '../views/Profile.vue'
 
 const router = createRouter({
@@ -46,6 +46,11 @@ const router = createRouter({
       path: '/profile',
       name: 'Profile',
       component: Profile
+    },
+    {
+      path: '/cart',
+      name: 'Cart',
+      component: Cart
     }
     // {
     //   path: '/about',
@@ -75,6 +80,6 @@ router.beforeEach(async (to, from, next) => {
   next();
 })
 router.afterEach((to) => {
-  document.title = to.meta.title;
+  document.title = to.meta.name;
 })
 export default router

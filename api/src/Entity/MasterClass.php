@@ -10,7 +10,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MasterClassRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['masterclass_read']],
+)]
 class MasterClass
 {
     #[ORM\Id]
@@ -37,9 +39,13 @@ class MasterClass
     #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Reservation::class)]
     private Collection $reservations;
 
+    #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
+    private Collection $carts;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,6 +137,36 @@ class MasterClass
             // set the owning side to null (unless already changed)
             if ($reservation->getMasterClass() === $this) {
                 $reservation->setMasterClass(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts->add($cart);
+            $cart->setMasterClass($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getMasterClass() === $this) {
+                $cart->setMasterClass(null);
             }
         }
 
