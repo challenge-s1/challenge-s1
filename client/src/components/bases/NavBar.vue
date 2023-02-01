@@ -11,14 +11,15 @@ const logout = inject('userProvider:logout');
 <template>
     <!-- Header -->
     <div>
-        <nav class="fixed w-full pl-16 flex justify-between items-center bg-white/[.6] backdrop-blur border-b-2 border-spacing-1" >
+        <nav
+            class="fixed w-full pl-16 flex justify-between items-center bg-white/[.6] backdrop-blur border-b-2 border-spacing-1">
             <div class="flex items-center flex-shrink-0 text-white mr-6">
                 <a class="text-3xl font-bold leading-none" href="#">
                     <div class="p-3" style="overflow: hidden;">
-                        <img src="@/assets/img/logo.png" class="" style="overflow: hidden;" width="100"
-                        height="100" alt="" /> 
+                        <img src="@/assets/img/logo1.png" class="" style="overflow: hidden;" width="100" height="100"
+                            alt="" />
                     </div>
-                    
+
                 </a>
             </div>
             <div class="lg:hidden mr-7">
@@ -106,7 +107,7 @@ const logout = inject('userProvider:logout');
                     </ul>
                 </div>
             </nav>
-            
+
         </div>
     </div>
 
