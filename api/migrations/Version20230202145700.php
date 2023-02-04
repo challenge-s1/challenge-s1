@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230116150941 extends AbstractMigration
+final class Version20230202145700 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,13 +20,15 @@ final class Version20230116150941 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE "user" ADD is_active BOOLEAN NOT NULL');
+        $this->addSql('ALTER TABLE master_class ADD is_canceled BOOLEAN DEFAULT NULL');
+        $this->addSql('ALTER TABLE master_class DROP status');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE "user" DROP is_active');
+        $this->addSql('ALTER TABLE master_class ADD status VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE master_class DROP is_canceled');
     }
 }

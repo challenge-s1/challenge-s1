@@ -96,9 +96,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['masterClass:details'])]
     private ?int $id = null;
 
-    #[Groups(['user_write', 'user:update', 'user:reset-password'])]
+    #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -109,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Groups(['user_write', 'user:update', 'user:update-password'])]
+    #[Groups(['user_write', 'user:update', 'user:update-password',])]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -121,11 +122,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'masterClass:read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'masterClass:read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
@@ -161,12 +162,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Reservation::class)]
     private Collection $reservations;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: VoucherDiscount::class)]
+    private Collection $voucherDiscounts;
+
     public function __construct()
     {
         $this->pastries = new ArrayCollection();
         $this->masterClasses = new ArrayCollection();
         $this->ordereds = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->voucherDiscounts = new ArrayCollection();
     }
 
 
@@ -441,6 +446,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUserId() === $this) {
                 $reservation->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VoucherDiscount>
+     */
+    public function getVoucherDiscounts(): Collection
+    {
+        return $this->voucherDiscounts;
+    }
+
+    public function addVoucherDiscount(VoucherDiscount $voucherDiscount): self
+    {
+        if (!$this->voucherDiscounts->contains($voucherDiscount)) {
+            $this->voucherDiscounts->add($voucherDiscount);
+            $voucherDiscount->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoucherDiscount(VoucherDiscount $voucherDiscount): self
+    {
+        if ($this->voucherDiscounts->removeElement($voucherDiscount)) {
+            // set the owning side to null (unless already changed)
+            if ($voucherDiscount->getOwner() === $this) {
+                $voucherDiscount->setOwner(null);
             }
         }
 

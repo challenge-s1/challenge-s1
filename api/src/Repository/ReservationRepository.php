@@ -39,28 +39,33 @@ class ReservationRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Reservation[] Returns an array of Reservation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Reservation[] Returns an array of Reservation objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('r.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Reservation
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Reservation[] Returns an array of Reservation objects
+     */
+    public function findByMasterClassField($value): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id', 'r.nbPlaces', 'r.price', 'u.email', 'm.title')
+            ->innerJoin('r.userId', 'u')
+            ->innerJoin('r.masterClass', 'm')
+            ->andWhere('r.masterClass = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

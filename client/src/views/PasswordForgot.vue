@@ -5,6 +5,7 @@ import axios from 'axios';
 
 
 const open = ref(true);
+const showMessage = ref(false);
 const email = ref('');
 
 const handleOpen = () => {
@@ -12,7 +13,6 @@ const handleOpen = () => {
 };
 
 const handleSubmit = () => {
-    console.log(email.value);
     handleOpen();
     axios.post('https://localhost/users/reset-password', { email: email.value })
         .then((response) => {
@@ -21,6 +21,7 @@ const handleSubmit = () => {
         .catch((error) => {
         console.log(error);
         });
+    showMessage.value = true;
   
 };
 
@@ -34,7 +35,7 @@ const handleSubmit = () => {
     <div class="mt-20 bg-emerald-200" v-if="!open">
        
     </div> -->
-    <div class="container px-6 mx-auto" v-if="!open">
+    <div class="container px-6 mx-auto" v-if="showMessage">
         <div class="flex  text-center md:text-left md:flex-row h-screen justify-evenly md:items-center">
 
             <div class="bg-white p-10 flex flex-col shadow-xl rounded-xl">
