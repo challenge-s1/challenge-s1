@@ -27,6 +27,20 @@ services:
         decorates: "api_platform.openapi.factory"
         arguments: ["@.inner"]
 
-    App\State\UserPasswordHasher:
-        bind:
-            $processor: "@api_platform.doctrine.orm.state.persist_processor"
+    # App\State\UserPasswordHasher:
+    #     bind:
+    #         $processor: "@api_platform.doctrine.orm.state.persist_processor"
+
+    # App\EventSubscriber\passwordHasher:
+    #     resource: "../src/EventSubscriber"
+    #     autowire: true
+    #     tags:
+    #         - { name: doctrine.event_subscriber }
+
+    App\EventListener\LoginSuccessListener:
+        tags:
+            - {
+                  name: kernel.event_listener,
+                  event: lexik_jwt_authentication.on_authentication_success,
+                  method: onLoginSuccess,
+              }

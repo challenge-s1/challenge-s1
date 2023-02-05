@@ -12,9 +12,11 @@ const updateProfile = async(handleClose) => {
     if (!validate()) {
         return;
     }
-    await axios.post('https://localhost/user/profile', userData.value,
+    userData.value.postalcode = parseInt(userData.value.postalcode);
+    await axios.patch(`https://localhost/users/${userToken.value.token.user.id}`, userData.value,
         {
             headers: {
+                'content-type': 'application/merge-patch+json',
                 authorization: 'Bearer ' + userToken.value.token.token
             }
         })
@@ -84,7 +86,7 @@ const validate = () => {
     return Object.values(errors.value).length == 0;
 }
 const getUserData = async () => {
-    await axios.get('https://localhost/user/profile', {
+    await axios.get(`https://localhost/users/${userToken.value.token.user.id}`, {
             headers: {
                 authorization: 'Bearer ' + userToken.value.token.token
 

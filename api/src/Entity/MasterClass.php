@@ -55,7 +55,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/master-classes/{id}/cancel',
             controller: CancelMasterClassController::class,
         )
-    ]
+    ],
+    normalizationContext: ['groups' => ['masterclass_read']]
 )]
 #[ApiResource(
     uriTemplate: '/users/{id}/master_classes',
@@ -68,6 +69,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'groups' => ['masterClass:details', 'masterClass:read'],
         ],
     )],
+
 )]
 class MasterClass
 {
@@ -106,9 +108,13 @@ class MasterClass
     #[Groups(['masterClass:read'])]
     private ?bool $isCanceled = null;
 
+    #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
+    private Collection $carts;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,7 +220,34 @@ class MasterClass
     public function setIsCanceled(?bool $isCanceled): self
     {
         $this->isCanceled = $isCanceled;
+        return $this;
+    }
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
 
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts->add($cart);
+            $cart->setMasterClass($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getMasterClass() === $this) {
+                $cart->setMasterClass(null);
+            }
+        }
         return $this;
     }
 }

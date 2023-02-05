@@ -7,6 +7,7 @@ import ResetPassword from '../views/ResetPassword.vue'
 import ForgotPassword from '../views/PasswordForgot.vue'
 import MasterClassList from '../views/masterClass/MasterClassList.vue'
 import AddPastrie from '../views/AddPastrie.vue'
+import Cart from '../views/Cart.vue'
 import Profile from '../views/Profile.vue'
 import Pastries from '../views/Pastries.vue'
 
@@ -65,6 +66,11 @@ const router = createRouter({
       path: '/pastries',
       name: 'Pastries',
       component: Pastries
+    },
+    {
+      path: '/cart',
+      name: 'Cart',
+      component: Cart
     }
     // {
     //   path: '/about',
@@ -95,6 +101,6 @@ router.beforeEach(async (to, from, next) => {
   next();
 })
 router.afterEach((to) => {
-  document.title = to.meta.title;
+  document.title = to.meta.name;
 })
 export default router

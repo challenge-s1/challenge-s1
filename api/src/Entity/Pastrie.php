@@ -16,6 +16,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation\Blameable;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: PastrieRepository::class)]
 
@@ -41,8 +43,8 @@ use Gedmo\Mapping\Annotation\Blameable;
             security: 'is_granted("ROLE_ADMIN") or object.getOwner() == user',
         ),
     ],
-    // normalizationContext: ['groups' => ['pastrie_read']],
-    // denormalizationContext: ['groups' => ['pastrie_write']],
+    normalizationContext: ['groups' => ['pastrie_read']],
+    denormalizationContext: ['groups' => ['pastrie_write']],
 )]
 #[ApiResource(
     uriTemplate: '/users/{id}/passtries',
@@ -56,15 +58,12 @@ use Gedmo\Mapping\Annotation\Blameable;
     operations: [
         new GetCollection()
     ],
-
 )]
 class Pastrie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    // #[ApiProperty(identifier: true)]
-    // #[Groups('pastrie_read', 'category_read')]
     #[Groups(['pastrie_read', 'category_read'])]
     private ?int $id = null;
 
@@ -108,6 +107,14 @@ class Pastrie
     // #[ApiProperty(identifier: true)]
     #[Groups(['pastrie_read', 'pastrie_write'])]
     private ?Category $category = null;
+
+    #[ORM\OneToMany(mappedBy: 'cake', targetEntity: Cart::class)]
+    private Collection $cartItems;
+
+    public function __construct()
+    {
+        $this->cartItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -182,6 +189,36 @@ class Pastrie
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(Cart $cartItem): self
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setCake($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(Cart $cartItem): self
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getCake() === $this) {
+                $cartItem->setCake(null);
+            }
+        }
 
         return $this;
     }
