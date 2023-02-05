@@ -59,12 +59,8 @@ class UserFixtures extends Fixture
             $patissier->setCity('City' . $i);
             $patissier->setPostalCode($i);
             $patissier->setCountry('Paris');
-
             $manager->persist($patissier);
         }
-
-
-
         $manager->flush();
     }
 }

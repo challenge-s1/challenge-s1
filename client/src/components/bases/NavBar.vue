@@ -70,8 +70,7 @@ const logout = inject('userProvider:logout');
                 class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
                 <div class="flex items-center mb-8">
                     <a class="mr-auto text-3xl font-bold leading-none" href="#">
-                        <img src="@/assets/img/Motobike_ESGI 2.png" class="" style="overflow: hidden;" width="50%"
-                            height="50%" alt="" />
+                        <!-- <img src="" class="" style="overflow: hidden;" width="50%" height="50%" alt="" /> -->
                     </a>
                     <button class="navbar-close">
                         <svg class="h-6 w-6 text-black cursor-pointer hover:text-gray-500"

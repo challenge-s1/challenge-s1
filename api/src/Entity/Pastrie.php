@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\PastrieRepository;
@@ -23,6 +24,7 @@ use Gedmo\Mapping\Annotation\Blameable;
         new GetCollection(
             normalizationContext: ['groups' => ['pastrie_read', 'category_read']]
         ),
+
         new Post(
             denormalizationContext: ['groups' => ['pastrie_write']],
             security: 'is_granted("ROLE_PATISSIER")',
@@ -42,7 +44,20 @@ use Gedmo\Mapping\Annotation\Blameable;
     // normalizationContext: ['groups' => ['pastrie_read']],
     // denormalizationContext: ['groups' => ['pastrie_write']],
 )]
+#[ApiResource(
+    uriTemplate: '/users/{id}/passtries',
+    uriVariables: [
+        'id' => new Link(
+            fromClass: User::class,
+            toProperty: 'owner',
+        )
+    ],
+    security: ' user.getId() == id',
+    operations: [
+        new GetCollection()
+    ],
 
+)]
 class Pastrie
 {
     #[ORM\Id]
