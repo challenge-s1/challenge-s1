@@ -5,8 +5,11 @@ import Register from '../views/Register.vue'
 import Activate from '../views/Activate.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ForgotPassword from '../views/PasswordForgot.vue'
-import Profile from '../views/Profile.vue'
 import MasterClassList from '../views/masterClass/MasterClassList.vue'
+import AddPastrie from '../views/AddPastrie.vue'
+import Profile from '../views/Profile.vue'
+import Pastries from '../views/Pastries.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +54,17 @@ const router = createRouter({
       path: '/masterclass',
       name: 'MasterClassList',
       component: MasterClassList
+    },
+    {
+      path:'/add/pastrie',
+      name:'AddPastrie',
+      component:AddPastrie
+      
+    },
+    {
+      path: '/pastries',
+      name: 'Pastries',
+      component: Pastries
     }
     // {
     //   path: '/about',
@@ -66,7 +80,8 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
   // const publicPages = ['/login', '/register','/account/activate/:token'];
-  const publicPages = ['Login', 'Register','Activate','ResetPassword','ForgotPassword','MasterClassList'];
+  const publicPages = ['Login', 'Register','Activate','ResetPassword','ForgotPassword','Home','Pastries','MasterClassList'];
+
   const authRequired = !publicPages.includes(to.name);
   const store = JSON.parse(localStorage.getItem('store'));
   const user = store.user;
@@ -74,9 +89,9 @@ router.beforeEach(async (to, from, next) => {
   if (authRequired && !loggedIn) {
       return next('/login');
   }
-  if (!authRequired && loggedIn) {
-      return next('/');
-  }
+  // if (!authRequired && loggedIn) {
+  //     return next(to.name==='Home');
+  // }
   next();
 })
 router.afterEach((to) => {

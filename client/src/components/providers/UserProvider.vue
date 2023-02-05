@@ -15,7 +15,7 @@ const store = useStore();
 const router = useRouter();
 
 const user = ref(store.state.user);
-const login = async function(userData){
+const login = async function (userData) {
     console.log(userData);
 
     const token = await axios.post('https://localhost/authentication_token', userData).
@@ -43,14 +43,14 @@ const login = async function(userData){
 }
 
 
-const register = async function(userData){
+const register = async function (userData) {
     userData.postalcode = parseInt(userData.postalcode);
     console.log(userData);
-    const user = await axios.post('https://localhost/users',userData)
-    .then((response)=>{
-        console.log(response);
-        return response.data;
-    }).
+    const user = await axios.post('https://localhost/users', userData)
+        .then((response) => {
+            console.log(response);
+            return response.data;
+        }).
         catch((error) => {
             console.log(error);
             return {
@@ -64,7 +64,7 @@ const register = async function(userData){
 
 }
 
-const logout = function(){
+const logout = function () {
     user.value = null;
     store.commit('removeUser');
 }

@@ -96,14 +96,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['masterClass:details'])]
+    #[Groups(['masterClass:details', 'pastrie_read'])]
     private ?int $id = null;
 
     #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[Groups(['user_read'])]
+    #[Groups(['user_read', 'pastrie_read'])]
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -122,27 +122,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user_read', 'masterClass:read'])]
+
+    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[Groups(['user_write', 'user_read', 'masterClass:read'])]
+    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read'])]
     #[ORM\Column]
     private ?int $postalcode = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[Groups(['user_write', 'user_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 

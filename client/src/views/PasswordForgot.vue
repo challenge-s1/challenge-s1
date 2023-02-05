@@ -9,17 +9,18 @@ const showMessage = ref(false);
 const email = ref('');
 
 const handleOpen = () => {
-  open.value = !open.value;
+    open.value = !open.value;
 };
 
 const handleSubmit = () => {
     handleOpen();
     axios.post('https://localhost/users/reset-password', { email: email.value })
         .then((response) => {
-        console.log(response);
+            console.log(response);
+
         })
         .catch((error) => {
-        console.log(error);
+            console.log(error);
         });
     showMessage.value = true;
   
@@ -31,7 +32,7 @@ const handleSubmit = () => {
 
 <template>
 
-<!-- 
+    <!-- 
     <div class="mt-20 bg-emerald-200" v-if="!open">
        
     </div> -->
@@ -44,30 +45,24 @@ const handleSubmit = () => {
 
         </div>
     </div>
-    
+
 
     <Modal :open="open" @close="handleOpen">
         <template #title>
-        <h1 class="text-2xl font-semibold text-gray-700">Reset Password</h1>
+            <h1 class="text-2xl font-semibold text-gray-700">Reset Password</h1>
         </template>
         <form @submit.prevent="handleSubmit">
-                <div class="flex flex-col mt-2">
+            <div class="flex flex-col mt-2">
                 <label class="mb-1 text-sm font-semibold text-gray-600">Email</label>
                 <input
                     class="px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                    type="email"
-                    placeholder="Email"
-                    v-model="email"
-                />
-                </div>
-                <div class="flex items-center justify-between mt-4">
-                <button
-                    type="submit"
-                    class="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-700"
-                >
+                    type="email" placeholder="Email" v-model="email" />
+            </div>
+            <div class="flex items-center justify-between mt-4">
+                <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-700">
                     Send
                 </button>
-                </div>
+            </div>
         </form>
 
     </Modal>

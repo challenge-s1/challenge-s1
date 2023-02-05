@@ -3,7 +3,9 @@ import App from './App.vue'
 import router from './router'
 import { createStore } from 'vuex'
 
-import './assets/main.css'
+// import './assets/main.css'
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@/assets/styles/tailwind.css";
 
 const store = createStore({
     state() {

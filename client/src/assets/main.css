@@ -1,4 +1,4 @@
-
+/* 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,11 +6,11 @@
 #app {
   width: 100vw;
   height: 100vh;
-  /* max-width: 1280px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
 
-  font-weight: normal; */
+  font-weight: normal;
 }
 
 a,
@@ -32,9 +32,9 @@ a,
     place-items: center;
   }
 
-  /* #app {
+  #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
-  } */
-}
+  }
+} */

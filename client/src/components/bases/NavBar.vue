@@ -11,14 +11,15 @@ const logout = inject('userProvider:logout');
 <template>
     <!-- Header -->
     <div>
-        <nav class="fixed w-full pl-16 flex justify-between items-center bg-white/[.6] backdrop-blur border-b-2 border-spacing-1" >
+        <nav
+            class="fixed w-full pl-16 flex justify-between items-center bg-white/[.6] backdrop-blur border-b-2 border-spacing-1">
             <div class="flex items-center flex-shrink-0 text-white mr-6">
                 <a class="text-3xl font-bold leading-none" href="#">
                     <div class="p-3" style="overflow: hidden;">
-                        <img src="@/assets/img/logo.png" class="" style="overflow: hidden;" width="100"
-                        height="100" alt="" /> 
+                        <img src="@/assets/img/logo1.png" class="" style="overflow: hidden;" width="100" height="100"
+                            alt="" />
                     </div>
-                    
+
                 </a>
             </div>
             <div class="lg:hidden mr-7">
@@ -69,8 +70,7 @@ const logout = inject('userProvider:logout');
                 class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
                 <div class="flex items-center mb-8">
                     <a class="mr-auto text-3xl font-bold leading-none" href="#">
-                        <img src="@/assets/img/Motobike_ESGI 2.png" class="" style="overflow: hidden;" width="50%"
-                            height="50%" alt="" />
+                        <!-- <img src="" class="" style="overflow: hidden;" width="50%" height="50%" alt="" /> -->
                     </a>
                     <button class="navbar-close">
                         <svg class="h-6 w-6 text-black cursor-pointer hover:text-gray-500"
@@ -106,7 +106,7 @@ const logout = inject('userProvider:logout');
                     </ul>
                 </div>
             </nav>
-            
+
         </div>
     </div>
 
