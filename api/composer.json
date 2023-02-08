@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
+        "gedmo/doctrine-extensions": "^3.10",
         "guzzlehttp/guzzle": "^7.4",
         "lexik/jwt-authentication-bundle": "^2.16",
         "nelmio/cors-bundle": "^2.2",
@@ -37,7 +38,7 @@
     "require-dev": {
         "api-platform/schema-generator": "^4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "fakerphp/faker": "^1.20",
+        "fakerphp/faker": "^1.21",
         "hautelook/alice-bundle": "^2.11",
         "justinrainbow/json-schema": "^5.2",
         "phpunit/phpunit": "^9.5",

@@ -3,9 +3,9 @@ import { ref } from 'vue';
 import Modal from '../components/Modal.vue';
 import axios from 'axios';
 
-const showMessage = ref(false);
 
 const open = ref(true);
+const showMessage = ref(false);
 const email = ref('');
 
 const handleOpen = () => {
@@ -13,7 +13,6 @@ const handleOpen = () => {
 };
 
 const handleSubmit = () => {
-    console.log(email.value);
     handleOpen();
     axios.post('https://localhost/users/reset-password', { email: email.value })
         .then((response) => {
@@ -24,7 +23,7 @@ const handleSubmit = () => {
             console.log(error);
         });
     showMessage.value = true;
-
+  
 };
 
 

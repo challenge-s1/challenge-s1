@@ -48,7 +48,7 @@ class UserFixtures extends Fixture
 
         for ($i = 1; $i < 5; $i++) {
             $patissier = new User();
-            $patissier->setEmail('patissier' . $i . '@gmail.com');
+            $patissier->setEmail('cake' . $i . '@gmail.com');
             $password = $this->hasher->hashPassword($patissier, 'test');
             $patissier->setPassword($password);
             $patissier->setRoles(['ROLE_PATISSIER']);
@@ -59,12 +59,8 @@ class UserFixtures extends Fixture
             $patissier->setCity('City' . $i);
             $patissier->setPostalCode($i);
             $patissier->setCountry('Paris');
-
             $manager->persist($patissier);
         }
-
-
-
         $manager->flush();
     }
 }
