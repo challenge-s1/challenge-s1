@@ -19,7 +19,10 @@ store.commit('loadStore');
   <UserProviderVue>
     <div id="app">
       <index-navbar />
+      <main class="pt-14">
+
       <router-view />
+      </main>
       <footer-component />
     </div>
 
