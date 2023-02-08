@@ -6,6 +6,8 @@ import Activate from '../views/Activate.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import ForgotPassword from '../views/PasswordForgot.vue'
 import MasterClassList from '../views/masterClass/MasterClassList.vue'
+import PastryChefMasterClass from '../views/masterClass/PastryChefMasterClassesList.vue'
+import AddMasterClass from '../views/masterClass/AddMasterClass.vue'
 import AddPastrie from '../views/AddPastrie.vue'
 import Cart from '../views/Cart.vue'
 import Profile from '../views/Profile.vue'
@@ -55,6 +57,16 @@ const router = createRouter({
       path: '/masterclass',
       name: 'MasterClassList',
       component: MasterClassList
+    },
+    {
+      path: '/my_masterclasses',
+      name: 'PastryChefMasterClass',
+      component: PastryChefMasterClass
+    },
+    {
+      path: '/add/masterclass',
+      name: 'AddMasterClass',
+      component: AddMasterClass
     },
     {
       path:'/add/pastrie',

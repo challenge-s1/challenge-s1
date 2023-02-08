@@ -29,6 +29,12 @@ const store = createStore({
         addToken(state, token) {
             state.user.token = token;
         },
+        addId(state, id) {
+            state.user.id = id;
+        },
+        addRoles(state, roles) {
+            state.user.roles = roles;
+        },
         /*addUser(state, newUser) {
             console.log(newUser);
             if (newUser.id !== undefined && typeof newUser.firstName == 'string' && typeof newUser.lastName == 'string') {

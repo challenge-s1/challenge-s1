@@ -10,6 +10,13 @@ import FooterComponent from "@/components/Footers/Footer.vue";
 // import HomeVue from "./views/Home.vue";
 import { useStore } from 'vuex';
 const store = useStore();
+const formatDate  = function(value) {
+  return moment(value).format('DD-MM-YYYY');
+}
+
+const formatTime = function(value) {
+  return moment(value).format('HH:mm');
+}
 
 store.commit('loadStore');
 

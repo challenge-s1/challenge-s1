@@ -1,10 +1,16 @@
 <script setup>
 import IndexDropdown from "@/components/Dropdowns/IndexDropdown.vue";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-import { inject, ref } from 'vue';
+import { inject, ref, computed } from 'vue';
+import {useStore} from 'vuex';
+const store = useStore();
 const user = inject(UserProvierKeys);
 const logout = inject('userProvider:logout');
 const navbarOpen = ref(false);
+
+const isPastryChef = computed(() => {
+  return store.getters.user.roles.includes('ROLE_PATISSIER');
+});
 
 const setNavbarOpen = function () {
   navbarOpen.value = !navbarOpen.value;
@@ -63,10 +69,18 @@ const setNavbarOpen = function () {
             </router-link>
           </li>
           <li class="flex items-center">
-            <a class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
-              href="#">
-              Master pastry
-            </a>
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'MasterClassList' }">
+                master pastry 
+            </router-link>
+          </li>
+          <li v-if ="store.getters.isLoggedIn && isPastryChef" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'PastryChefMasterClass' }">
+                my master pastry
+            </router-link>
           </li>
         </ul>
         <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">

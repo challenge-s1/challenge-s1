@@ -66,7 +66,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     security: 'is_granted("ROLE_PATISSIER") and user.getId() == id',
     operations: [new GetCollection(
         normalizationContext: [
-            'groups' => ['masterClass:details', 'masterClass:read'],
+            // 'groups' => ['masterClass:details', 'masterClass:read'],
+            'groups' => ['masterClass:owner'],
         ],
     )],
 
@@ -76,21 +77,22 @@ class MasterClass
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['masterClass:read', 'masterClass:details', 'masterClass:owner'])]
     private ?int $id = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['masterClass:write', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:read', 'masterClass:owner'])]
     #[ORM\Column]
     private ?float $price = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
     #[ORM\Column]
     private ?int $maxNumber = null;
 
@@ -105,11 +107,36 @@ class MasterClass
     private Collection $reservations;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'masterClass:owner'])]
     private ?bool $isCanceled = null;
 
     #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
     private Collection $carts;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update'])]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update'])]
+    private ?\DateTimeInterface $time = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    private ?string $adress = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    private ?string $city = null;
+
+    #[ORM\Column]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    private ?int $postalcode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    private ?string $country = null;
+
 
     public function __construct()
     {
@@ -248,6 +275,78 @@ class MasterClass
                 $cart->setMasterClass(null);
             }
         }
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getTime(): ?\DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    public function setTime(\DateTimeInterface $time): self
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(string $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPostalcode(): ?int
+    {
+        return $this->postalcode;
+    }
+
+    public function setPostalcode(int $postalcode): self
+    {
+        $this->postalcode = $postalcode;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+
         return $this;
     }
 }

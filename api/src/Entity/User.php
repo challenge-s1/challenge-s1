@@ -82,7 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['masterClass:details', 'pastrie_read', 'user_read'])]
+    #[Groups(['masterClass:details', 'masterClass:read', 'pastrie_read', 'user_read'])]
     private ?int $id = null;
 
     #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details', 'user_cart'])]
