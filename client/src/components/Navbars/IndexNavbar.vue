@@ -1,15 +1,26 @@
 <script setup>
 import IndexDropdown from "@/components/Dropdowns/IndexDropdown.vue";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-import { inject, ref } from 'vue';
+import { inject, computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const router = useRouter();
 const user = inject(UserProvierKeys);
 const logout = inject('userProvider:logout');
 const navbarOpen = ref(false);
 
+
 const setNavbarOpen = function () {
   navbarOpen.value = !navbarOpen.value;
 };
-
+const isLoggedIn = computed({
+  get: () => store.getters.isLoggedIn,
+});
+const isPastrieOwner = computed({
+  get: () => store.getters.isPastrieOwner,
+});
 
 // export default {
 //   data() {
@@ -59,7 +70,7 @@ const setNavbarOpen = function () {
             <router-link
               class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
               :to="{ name: 'Pastries' }">
-              pastry shop
+              Pastry shop
             </router-link>
           </li>
           <li class="flex items-center">
@@ -67,6 +78,20 @@ const setNavbarOpen = function () {
               href="#">
               Master pastry
             </a>
+          </li>
+          <li v-if="isLoggedIn && isPastrieOwner" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'MyPastries' }">
+              My pastry
+            </router-link>
+          </li>
+          <li v-if="isLoggedIn && isPastrieOwner" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'AddPastries' }">
+              Add pastry
+            </router-link>
           </li>
         </ul>
         <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">

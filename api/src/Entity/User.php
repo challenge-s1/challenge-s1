@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Controller\ResetPasswordController;
 use Doctrine\Common\Collections\Collection;
 use App\Controller\UpdatePasswordController;
+use App\Entity\Traits\TimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -72,12 +73,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         //     denormalizationContext: ['groups' => ['user:active']],
         // ),
     ],
-    normalizationContext: ['groups' => ['user_read']],
-    denormalizationContext: ['groups' => ['user_write']],
+    normalizationContext: ['groups' => ['user_read', 'timestampable']],
+    denormalizationContext: ['groups' => ['user_write', 'timestampable']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

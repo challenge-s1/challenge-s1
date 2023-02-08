@@ -10,6 +10,8 @@ import AddPastrie from '../views/AddPastrie.vue'
 import Cart from '../views/Cart.vue'
 import Profile from '../views/Profile.vue'
 import Pastries from '../views/Pastries.vue'
+import MyPastries from '../views/MyPastries/Mypastries.vue'
+import AddPastries from '../views/MyPastries/AddPastries.vue'
 
 
 const router = createRouter({
@@ -71,6 +73,16 @@ const router = createRouter({
       path: '/cart',
       name: 'Cart',
       component: Cart
+    },
+    {
+      path: '/user/mypastries',
+      name: 'MyPastries',
+      component: MyPastries
+    },
+    {
+      path: '/user/add/pastries',
+      name: 'AddPastries',
+      component: AddPastries
     }
     // {
     //   path: '/about',
