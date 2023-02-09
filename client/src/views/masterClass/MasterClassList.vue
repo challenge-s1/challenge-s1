@@ -12,14 +12,20 @@ const user = store.getters.user;
 
 
 const getMasterClasses = async () => {
-  await axios.get(`https://localhost/master_classes`, {
+  await axios.get(`${url}/master_classes`, {
     headers: {
       Accept: 'application/json'
     }
   }).then((response) => {
     console.log(response.data);
     masterClasses.value = response.data;
-    console.log(masterClasses.value);
+    let options = { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' };
+    masterClasses.value.forEach(element => {
+      let timeStr = new Date(element.time);
+      let time = new Intl.DateTimeFormat('default', options).format(timeStr);
+      element.time = time;
+      // timeStr = timeStr.toLocaleTimeString();
+    });
   }).catch((error) => {
     console.log(error);
   })
@@ -85,14 +91,23 @@ getMasterClasses();
                         </polygon>
                       </svg>
                       <div class="flex absolute top-0">
-                        <span
-                          class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-purple-200 uppercase last:mr-0 mr-1">
-                          {{ masterClass.title }}
-                        </span>
+                        <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}" >
+                          <span
+                          class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-orange-400 uppercase last:mr-0 mr-1">
+                            {{ masterClass.title }}
+                          </span>
+
+                        </router-link>
+                        
                       </div>
 
                       <h4 class="text-xl  text-white">
-                        <span class="font-bold"> {{ masterClass.title }}</span>
+                        <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}" >
+                          <span>
+                            {{ masterClass.title }}
+                          </span>
+
+                        </router-link>
                       </h4>
                       <p class="text-md font-light mt-2 text-white">
                         proposed by : <span class="font-bold">{{ masterClass.owner.lastName }}
@@ -107,16 +122,13 @@ getMasterClasses();
                         }}
                       </p>
                       <p class="text-md font-light mt-2 text-white">
-                        Date : {{ formatDate(masterClass.date) }}
-                      </p>
-                      <p class="text-md font-light mt-2 text-white">
-                        hour : {{ formatTime(masterClass.time) }}
+                        Date : <span class="font-bold"> {{ formatDate(masterClass.date) }} At {{ masterClass.time }} </span>
                       </p>
                       <p class="text-md font-light mt-2 text-white">
                         Price : <span class="font-bold">{{ masterClass.price }} € </span>
                       </p>
                       <button
-                        class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
+                        class="bg-orange-400 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
                         type="button" @click="addToCart(masterClass)">
                         <span class="flex flex-row">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

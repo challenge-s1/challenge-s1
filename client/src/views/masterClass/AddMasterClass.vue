@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
+const url = (import.meta.env.VITE_API_URL)
 const store = useStore();
 const user = store.getters.user;
 const router = useRouter();
@@ -74,7 +75,7 @@ const onSubmit = async function () {
         return;
     }
     UserData.date  = moment(UserData.date).format('DD-MM-YYYY');
-    await axios.post('https://localhost/master_classes', {
+    await axios.post(`${url}/master_classes`, {
             "title": UserData.title,
             "description": UserData.description,
             "price": UserData.price,

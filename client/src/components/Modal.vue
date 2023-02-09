@@ -31,7 +31,7 @@ const props = defineProps({
             <h3 class="text-3xl font-semibold">
               <slot name="title"></slot>
             </h3>
-            <button class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none" v-on:click="toggleModal()">
+            <button class="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none">
               <svg
                 @click="$emit('close')"
                 xmlns="http://www.w3.org/2000/svg"

@@ -7,6 +7,7 @@ import ResetPassword from '../views/ResetPassword.vue'
 import ForgotPassword from '../views/PasswordForgot.vue'
 import MasterClassList from '../views/masterClass/MasterClassList.vue'
 import PastryChefMasterClass from '../views/masterClass/PastryChefMasterClassesList.vue'
+import MasterClassDetails from '../views/masterClass/MasterClassDetails.vue'
 import AddMasterClass from '../views/masterClass/AddMasterClass.vue'
 import AddPastrie from '../views/AddPastrie.vue'
 import Cart from '../views/Cart.vue'
@@ -69,6 +70,12 @@ const router = createRouter({
       component: AddMasterClass
     },
     {
+      path: '/masterclass/:id',
+      name: 'MasterClassDetails',
+      component: MasterClassDetails
+
+    },
+    {
       path:'/add/pastrie',
       name:'AddPastrie',
       component:AddPastrie
@@ -98,7 +105,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
   // const publicPages = ['/login', '/register','/account/activate/:token'];
-  const publicPages = ['Login', 'Register','Activate','ResetPassword','ForgotPassword','Home','Pastries','MasterClassList'];
+  const publicPages = ['Login', 'Register','Activate','ResetPassword','ForgotPassword','Home','Pastries','MasterClassList','MasterClassDetails'];
 
   const authRequired = !publicPages.includes(to.name);
   const store = JSON.parse(localStorage.getItem('store'));

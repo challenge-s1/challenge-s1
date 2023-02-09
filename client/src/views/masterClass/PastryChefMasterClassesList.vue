@@ -7,9 +7,9 @@ import {formatDate, formatTime} from "@/composable/dates.js";
 import Modal from "../../components/Modal.vue";
 import moment from "moment";
 
+const url = (import.meta.env.VITE_API_URL)
 const store = useStore();
 const router = useRouter();
-const url = (import.meta.env.VITE_API_URL)
 const masterClasses = ref([]);
 const user = store.getters.user;
 const open = ref(false);
@@ -38,7 +38,8 @@ const handleOpenModalUpdate = () => {
 };
 
 const getMasterClasses = async () => {
-    await axios.get(`https://localhost/users/${user.id}/master_classes`,{
+  console.log(moment().format('HH:mm'))
+    await axios.get(`${url}/users/${user.id}/master_classes`,{
       headers: {
         Authorization: `Bearer ${user.token}`,
         Accept : 'application/json'
@@ -46,7 +47,14 @@ const getMasterClasses = async () => {
     }).then((response) => {
       console.log(response.data);
       masterClasses.value = response.data;
-      console.log(masterClasses.value);
+      let options = { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' };
+      masterClasses.value.forEach(element => {
+        let timeStr = new Date(element.time);
+        let time = new Intl.DateTimeFormat('default', options).format(timeStr);
+        element.time = time;
+        // timeStr = timeStr.toLocaleTimeString();
+        console.log(element.time)
+      });
     }).catch((error) => {
         console.log(error);
     })
@@ -63,8 +71,8 @@ const getMasterClassToUpdate = function(masterClass){
   masterClasstoUpdate.title = masterClass.title;
   masterClasstoUpdate.description = masterClass.description;
   masterClasstoUpdate.maxNumber = masterClass.maxNumber;
-  masterClasstoUpdate.date = formatDate(masterClass.date);
-  masterClasstoUpdate.time = formatTime(masterClass.time);
+  masterClasstoUpdate.date = masterClass.date;
+  masterClasstoUpdate.time = masterClass.time;
   masterClasstoUpdate.adress = masterClass.adress;
   masterClasstoUpdate.city = masterClass.city;
   masterClasstoUpdate.postalCode = masterClass.postalcode;
@@ -74,7 +82,9 @@ const getMasterClassToUpdate = function(masterClass){
 
 const updateMasterClass = async () =>{
     handleOpenModalUpdate();
-    await axios.put(`https://localhost/master_classes/${masterClasstoUpdate.id}`, {
+    masterClasstoUpdate.date = moment(masterClasstoUpdate.date).format('YYYY-MM-DD');
+    console.log(masterClasstoUpdate.time)
+    await axios.put(`${url}/master_classes/${masterClasstoUpdate.id}`, {
         "title": masterClasstoUpdate.title,
         "description": masterClasstoUpdate.description,
         "maxNumber": masterClasstoUpdate.maxNumber,
@@ -91,12 +101,10 @@ const updateMasterClass = async () =>{
         }
     }).then((response) => {
         console.log(response);
+        getMasterClasses();
     }).catch((error) => {
         console.log(error);
     })
-
-  console.log(masterClasstoUpdate)
-  router.push({ name: "PastryChefMasterClassesList" })
 }
 
 const cancelMasterClass = async () => {
@@ -108,6 +116,7 @@ const cancelMasterClass = async () => {
         }
     }).then((response) => {
         console.log(response);
+        getMasterClasses();
     }).catch((error) => {
         console.log(error);
     })
@@ -237,13 +246,23 @@ getMasterClasses();
                                 </polygon>
                               </svg>
                               <div class="flex absolute top-0">
-                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-purple-200 uppercase last:mr-0 mr-1">
-                                  {{masterClass.title}}
-                                </span>
+                                <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}">
+                                  <span
+                                    class="bg-orange-400 text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-purple-200 uppercase last:mr-0 mr-1">
+                                    {{ masterClass.title }}
+                                  </span>
+                              
+                                </router-link>
                               </div>
 
                               <h4 class="text-xl  text-white">
-                                <span class="font-bold"> {{ masterClass.title }}</span>
+                                <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}">
+                                  <span
+                                    class="font-bold">
+                                    {{ masterClass.title }}
+                                  </span>
+                                
+                                </router-link>
                               </h4>
                               <p class="text-md font-light mt-2 text-white">
                                 Discription :{{ masterClass.description }}
@@ -252,11 +271,10 @@ getMasterClasses();
                                 Location :{{ masterClass.adress }} {{ masterClass.city }} {{ masterClass.postalCode }}, {{ masterClass.country }}
                               </p>
                               <p class="text-md font-light mt-2 text-white">
-                                Date : <span class="font-bold">{{ formatDate(masterClass.date) }} </span>
+                                Date : <span class="font-bold">{{ formatDate(masterClass.date) }}  </span>
                               </p>
                               <p class="text-md font-light mt-2 text-white">
-                                Hour : <span class="font-bold">{{ formatTime(masterClass.time) }} </span>
-                              </p>
+                                Time : <span class="font-bold">{{ masterClass.time }} </span></p>
                               <p class="text-md font-light mt-2 text-white">
                                 Price : <span class="font-bold">{{ masterClass.price }} € </span>
                               </p>
@@ -270,16 +288,15 @@ getMasterClasses();
                                   Cancel
                                 </span>
                               </button>
-                              <button @click="getMasterClassToUpdate(masterClass)" class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15" type="button">
+                              <button @click="getMasterClassToUpdate(masterClass)" class="bg-gray-700 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15" type="button">
                                 <span class="flex flex-row">
                                     <font-awesome-icon icon="fa-solid fa-calendar-xmark" />
-                                  update
+                                  Edit
                                 </span>
                               </button>
-
                               </div>
                               
-                              <button v-else disabled class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15" type="button">
+                              <button v-else disabled class="bg-orange-400 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15" type="button">
                                 <span class="flex flex-row">
                                     <font-awesome-icon icon="fa-solid fa-calendar-xmark" />
                                   Canceled

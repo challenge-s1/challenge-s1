@@ -1,4 +1,5 @@
 import moment from 'moment';
+moment.locale();
 export const formatDate  = function(value) {
   return moment(value).format('DD-MM-YYYY');
 }
