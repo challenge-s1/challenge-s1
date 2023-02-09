@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Controller\ResetPasswordController;
 use Doctrine\Common\Collections\Collection;
 use App\Controller\UpdatePasswordController;
+use App\Entity\Traits\TimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -72,24 +73,25 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         //     denormalizationContext: ['groups' => ['user:active']],
         // ),
     ],
-    normalizationContext: ['groups' => ['user_read']],
-    denormalizationContext: ['groups' => ['user_write']],
+    normalizationContext: ['groups' => ['user_read', 'timestampable']],
+    denormalizationContext: ['groups' => ['user_write', 'timestampable']],
 )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['masterClass:details', 'masterClass:read', 'pastrie_read', 'user_read'])]
+    #[Groups(['masterClass:details', 'masterClass:read', 'pastrie_read', 'user_read', 'comment_read', 'reporting_read'])]
     private ?int $id = null;
 
     #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details', 'user_cart'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[Groups(['user_read', 'pastrie_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read', 'comment_read'])]
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -108,30 +110,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read', 'user_update'])]
+    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'masterClass:read', 'pastrie_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'masterClass:read', 'pastrie_read', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?int $postalcode = null;
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
 
-    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
@@ -159,6 +161,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_cart'])]
     private Collection $cartItems;
 
+    #[ORM\OneToMany(mappedBy: 'userid', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    #[ORM\OneToMany(mappedBy: 'userid', targetEntity: Reporting::class)]
+    private Collection $reportings;
+
 
     public function __construct()
     {
@@ -168,6 +176,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->reservations = new ArrayCollection();
         $this->voucherDiscounts = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->reportings = new ArrayCollection();
     }
 
 
@@ -500,6 +510,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($cartItem->getClient() === $this) {
                 $cartItem->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUserid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUserid() === $this) {
+                $comment->setUserid(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reporting>
+     */
+    public function getReportings(): Collection
+    {
+        return $this->reportings;
+    }
+
+    public function addReporting(Reporting $reporting): self
+    {
+        if (!$this->reportings->contains($reporting)) {
+            $this->reportings->add($reporting);
+            $reporting->setUserid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReporting(Reporting $reporting): self
+    {
+        if ($this->reportings->removeElement($reporting)) {
+            // set the owning side to null (unless already changed)
+            if ($reporting->getUserid() === $this) {
+                $reporting->setUserid(null);
             }
         }
 

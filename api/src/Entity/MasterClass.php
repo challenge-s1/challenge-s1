@@ -19,6 +19,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Blameable;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Traits\TimestampTrait;
 
 #[ORM\Entity(repositoryClass: MasterClassRepository::class)]
 #[ApiResource(
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
         new GetCollection(
             normalizationContext: [
-                'groups' => ['masterClass:read'],
+                'groups' => ['masterClass:read', 'comment_read'],
             ],
         ),
 
@@ -78,30 +79,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
 // #[ApiFilter(DateFilter::class, properties: ['date'])]
 class MasterClass
 {
+    use TimestampTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['masterClass:read', 'masterClass:details', 'masterClass:owner'])]
+    #[Groups(['masterClass:read', 'masterClass:details', 'masterClass:owner', 'reporting_read'])]
     private ?int $id = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['masterClass:write', 'masterClass:read', 'masterClass:owner'])]
+
+
+    #[Groups(['masterClass:write', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?float $price = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?int $maxNumber = null;
 
     #[Blameable(on: 'create')]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\ManyToOne(inversedBy: 'masterClasses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -111,41 +116,47 @@ class MasterClass
     private Collection $reservations;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'comment_read'])]
     private ?bool $isCanceled = null;
 
     #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
     private Collection $carts;
 
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update'])]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update', 'comment_read', 'reporting_read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update'])]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update', 'comment_read', 'reporting_read'])]
     private ?\DateTimeInterface $time = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     private ?string $adress = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     private ?string $city = null;
 
     #[ORM\Column]
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     private ?int $postalcode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     private ?string $country = null;
 
+
+    #[ORM\OneToMany(mappedBy: 'masterid', targetEntity: Comment::class)]
+    #[Groups(['masterClass:read'])]
+    private Collection $comments;
 
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -290,7 +301,23 @@ class MasterClass
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setMasterid($this);
+        }
         return $this;
     }
 
@@ -350,7 +377,16 @@ class MasterClass
     public function setCountry(?string $country): self
     {
         $this->country = $country;
-
+        return $this;
+    }
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getMasterid() === $this) {
+                $comment->setMasterid(null);
+            }
+        }
         return $this;
     }
 }

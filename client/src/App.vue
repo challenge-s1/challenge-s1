@@ -9,25 +9,32 @@ import FooterComponent from "@/components/Footers/Footer.vue";
 // import LoginVue from "./views/Login.vue";
 // import HomeVue from "./views/Home.vue";
 import { useStore } from 'vuex';
+import { useRoute } from "vue-router";
+import router from "./router";
 const store = useStore();
-const formatDate  = function(value) {
-  return moment(value).format('DD-MM-YYYY');
-}
+const route = useRoute();
 
-const formatTime = function(value) {
-  return moment(value).format('HH:mm');
-}
 
 store.commit('loadStore');
+const isRoot = () => {
+  // const name = 'Dashbord' || 'Categories';
+  // return router.currentRoute.value.name == name;
+  if (router.currentRoute.value.name == 'Dashbord' || router.currentRoute.value.name == 'Categories') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 </script>
 
 <template>
   <UserProviderVue>
     <div id="app">
-      <index-navbar />
+      <index-navbar v-if="!isRoot()" />
       <router-view />
-      <footer-component />
+      <footer-component v-if="!isRoot()" />
     </div>
 
     <!-- <div class=" bg-gray-100  overflow-hidden">
