@@ -14,20 +14,7 @@ const user = store.getters.user
 const masterClass = ref({});
 const open = ref(false);
 const openModalUpdate = ref(false);
-// const masterClasstoCancel = ref({});
-// const masterClasstoUpdate = reactive({
-//     id: '',
-//     title: '',
-//     description: '',
-//     maxNumber: '',
-//     date: '',
-//     time: '',
-//     adress: '',
-//     city: '',
-//     postalCode: '',
-//     country: '',
-// });
-
+const today = new Date();
 
 const handleOpen = () => {
     open.value = !open.value;
@@ -38,19 +25,26 @@ const handleOpenModalUpdate = () => {
 };
 
 const getMasterClass = async ()=> {
-    console.log(route.params);
   await axios.get(`https://localhost/master_classes/${route.params.id}`, {
     headers: {
       Accept: 'application/json'
     }
   }).then((response) => {
-    console.log(response.data);
     masterClass.value = response.data;
+    masterClass.value.expired = false;
     let options = { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' };
     let timeStr = new Date(masterClass.value.time);
     let time = new Intl.DateTimeFormat('default', options).format(timeStr);
     masterClass.value.time = time;
-    console.log(masterClass.value);
+    let date = new Date(masterClass.value.date);
+    if (today > date) {
+        masterClass.value.expired = true;
+    }
+    if (today == date) {
+        if (new Intl.DateTimeFormat('default', options).format(today) > time) {
+            masterClass.value.expired = true;
+        }
+    }
   }).catch((error) => {
     console.log(error);
   })
@@ -67,7 +61,6 @@ const getMasterClassToUpdate = function(){
 
 const updateMasterClass = async () =>{
     handleOpenModalUpdate();
-    console.log(masterClass.value.time);
     await axios.put(`https://localhost/master_classes/${masterClass.value.id}`, {
         "title": masterClass.value.title,
         "description": masterClass.value.description,
@@ -188,18 +181,18 @@ getMasterClass();
       </div>
       <div class="container relative mx-auto">
           <div class="items-center flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
-                  <div class="">
-                      <h1 class="text-white mt-4 font-semibold text-5xl">
-                        
+            <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
+                <div class="">
+                    <h1 class="text-white mt-4 font-semibold text-5xl">
+            
                         {{ masterClass.title }}
-                      </h1>
-                      <p class="mt-4 text-lg text-blueGray-200">
+                    </h1>
+                    <p class="mt-4 text-lg text-blueGray-200">
                         proposed by : <span class="font-bold">{{ masterClass.owner.lastName }}
                             {{ masterClass.owner.firstName }}</span>
                     </p>
-                  </div>
-              </div>
+                </div>
+            </div>
           </div>
       </div>
       <!-- <div class="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-70-px"
@@ -271,7 +264,7 @@ getMasterClass();
       
     </div>
     <div v-else class="w-full px-4 flex-1" >
-        <button
+        <button v-if = "!masterClass.expired"
             class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
             type="button" @click="addToCart(masterClass)">
             <span class="flex flex-row">
@@ -283,7 +276,13 @@ getMasterClass();
                 participate
             </span>
         </button>
-
+        <button v-else disabled
+            class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
+            type="button">
+            
+                expired
+            
+        </button>
     </div>
   </div>
 

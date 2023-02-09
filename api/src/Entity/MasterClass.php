@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -20,6 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MasterClassRepository::class)]
 #[ApiResource(
+    order: ['date' => 'ASC'],
     operations: [
 
         new GetCollection(
@@ -72,6 +75,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     )],
 
 )]
+// #[ApiFilter(DateFilter::class, properties: ['date'])]
 class MasterClass
 {
     #[ORM\Id]

@@ -10,6 +10,7 @@ const url = (import.meta.env.VITE_API_URL)
 const masterClasses = ref([]);
 const user = store.getters.user;
 
+const today = new Date();
 
 const getMasterClasses = async () => {
   await axios.get(`${url}/master_classes`, {
@@ -17,14 +18,22 @@ const getMasterClasses = async () => {
       Accept: 'application/json'
     }
   }).then((response) => {
-    console.log(response.data);
     masterClasses.value = response.data;
     let options = { timeZone: 'UTC', hour: '2-digit', minute: '2-digit' };
     masterClasses.value.forEach(element => {
+      element.expired = false;
       let timeStr = new Date(element.time);
       let time = new Intl.DateTimeFormat('default', options).format(timeStr);
       element.time = time;
-      // timeStr = timeStr.toLocaleTimeString();
+      let date = new Date(element.date);
+      if (today > date) {
+        element.expired = true;
+      }
+      if (today == date) {
+        if (new Intl.DateTimeFormat('default', options).format(today) > time) {
+          element.expired = true;
+        }
+      }
     });
   }).catch((error) => {
     console.log(error);
@@ -33,7 +42,6 @@ const getMasterClasses = async () => {
 };
 
 const addToCart = function (masterClass) {
-  console.log(user.id)
   if (!store.getters.isLoggedIn) {
     router.push({ name: "Login" })
   }
@@ -77,9 +85,10 @@ getMasterClasses();
       <section class="pb-20 bg-blueGray-200 -mt-24">
         <div class="container mx-auto px-4">
           <div class="flex flex-wrap">
-            <div v-for="masterClass in masterClasses" :class="{'w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center': !masterClass.isCanceled && masterClass.owner.id != user.id }">
+            <div v-for="masterClass in masterClasses"
+              :class="{ 'w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center': !masterClass.isCanceled && masterClass.owner.id != user.id }">
               <div v-if="!masterClass.isCanceled">
-                <div v-if="masterClass.owner.id != user.id" >
+                <div v-if="masterClass.owner.id != user.id">
                   <div class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-red-300">
                     <img alt="..."
                       src="https://static.750g.com/images/1200-630/2bb28ae83807e3f46e861587586c6aee/adobestock-182827481.jpeg"
@@ -91,18 +100,18 @@ getMasterClasses();
                         </polygon>
                       </svg>
                       <div class="flex absolute top-0">
-                        <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}" >
+                        <router-link :to="{ name: 'MasterClassDetails', params: { id: masterClass.id } }">
                           <span
-                          class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-orange-400 uppercase last:mr-0 mr-1">
+                            class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-orange-400 uppercase last:mr-0 mr-1">
                             {{ masterClass.title }}
                           </span>
 
                         </router-link>
-                        
+
                       </div>
 
                       <h4 class="text-xl  text-white">
-                        <router-link :to="{name:'MasterClassDetails',params:{id:masterClass.id}}" >
+                        <router-link :to="{ name: 'MasterClassDetails', params: { id: masterClass.id } }">
                           <span>
                             {{ masterClass.title }}
                           </span>
@@ -122,12 +131,13 @@ getMasterClasses();
                         }}
                       </p>
                       <p class="text-md font-light mt-2 text-white">
-                        Date : <span class="font-bold"> {{ formatDate(masterClass.date) }} At {{ masterClass.time }} </span>
+                        Date : <span class="font-bold"> {{ formatDate(masterClass.date) }} At {{ masterClass.time }}
+                        </span>
                       </p>
                       <p class="text-md font-light mt-2 text-white">
                         Price : <span class="font-bold">{{ masterClass.price }} € </span>
                       </p>
-                      <button
+                      <button v-if="!masterClass.expired"
                         class="bg-orange-400 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
                         type="button" @click="addToCart(masterClass)">
                         <span class="flex flex-row">
@@ -138,6 +148,11 @@ getMasterClasses();
                           </svg>
                           participate
                         </span>
+                      </button>
+                      <button v-else
+                        class="bg-orange-400 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
+                        type="button" disabled>
+                        expired
                       </button>
                     </blockquote>
                   </div>
