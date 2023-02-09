@@ -36,6 +36,7 @@ security:
         - { path: ^/users, methods: POST, roles: PUBLIC_ACCESS }
         - { path: ^/account/activate, roles: PUBLIC_ACCESS }
         - { path: ^/pastries, methods: GET, roles: PUBLIC_ACCESS }
+        # - { path: ^/master_classes, methods: GET, roles: PUBLIC_ACCESS }
         # - { path: ^/account/activate, roles: PUBLIC_ACCESS }
         # - { path: ^/register, methods: POST, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

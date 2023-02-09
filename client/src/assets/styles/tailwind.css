@@ -1607,6 +1607,11 @@ select {
   border-color: rgba(4, 120, 87, var(--tw-border-opacity));
 }
 
+.border-red-400 {
+  --tw-border-opacity: 1;
+  border-color: rgba(248, 113, 113, var(--tw-border-opacity));
+}
+
 .border-gray-100 {
   --tw-border-opacity: 1;
   border-color: rgba(244, 244, 245, var(--tw-border-opacity));

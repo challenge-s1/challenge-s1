@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
         new GetCollection(
             normalizationContext: [
-                'groups' => ['masterClass:read'],
+                'groups' => ['masterClass:read', 'comment_read'],
             ],
         ),
 
@@ -76,26 +76,27 @@ class MasterClass
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['reporting_read'])]
     private ?int $id = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['masterClass:write', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?float $price = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?int $maxNumber = null;
 
     #[Blameable(on: 'create')]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\ManyToOne(inversedBy: 'masterClasses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -105,16 +106,21 @@ class MasterClass
     private Collection $reservations;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'comment_read'])]
     private ?bool $isCanceled = null;
 
     #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
     private Collection $carts;
 
+    #[ORM\OneToMany(mappedBy: 'masterid', targetEntity: Comment::class)]
+    #[Groups(['masterClass:read'])]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -248,6 +254,36 @@ class MasterClass
                 $cart->setMasterClass(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setMasterid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getMasterid() === $this) {
+                $comment->setMasterid(null);
+            }
+        }
+
         return $this;
     }
 }

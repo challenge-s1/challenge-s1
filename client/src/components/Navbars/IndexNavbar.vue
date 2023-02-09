@@ -21,6 +21,9 @@ const isLoggedIn = computed({
 const isPastrieOwner = computed({
   get: () => store.getters.isPastrieOwner,
 });
+const isAdmin = computed({
+  get: () => store.getters.isAdmin,
+});
 
 // export default {
 //   data() {
@@ -45,8 +48,8 @@ const isPastrieOwner = computed({
     <div class="container px-4 mx-auto flex flex-wrap items-center justify-between">
       <div class="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
         <router-link :to="{ name: 'Home' }">
-          <a class="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase"
-            href="#pablo">
+          <a
+            class="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase">
             <img src="../../assets/img/logo1.png" class="" style="overflow: hidden;" width="60" height="60" alt="" />
           </a>
         </router-link>
@@ -117,6 +120,14 @@ const isPastrieOwner = computed({
             </router-link>
           </li>
           <li class="flex items-center" v-else>
+            <button v-if="isAdmin">
+              <router-link :to="{ name: 'Dashbord' }"
+                class="border-red-400 text-black  text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                type="button">
+                dashboard
+
+              </router-link>
+            </button>
             <a class="  bg-red-400 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg
               outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
               href="#" @click="logout">

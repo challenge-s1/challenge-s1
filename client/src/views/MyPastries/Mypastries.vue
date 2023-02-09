@@ -130,6 +130,22 @@ const NotAvailable = async (pastry) => {
         console.log(error);
     })
 };
+const Available = async (pastry) => {
+    const Statuspasrty = {
+        Status: false
+    };
+    console.log(Statuspasrty);
+    await axios.put(`${url}/pastries/${pastry.id}`, Statuspasrty, {
+        headers: {
+            authorization: 'Bearer ' + userToken.value.token.token
+        }
+    }).then((response) => {
+        GetProduct();
+        console.log(response);
+    }).catch((error) => {
+        console.log(error);
+    })
+};
 
 const EditProduct = async (pastry) => {
     if (!validate()) {
@@ -162,10 +178,10 @@ const EditProduct = async (pastry) => {
         name: product.name,
         description: product.description,
         price: product.price,
-        category: product.category,
+        category: `/categories/${product.category}`,
         contentUrl: product.contentUrl,
     };
-
+    console.log(productpasrty);
     await axios.put(`${url}/pastries/${pastry.id}`, productpasrty, {
         headers: {
             authorization: 'Bearer ' + userToken.value.token.token
@@ -196,12 +212,18 @@ const EditProduct = async (pastry) => {
                     <div class="items-center flex flex-wrap">
                         <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
                             <div class="pr-12">
-                                <h1 class="text-white mt-4 font-semibold text-5xl">
+                                <h1 class="text-white mt-4 mb-8 font-semibold text-5xl">
                                     My products
                                     <span role="img" aria-label="love">
                                         😍
                                     </span>
                                 </h1>
+                                <router-link
+                                    class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15"
+                                    :to="{ name: 'AddPastries' }">
+                                    Add pastry
+                                </router-link>
+
                             </div>
                         </div>
                     </div>
@@ -243,9 +265,14 @@ const EditProduct = async (pastry) => {
                                     <h4 class="text-xl  text-white">
                                         Name: <span class="font-bold"> {{ pastries.name }}</span>
                                     </h4>
-                                    <p class="text-md font-light mt-2 text-white">
-                                        Discription :{{ pastries.description }}
-                                    </p>
+                                    <span class="text-md font-light mt-2 text-white flex justify-center">
+                                        Discription :
+                                        <details class="ml-1">
+                                            <summary> Show more details
+                                            </summary>
+                                            {{ pastries.description }}
+                                        </details>
+                                    </span>
                                     <p class="text-md font-light mt-2 text-white">
                                         Price : <span class="font-bold">{{ pastries.price }} € </span>
                                     </p>
@@ -285,12 +312,18 @@ const EditProduct = async (pastry) => {
                                                 not available
                                             </span>
                                         </button>
+                                        <button @click="Available(pastries)"
+                                            class="bg-emerald-300 mt-2 text-white hover:cursor-not-allowed  font-bold uppercase text-sm px-6 py-3 rounded-xl shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                            <span class="flex flex-row">
+                                                It's disponible
+                                            </span>
+                                        </button>
                                     </div>
                                 </blockquote>
                             </div>
                         </div>
                     </div>
-                    <div v-else>
+                    <!-- <div v-else>
                         <div class="flex  text-center md:text-left md:flex-row h-screen justify-evenly md:items-center">
 
                             <div class="bg-white p-10 flex flex-col shadow-xl rounded-xl">
@@ -298,7 +331,7 @@ const EditProduct = async (pastry) => {
                             </div>
 
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div v-if="showModal"
                     class="overflow-x-hidden overflow-y-auto  fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
@@ -349,12 +382,15 @@ const EditProduct = async (pastry) => {
                                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">
                                         Price
                                     </label>
-                                    <input type="number" name="price"
+                                    <input type="number" step="0.01" name="price"
                                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15"
                                         placeholder="price" v-model="product.price" />
                                     <div class=" text-red-500 text-xs italic">{{ errors.price }}</div>
 
-
+                                    <!-- <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15">
+    <option value="" selected>rouge</option>
+    <option value="">vert</option>
+</select> -->
                                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">
                                         categorie
                                     </label>

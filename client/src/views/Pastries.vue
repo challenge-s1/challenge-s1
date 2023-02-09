@@ -12,7 +12,7 @@ const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
 const userToken = inject(UserProvierKeys);
-console.log(url);
+
 // console.log(userToken.value.token.token);
 const GetProduct = async () => {
     await axios.get(`${url}/pastries`)
@@ -35,9 +35,8 @@ GetProduct();
     <div>
         <main>
             <div class="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
-                <div class="absolute top-0 w-full h-full bg-center bg-cover" style="
-            background-image: url('https://www.marmiteauxplumes.com/wp-content/uploads/2021/01/36519-738-cupcakes-5116009_640.jpg');
-          ">
+                <div class="absolute top-0 w-full h-full bg-center bg-cover"
+                    style="background-image: url('https://www.marmiteauxplumes.com/wp-content/uploads/2021/01/36519-738-cupcakes-5116009_640.jpg');">
                     <span id="blackOverlay" class="w-full h-full absolute opacity-75 bg-black"></span>
                 </div>
                 <div class="container relative mx-auto">
@@ -77,10 +76,11 @@ GetProduct();
                                 class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
                                 <div
                                     class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-red-300">
-                                    <img alt="..."
+                                    <!-- <img alt="..."
                                         src="https://static.750g.com/images/1200-630/2bb28ae83807e3f46e861587586c6aee/adobestock-182827481.jpeg"
+                                        class="w-full align-middle rounded-t-lg" /> -->
+                                    <img alt="..." :src="url + '/' + pastries.contentUrl"
                                         class="w-full align-middle rounded-t-lg" />
-
                                     <blockquote class="relative p-8 mb-4">
 
                                         <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
@@ -105,9 +105,17 @@ GetProduct();
                                                 pastries.owner.firstName
                                             }}</span>
                                         </p>
-                                        <p class="text-md font-light mt-2 text-white">
+                                        <!-- <p class="text-md font-light mt-2 text-white">
                                             Discription :{{ pastries.description }}
-                                        </p>
+                                        </p> -->
+                                        <span class="text-md font-light mt-2 text-white flex justify-center">
+                                            Discription :
+                                            <details class="ml-1">
+                                                <summary> Show more details
+                                                </summary>
+                                                {{ pastries.description }}
+                                            </details>
+                                        </span>
                                         <p class="text-md font-light mt-2 text-white">
                                             Price : <span class="font-bold">{{ pastries.price }} € </span>
                                         </p>
