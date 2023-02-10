@@ -27,6 +27,7 @@ class Reservation
     private ?User $userId = null;
 
     #[ORM\Column]
+    #[Groups(['masterClass:details'])]
     private ?int $nbPlaces = null;
 
     #[ORM\Column]

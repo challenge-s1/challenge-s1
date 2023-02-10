@@ -1,21 +1,26 @@
 <script setup>
 import axios from 'axios';
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-import { inject, ref, onBeforeMount, reactive } from 'vue';
+import { inject, ref, onBeforeMount, reactive } from 'vue'
+import { useStore } from "vuex";
 import Alert from '@/components/alert/Alert.vue';
-const userToken = inject(UserProvierKeys);
+// const userToken = inject(UserProvierKeys);
+const store = useStore();
+const userToken = store.getters.user;
 const cartItems = ref([]);
 const cartTotal = ref(0);
 const quantityByItemCart = reactive({});
 const hasBeenModify = ref(false);
 const getCart = async () => {
     cartTotal.value = 0;
-    const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/carts`, {
+    const response = await axios.get(`https://localhost/users/${userToken.id}/carts`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
-        cartItems.value = response.data['hydra:member'];
+        console.log(response);
+        // cartItems.value = response.data['hydra:member'];
+        cartItems.value = response.data;
         console.log(cartItems.value);
         for (const element of cartItems.value) {
             if (element.cake) {
@@ -39,13 +44,13 @@ const handleSubmit = async (id) => {
 
     console.log(id, quantityByItemCart[id]);
 
-    const reponse = await axios.patch(`https://localhost/users/${userToken.value.token.user.id}/carts/${id}`,
+    const reponse = await axios.patch(`https://localhost/users/${userToken.id}/carts/${id}`,
         {
             quantity: quantityByItemCart[id]
         }, {
         headers: {
             'content-type': 'application/merge-patch+json',
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         hasBeenModify.value = true;
@@ -59,9 +64,9 @@ const handleSubmit = async (id) => {
 };
 
 const deleteItemCart = async (id) => {
-    const response = await axios.delete(`https://localhost/users/${userToken.value.token.user.id}/carts/${id}`, {
+    const response = await axios.delete(`https://localhost/users/${userToken.id}/carts/${id}`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response);
@@ -154,7 +159,7 @@ const timer = (id, date) => {
                                             itemCart.quantity * itemCart.masterClass.price
                                         }}</dd>
                                     </div>
-                                    <div >
+                                    <div>
                                         <dt class="inline">Masterclass stays in your basket for {{
                                         timerTime[itemCart.id] }}</dt>
                                     </div>
@@ -165,8 +170,8 @@ const timer = (id, date) => {
                                 <form @submit.prevent="handleSubmit(itemCart.id)">
                                     <label for="Line1Qty" class="sr-only"> Quantity </label>
 
-                                    <input type="number" min="1" v-model="quantityByItemCart[itemCart.id]"
-                                     id="Line1Qty" :readonly="itemCart.masterClass"
+                                    <input type="number" min="1" v-model="quantityByItemCart[itemCart.id]" id="Line1Qty"
+                                        :readonly="itemCart.masterClass"
                                         class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none" />
                                 </form>
 

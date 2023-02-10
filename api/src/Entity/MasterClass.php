@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -17,14 +19,16 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Blameable;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Traits\TimestampTrait;
 
 #[ORM\Entity(repositoryClass: MasterClassRepository::class)]
 #[ApiResource(
+    order: ['date' => 'ASC'],
     operations: [
 
         new GetCollection(
             normalizationContext: [
-                'groups' => ['masterClass:read'],
+                'groups' => ['masterClass:read', 'comment_read'],
             ],
         ),
 
@@ -66,36 +70,43 @@ use Symfony\Component\Serializer\Annotation\Groups;
     security: 'is_granted("ROLE_PATISSIER") and user.getId() == id',
     operations: [new GetCollection(
         normalizationContext: [
-            'groups' => ['masterClass:details', 'masterClass:read'],
+            // 'groups' => ['masterClass:details', 'masterClass:read'],
+            'groups' => ['masterClass:owner'],
         ],
     )],
 
 )]
+// #[ApiFilter(DateFilter::class, properties: ['date'])]
 class MasterClass
 {
+    use TimestampTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['masterClass:read', 'masterClass:details', 'masterClass:owner', 'reporting_read'])]
     private ?int $id = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['masterClass:write', 'masterClass:read'])]
+
+
+    #[Groups(['masterClass:write', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?float $price = null;
 
-    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read'])]
+
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
     #[ORM\Column]
     private ?int $maxNumber = null;
 
     #[Blameable(on: 'create')]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'comment_read', 'reporting_read'])]
     #[ORM\ManyToOne(inversedBy: 'masterClasses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -105,16 +116,47 @@ class MasterClass
     private Collection $reservations;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['masterClass:read'])]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'comment_read'])]
     private ?bool $isCanceled = null;
 
     #[ORM\OneToMany(mappedBy: 'masterClass', targetEntity: Cart::class)]
     private Collection $carts;
 
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update', 'comment_read', 'reporting_read'])]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(['masterClass:read', 'masterClass:owner', 'masterClass:write', 'masterClass:update', 'comment_read', 'reporting_read'])]
+    private ?\DateTimeInterface $time = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
+    private ?string $adress = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
+    private ?string $city = null;
+
+    #[ORM\Column]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
+    private ?int $postalcode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['masterClass:write', 'masterClass:update', 'masterClass:read', 'masterClass:owner', 'comment_read', 'reporting_read'])]
+    private ?string $country = null;
+
+
+    #[ORM\OneToMany(mappedBy: 'masterid', targetEntity: Comment::class)]
+    #[Groups(['masterClass:read'])]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->carts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,6 +288,103 @@ class MasterClass
             // set the owning side to null (unless already changed)
             if ($cart->getMasterClass() === $this) {
                 $cart->setMasterClass(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setMasterid($this);
+        }
+        return $this;
+    }
+
+    public function getTime(): ?\DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    public function setTime(\DateTimeInterface $time): self
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(string $adress): self
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPostalcode(): ?int
+    {
+        return $this->postalcode;
+    }
+
+    public function setPostalcode(int $postalcode): self
+    {
+        $this->postalcode = $postalcode;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+        return $this;
+    }
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getMasterid() === $this) {
+                $comment->setMasterid(null);
             }
         }
         return $this;

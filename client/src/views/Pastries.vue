@@ -12,15 +12,16 @@ const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
 const userToken = inject(UserProvierKeys);
-console.log(url);
+
 // console.log(userToken.value.token.token);
 const GetProduct = async () => {
     await axios.get(`${url}/pastries`)
         .then((response) => {
-            products.value = response.data['hydra:member'];
-            for (const test of products.value) {
-                console.log(test.name);
-            }
+            console.log(response.data);
+            products.value = response.data;
+            // for (const test of products.value) {
+            //     console.log(test.name);
+            // }
         }).catch((error) => {
             console.log(error);
         })
@@ -34,9 +35,8 @@ GetProduct();
     <div>
         <main>
             <div class="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
-                <div class="absolute top-0 w-full h-full bg-center bg-cover" style="
-            background-image: url('https://www.marmiteauxplumes.com/wp-content/uploads/2021/01/36519-738-cupcakes-5116009_640.jpg');
-          ">
+                <div class="absolute top-0 w-full h-full bg-center bg-cover"
+                    style="background-image: url('https://www.marmiteauxplumes.com/wp-content/uploads/2021/01/36519-738-cupcakes-5116009_640.jpg');">
                     <span id="blackOverlay" class="w-full h-full absolute opacity-75 bg-black"></span>
                 </div>
                 <div class="container relative mx-auto">
@@ -71,59 +71,71 @@ GetProduct();
             <section class="pb-20 bg-blueGray-200 -mt-24">
                 <div class="container mx-auto px-4">
                     <div class="flex flex-wrap">
-                        <div v-for="pastries in products " :key="pastries.id"
-                            class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
-                            <div
-                                class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-red-300">
-                                <img alt="..."
-                                    src="https://static.750g.com/images/1200-630/2bb28ae83807e3f46e861587586c6aee/adobestock-182827481.jpeg"
-                                    class="w-full align-middle rounded-t-lg" />
+                        <template v-for="pastries in products " :key="pastries.id">
+                            <div v-if="pastries.Status == false"
+                                class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
+                                <div
+                                    class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-red-300">
+                                    <!-- <img alt="..."
+                                        src="https://static.750g.com/images/1200-630/2bb28ae83807e3f46e861587586c6aee/adobestock-182827481.jpeg"
+                                        class="w-full align-middle rounded-t-lg" /> -->
+                                    <img alt="..." :src="url + '/' + pastries.contentUrl"
+                                        class="w-full align-middle rounded-t-lg" />
+                                    <blockquote class="relative p-8 mb-4">
 
-                                <blockquote class="relative p-8 mb-4">
+                                        <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 583 95"
+                                            class="absolute left-0 w-full block h-95-px -top-94-px">
+                                            <polygon points="-30,95 583,95 583,65" class="text-red-300 fill-current">
+                                            </polygon>
 
-                                    <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 583 95" class="absolute left-0 w-full block h-95-px -top-94-px">
-                                        <polygon points="-30,95 583,95 583,65" class="text-red-300 fill-current">
-                                        </polygon>
+                                        </svg>
+                                        <div class="flex absolute top-0">
+                                            <span
+                                                class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-purple-200 uppercase last:mr-0 mr-1">
+                                                {{ pastries.category.name }}
+                                            </span>
+                                        </div>
 
-                                    </svg>
-                                    <div class="flex absolute top-0">
-                                        <span
-                                            class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-purple-600 bg-purple-200 uppercase last:mr-0 mr-1">
-                                            {{ pastries.category.name }}
+                                        <h4 class="text-xl  text-white">
+                                            Name: <span class="font-bold"> {{ pastries.name }}</span>
+                                        </h4>
+                                        <p class="text-md font-light mt-2 text-white">
+                                            realize by : <span class="font-bold">{{ pastries.owner.lastName }} {{
+                                                pastries.owner.firstName
+                                            }}</span>
+                                        </p>
+                                        <!-- <p class="text-md font-light mt-2 text-white">
+                                            Discription :{{ pastries.description }}
+                                        </p> -->
+                                        <span class="text-md font-light mt-2 text-white flex justify-center">
+                                            Discription :
+                                            <details class="ml-1">
+                                                <summary> Show more details
+                                                </summary>
+                                                {{ pastries.description }}
+                                            </details>
                                         </span>
-                                    </div>
+                                        <p class="text-md font-light mt-2 text-white">
+                                            Price : <span class="font-bold">{{ pastries.price }} € </span>
+                                        </p>
+                                        <button
+                                            class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            type="button">
+                                            <span class="flex flex-row">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                                </svg>
 
-                                    <h4 class="text-xl  text-white">
-                                        Name: <span class="font-bold"> {{ pastries.name }}</span>
-                                    </h4>
-                                    <p class="text-md font-light mt-2 text-white">
-                                        realize by : <span class="font-bold">{{ pastries.owner.lastName }} {{
-                                            pastries.owner.firstName
-                                        }}</span>
-                                    </p>
-                                    <p class="text-md font-light mt-2 text-white">
-                                        Discription :{{ pastries.description }}
-                                    </p>
-                                    <p class="text-md font-light mt-2 text-white">
-                                        Price : <span class="font-bold">{{ pastries.price }} € </span>
-                                    </p>
-                                    <button
-                                        class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                        type="button">
-                                        <span class="flex flex-row">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                                            </svg>
-
-                                            Add to cart
-                                        </span>
-                                    </button>
-                                </blockquote>
+                                                Add to cart
+                                            </span>
+                                        </button>
+                                    </blockquote>
+                                </div>
                             </div>
-                        </div>
+                        </template>
                         <!-- <div class=" w-full md:w-4/12 px-4 mr-auto ml-auto    text-center">
                             <div
                                 class="relative flex flex-col min-w-0 break-words bg-red-300 w-full mb-6 shadow-lg rounded-lg ">

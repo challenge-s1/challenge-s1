@@ -5,19 +5,18 @@ namespace App\Tests\Api;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
-use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 
 class UserTese extends ApiTestCase
 {
-    use ReloadDatabaseTrait;
 
-    private string $jwtToken;
-    private array $users;
+
+    // private string $jwtToken;
+    // private array $users;
 
     public  function testLogin(): void
     {
         $response = static::createClient()->request('POST', '/authentication_token', ['json' => [
-            'email' => 'user1@gmail.com',
+            'email' => 'cake1@gmail.com',
             'password' => 'test',
         ]]);
         $this->assertResponseIsSuccessful();

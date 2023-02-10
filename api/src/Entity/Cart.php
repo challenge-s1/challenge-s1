@@ -27,30 +27,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'id' => new Link(
             fromClass: User::class,
             toProperty: 'client',
-        )],
+        )
+    ],
     security: 'is_granted("ROLE_ADMIN") or user.getId() == id',
     operations: [
-    new GetCollection(),
-    new Post()
+        new GetCollection(),
+        new Post()
     ],
     normalizationContext: ['groups' => ['cart_read', 'user_read', 'pastrie_read', 'masterClass:read', 'timestampable']],
     denormalizationContext: ['groups' => ['cart_write', 'user_write', 'pastrie_write', 'masterClass:write', 'timestampable']],
-    )]
-    #[ApiResource(
-        uriTemplate: '/users/{userId}/carts/{id}',
-        uriVariables: [
-            'userId' => new Link(
-                fromClass: User::class,
-                toProperty: 'client',
-            ),
-            'id' => new Link(fromClass: Cart::class)
-        ],
-        security: 'is_granted("ROLE_ADMIN") or user.getId() == userId',
-        operations: [
-            new Delete(),
-            new Patch(),
-        ]
-    )]
+)]
+#[ApiResource(
+    uriTemplate: '/users/{userId}/carts/{id}',
+    uriVariables: [
+        'userId' => new Link(
+            fromClass: User::class,
+            toProperty: 'client',
+        ),
+        'id' => new Link(fromClass: Cart::class)
+    ],
+    security: 'is_granted("ROLE_ADMIN") or user.getId() == userId',
+    operations: [
+        new Delete(),
+        new Patch(),
+    ]
+)]
 class Cart
 {
     #[ORM\Id]
@@ -72,6 +73,7 @@ class Cart
     #[ORM\ManyToOne(inversedBy: 'cartItems')]
     #[Blameable(on: 'create')]
     #[Groups(['pastrie_read', 'pastrie_write'])]
+    // #[Groups(['pastrie_read'])]
     private ?Pastrie $cake = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
