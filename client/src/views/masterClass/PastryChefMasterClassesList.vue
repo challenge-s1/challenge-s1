@@ -190,7 +190,7 @@ getMasterClasses();
       <div class="flex justify-between">
         <div class="mr-2">
           <label for="postalCode">Postal Code</label>
-          <input type="text" name="postalCode" id="postalCode" v-model.trim="masterClasstoUpdate.postalCode"
+          <input type="text" name="postalCode" id="postalCode" v-model.number="masterClasstoUpdate.postalCode"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
             placeholder="Postal Code">
         </div>
@@ -279,7 +279,7 @@ getMasterClasses();
                     Discription :{{ masterClass.description }}
                   </p>
                   <p class="text-md font-light mt-2 text-white">
-                    Location :{{ masterClass.adress }} {{ masterClass.city }} {{ masterClass.postalCode }}, {{
+                    Location :{{ masterClass.adress }} {{ masterClass.city }} {{ masterClass.postalcode }}, {{
                       masterClass.country
                     }}
                   </p>

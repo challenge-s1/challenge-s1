@@ -4,6 +4,10 @@ namespace App\Entity;
 
 use App\Entity\User;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CartRepository;
 use ApiPlatform\Metadata\ApiFilter;
@@ -14,7 +18,6 @@ use ApiPlatform\Metadata\GetCollection;
 use Gedmo\Mapping\Annotation\Blameable;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Metadata\Link;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
 #[ApiResource()]
@@ -24,15 +27,31 @@ use ApiPlatform\Metadata\Link;
         'id' => new Link(
             fromClass: User::class,
             toProperty: 'client',
-        )],
+        )
+    ],
     security: 'is_granted("ROLE_ADMIN") or user.getId() == id',
     operations: [
-    new GetCollection(
-    )
+        new GetCollection(),
+        new Post()
     ],
-    normalizationContext: ['groups' => ['cart_read', 'user_read', 'pastrie_read', 'masterclass_read', 'timestampable']],
-    denormalizationContext: ['groups' => ['cart_write', 'user_write', 'pastrie_write', 'masterclass_write', 'timestampable']],
-    )]
+    normalizationContext: ['groups' => ['cart_read', 'user_read', 'pastrie_read', 'masterClass:read', 'timestampable']],
+    denormalizationContext: ['groups' => ['cart_write', 'user_write', 'pastrie_write', 'masterClass:write', 'timestampable']],
+)]
+#[ApiResource(
+    uriTemplate: '/users/{userId}/carts/{id}',
+    uriVariables: [
+        'userId' => new Link(
+            fromClass: User::class,
+            toProperty: 'client',
+        ),
+        'id' => new Link(fromClass: Cart::class)
+    ],
+    security: 'is_granted("ROLE_ADMIN") or user.getId() == userId',
+    operations: [
+        new Delete(),
+        new Patch(),
+    ]
+)]
 class Cart
 {
     #[ORM\Id]
@@ -54,11 +73,12 @@ class Cart
     #[ORM\ManyToOne(inversedBy: 'cartItems')]
     #[Blameable(on: 'create')]
     #[Groups(['pastrie_read', 'pastrie_write'])]
+    // #[Groups(['pastrie_read'])]
     private ?Pastrie $cake = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
     #[Blameable(on: 'create')]
-    #[Groups(['masterclass_read', 'masterclass_write'])]
+    #[Groups(['masterClass:read'])]
     private ?MasterClass $masterClass = null;
 
     use TimestampTrait;

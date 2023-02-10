@@ -32,8 +32,11 @@ const isRoot = () => {
 <template>
   <UserProviderVue>
     <div id="app">
+
       <index-navbar v-if="!isRoot()" />
-      <router-view />
+      <main class="pt-14">
+        <router-view />
+      </main>
       <footer-component v-if="!isRoot()" />
     </div>
 
