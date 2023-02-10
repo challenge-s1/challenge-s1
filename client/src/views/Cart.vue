@@ -3,9 +3,13 @@ import axios from 'axios';
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import { inject, ref, onBeforeMount, reactive } from 'vue';
 import Alert from '@/components/alert/Alert.vue';
+import Checkout from '@/components/Checkout.vue';
+import Modal from '@/components/ModalForm.vue';
+
 const userToken = inject(UserProvierKeys);
 const cartItems = ref([]);
 const cartTotal = ref(0);
+const checkoutModal = ref(false);
 const quantityByItemCart = reactive({});
 const hasBeenModify = ref(false);
 const getCart = async () => {
@@ -102,6 +106,16 @@ const timer = (id, date) => {
     }, 1000)
 
 }
+
+const openCheckoutModal = () => {
+    checkoutModal.value = true;
+}
+
+const handleOpen = () => {
+    checkoutModal.value = !checkoutModal.value;
+}
+
+    
 </script>
 <template>
 
@@ -225,10 +239,7 @@ const timer = (id, date) => {
             </div>
 -->
                             <div class="flex justify-end">
-                                <a href="#"
-                                    class="block px-5 py-3 text-sm text-gray-100 transition bg-gray-700 rounded hover:bg-gray-600">
-                                    Checkout
-                                </a>
+                                <Checkout/>
                             </div>
                         </div>
                     </div>
@@ -236,5 +247,4 @@ const timer = (id, date) => {
             </div>
         </div>
     </section>
-
 </template>

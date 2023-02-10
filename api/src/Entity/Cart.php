@@ -5,12 +5,13 @@ namespace App\Entity;
 use App\Entity\User;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CartRepository;
 use ApiPlatform\Metadata\ApiFilter;
+use App\Controller\StripeController;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\Cart\GetCartItems;
 use App\Entity\Traits\TimestampTrait;
@@ -31,8 +32,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
     security: 'is_granted("ROLE_ADMIN") or user.getId() == id',
     operations: [
     new GetCollection(),
-    new Post()
-    ],
+    new Post(),
+    new Post(
+        name: 'checkout_cart',
+        uriTemplate: '/users/{id}/carts/checkout',
+        normalizationContext: ['groups' => 'publication'],
+        controller: StripeController::class,
+        denormalizationContext: ['groups' => 'publication'],
+        read: false
+    )],
     normalizationContext: ['groups' => ['cart_read', 'user_read', 'pastrie_read', 'masterClass:read', 'timestampable']],
     denormalizationContext: ['groups' => ['cart_write', 'user_write', 'pastrie_write', 'masterClass:write', 'timestampable']],
     )]

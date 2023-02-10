@@ -39,6 +39,57 @@ class CartRepository extends ServiceEntityRepository
         }
     }
 
+     /**
+    * @return Cart[] Returns an array of Cart objects
+    */
+    public function findByUserId($id)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.client = :val')
+            ->setParameter('val', $id)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getAmountMasterClassByUserId($id): ?String
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.client = :val')
+            ->setParameter('val', $id)
+            ->join('c.masterClass', 'm')
+            ->select('SUM(c.quantity * m.price) as amount')
+            ->andWhere('m.id IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+        ;
+    }
+
+    public function getAmountPastrieByUserId($id): ?String
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.client = :val')
+            ->setParameter('val', $id)
+            ->join('c.cake', 'p')
+            ->select('SUM(c.quantity * p.price) as amount')
+            ->andWhere('p.id IS NOT NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+        ;
+    }
+
+    public function drainCartForUser($idUser): void
+    {
+        $this->createQueryBuilder('c')
+        ->delete()
+        ->where('c.client = :idUser')
+        ->setParameter('idUser', $idUser)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
 //    public function findOneBySomeField($value): ?Cart
 //    {
 //        return $this->createQueryBuilder('c')
