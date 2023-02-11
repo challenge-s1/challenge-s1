@@ -18,7 +18,13 @@ const user = ref(store.state.user);
 const login = async function (userData) {
     console.log(userData);
 
-    const result = await axios.post(`${url}/authentication_token`, userData).
+    const result = await axios.post(`${url}/authentication_token`, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers':
+                'Origin, X-Requested-With, Content-Type, Accept',
+        }
+    }, userData).
         then((response) => {
             console.log(response);
             return response.data;
