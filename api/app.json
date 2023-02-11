@@ -15,10 +15,10 @@
     ],
     "scripts": {
         "predeploy": [
-            "php bin/console composer install --no-dev --optimize-autoloader",
-            "php bin/console doctrine:schema:create",
-            "php bin/console doctrine:schema:update --force",
-            "php bin/console doctrine:fixtures:load -n"
+            "cd api/ && php bin/console composer install --no-dev --optimize-autoloader",
+            "cd api/ && php bin/console doctrine:schema:create",
+            "cd api/ && php bin/console doctrine:schema:update --force",
+            "cd api/ && php bin/console doctrine:fixtures:load -n"
         ]
 
     }
