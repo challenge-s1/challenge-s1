@@ -4,16 +4,25 @@ import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys
 import { inject, ref, onBeforeMount, reactive } from 'vue';
 import Alert from '@/components/alert/Alert.vue';
 import Checkout from '@/components/Checkout.vue';
-import Modal from '@/components/ModalForm.vue';
 
 const userToken = inject(UserProvierKeys);
 const cartItems = ref([]);
-const cartTotal = ref(0);
-const checkoutModal = ref(false);
+const vouchers = ref([]);
+const cartTotalMasterClass = ref(0);
+const cartTotalPastrie = ref(0);
+
 const quantityByItemCart = reactive({});
 const hasBeenModify = ref(false);
+const alert = reactive({
+    open: false,
+    title: '',
+    content: '',
+    type: 'success'
+});
+
 const getCart = async () => {
-    cartTotal.value = 0;
+    cartTotalPastrie.value = 0;
+    cartTotalMasterClass.value = 0;
     const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/carts`, {
         headers: {
             authorization: 'Bearer ' + userToken.value.token.token
@@ -23,9 +32,9 @@ const getCart = async () => {
         console.log(cartItems.value);
         for (const element of cartItems.value) {
             if (element.cake) {
-                cartTotal.value += element.cake.price * element.quantity;
+                cartTotalPastrie.value += element.cake.price * element.quantity;
             } else if (element.masterClass) {
-                cartTotal.value += element.masterClass.price * element.quantity;
+                cartTotalMasterClass.value += element.masterClass.price * element.quantity;
                 timer(element.id, element.updated_at);
             }
             quantityByItemCart[element.id] = element.quantity;
@@ -35,8 +44,36 @@ const getCart = async () => {
         console.log(error);
     });
 }
+
+const getVoucher = async () => {
+    if (cartTotalMasterClass.value > 0) {
+        vouchers.value = [];
+        const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/vouchers`, {
+            headers: {
+                authorization: 'Bearer ' + userToken.value.token.token
+            }
+        }).then((response) => {
+            const vouchersData = response.data['hydra:member'];
+            for (const voucher of vouchersData) {
+                if (cartTotalMasterClass.value >= voucher.price) {
+                    cartTotalMasterClass.value -= voucher.price;
+                    vouchers.value.push(voucher);
+                } else {
+                    const rest = voucher.price - cartTotalMasterClass.value;
+                    cartTotalMasterClass.value = 0;
+                    vouchers.value.push({ price: voucher.price - rest, all: voucher.price });
+                }
+            }
+
+            console.log(response);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+}
 onBeforeMount(async () => {
     await getCart();
+    await getVoucher();
 });
 
 const handleSubmit = async (id) => {
@@ -52,10 +89,12 @@ const handleSubmit = async (id) => {
             authorization: 'Bearer ' + userToken.value.token.token
         }
     }).then((response) => {
-        hasBeenModify.value = true;
+        alert.open = true;
+        alert.title = 'Your cart has been updated !';
         console.log(response);
 
         getCart();
+        getVoucher();
     }).catch((error) => {
         console.log(error);
     });
@@ -70,6 +109,7 @@ const deleteItemCart = async (id) => {
     }).then((response) => {
         console.log(response);
         getCart();
+        getVoucher();
     }).catch((error) => {
         console.log(error);
     });
@@ -106,20 +146,18 @@ const timer = (id, date) => {
     }, 1000)
 
 }
+const onCheckoutDone = (payload) => {
+    alert.open = true;
+    alert.title = payload;
+    getCart();
+    getVoucher();
 
-const openCheckoutModal = () => {
-    checkoutModal.value = true;
 }
 
-const handleOpen = () => {
-    checkoutModal.value = !checkoutModal.value;
-}
-
-    
 </script>
 <template>
 
-    <Alert v-model="hasBeenModify" title="Your cart has been well updated" />
+    <Alert v-model="alert" />
     <section>
         <div class="max-w-screen-xl px-4 py-8 mx-auto sm:px-6 sm:py-12 lg:px-8">
             <div class="max-w-3xl mx-auto">
@@ -127,7 +165,7 @@ const handleOpen = () => {
                     <h1 class="text-xl font-bold text-gray-900 sm:text-3xl">Your Cart</h1>
                 </header>
 
-                <div class="mt-8">
+                <div class="mt-8" v-if="cartItems.length > 0">
                     <ul class="space-y-4">
                         <li class="flex items-center" v-for="itemCart of cartItems">
                             <img v-if="itemCart.cake" src="@/assets/img/shop/product-1.jpg" alt=""
@@ -143,16 +181,11 @@ const handleOpen = () => {
                                         <dd class="inline"> ${{ itemCart.cake.price }}</dd>
                                     </div>
 
-                                    <div>
-                                        <dt class="inline">All:</dt>
-                                        <dd class="inline">${{
-                                            itemCart.quantity * itemCart.cake.price
-                                        }}</dd>
-                                    </div>
+
                                 </dl>
                             </div>
                             <div class="ml-4" v-else-if="itemCart.masterClass">
-                                <h3 class="text-sm text-gray-900">{{ itemCart.masterClass.name }}</h3>
+                                <h3 class="text-sm text-gray-900">{{ itemCart.masterClass.title }}</h3>
 
                                 <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
                                     <div>
@@ -162,13 +195,8 @@ const handleOpen = () => {
                                         }}$</dd>
                                     </div>
 
+
                                     <div>
-                                        <dt class="inline">All:</dt>
-                                        <dd class="inline">${{
-                                            itemCart.quantity * itemCart.masterClass.price
-                                        }}</dd>
-                                    </div>
-                                    <div >
                                         <dt class="inline">Masterclass stays in your basket for {{
                                         timerTime[itemCart.id] }}</dt>
                                     </div>
@@ -179,8 +207,8 @@ const handleOpen = () => {
                                 <form @submit.prevent="handleSubmit(itemCart.id)">
                                     <label for="Line1Qty" class="sr-only"> Quantity </label>
 
-                                    <input type="number" min="1" v-model="quantityByItemCart[itemCart.id]"
-                                     id="Line1Qty" :readonly="itemCart.masterClass"
+                                    <input type="number" min="1" v-model="quantityByItemCart[itemCart.id]" id="Line1Qty"
+                                        :readonly="itemCart.masterClass"
                                         class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none" />
                                 </form>
 
@@ -204,45 +232,41 @@ const handleOpen = () => {
 
 
 
-                                <!--<div class="flex justify-between">
-                <dt>Discount</dt>
-                <dd>-£20</dd>
-              </div>
--->
+                                <div class="flex justify-between" v-for="voucher in vouchers">
+                                    <dt>Discount</dt>
+                                    <dd>-${{ voucher.price }}{{ voucher.all ? '/' + voucher.all : '' }}</dd>
+                                </div>
+
+
+                                <div class="flex justify-end" v-if="vouchers.length > 0">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="-ml-1 mr-1.5 h-4 w-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
+                                        </svg>
+
+                                        <p class="text-xs whitespace-nowrap"> {{ vouchers.length }} Discounts Applied
+                                        </p>
+                                    </span>
+                                </div>
+
                                 <div class="flex justify-between !text-base font-medium">
                                     <dt>Total</dt>
-                                    <dd>${{ cartTotal }}</dd>
+                                    <dd>${{ cartTotalMasterClass + cartTotalPastrie }}</dd>
                                 </div>
                             </dl>
-                            <!--
-            <div class="flex justify-end">
-              <span
-                class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="-ml-1 mr-1.5 h-4 w-4"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"
-                  />
-                </svg>
 
-                <p class="text-xs whitespace-nowrap">2 Discounts Applied</p>
-              </span>
-            </div>
--->
                             <div class="flex justify-end">
-                                <Checkout/>
+                                <Checkout @checkout-done="onCheckoutDone" />
                             </div>
                         </div>
                     </div>
+                </div>
+                <div v-else class="text-lg text-center  text-gray-900 sm:text-3lg m-8">
+                    
+                    Your cart is empty, please add some items.
                 </div>
             </div>
         </div>

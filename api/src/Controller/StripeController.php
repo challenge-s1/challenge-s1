@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Ordered;
 use App\Entity\Reservation;
 use App\Repository\CartRepository;
+use App\Repository\VoucherDiscountRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,7 +24,8 @@ class StripeController extends AbstractController
         private RequestStack $requestStack,
         private ManagerRegistry $managerRegistry,
         private EntityManagerInterface $entityManager,
-        private CartRepository $cartRepository
+        private CartRepository $cartRepository,
+        private VoucherDiscountRepository $voucherRepository
     ) {
     }
 
@@ -33,14 +36,25 @@ class StripeController extends AbstractController
         $user = $this->getUser();
         $carts = $this->cartRepository->findByUserId($user->getId());
         $amountMasterClass = $this->cartRepository->getAmountMasterClassByUserId($user->getId());
+        $vouchers = $this->voucherRepository->findByUserId($user->getId());
+        foreach ($vouchers as $voucher) {
+            $rest = $voucher->getPrice() - $amountMasterClass;
+            if ($rest > 0) {
+                $amountMasterClass = $amountMasterClass - ($voucher->getPrice() - $rest);
+                $voucher->setPrice($rest);
+            } else {
+                $amountMasterClass = $amountMasterClass - $voucher->getPrice();
+                $this->entityManager->remove($voucher);
+            }
+        }
         $amountPastrie = $this->cartRepository->getAmountPastrieByUserId($user->getId());
 
         Stripe::setApiKey($_ENV["STRIPE_SECRET"]);
         Charge::create([
-                "amount" => floatval($amountMasterClass + $amountPastrie) * 100,
+                "amount" => floatval($amountPastrie + $amountMasterClass) * 100,
                 "currency" => "usd",
                 "source" => json_decode($request->getContent())->stripeToken,
-                "description" => "Binaryboxtuts Payment Test"
+                "description" => "Payment For Let's bake"
         ]);
         foreach ($carts as $cart) {
             if ($cart->getMasterClass() !== null) {
@@ -62,6 +76,6 @@ class StripeController extends AbstractController
         }
         $this->entityManager->flush();
         $this->cartRepository->drainCartForUser($user->getId());
-        $this->json("Your payment has been accepted");
+        return $this->json("Your payment has been accepted");
     }
 }
