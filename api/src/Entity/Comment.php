@@ -58,7 +58,7 @@ class Comment
     private ?string $content = null;
 
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\ManyToOne(inversedBy: 'comments', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Blameable(on: 'create')]
     #[Groups(['comment_read', 'masterClass:read', 'reporting_read'])]

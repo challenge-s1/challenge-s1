@@ -19,6 +19,9 @@ class LoginSuccessListener
         $payload['user'] = [
             'id' => $user->getId(),
             'role' => $user->getRoles(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+
         ];
         $event->setData($payload);
     }

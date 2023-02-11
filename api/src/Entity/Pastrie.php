@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -27,6 +29,7 @@ use Symfony\Component\HttpFoundation\File\File;
 #[ORM\Entity(repositoryClass: PastrieRepository::class)]
 
 #[ApiResource(
+    order: ['created_at' => 'ASC'],
     types: ['https://schema.org/Pastrie'],
     operations: [
         new GetCollection(
@@ -98,6 +101,7 @@ use Symfony\Component\HttpFoundation\File\File;
         )
     ],
 )]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 class Pastrie
 {
     use TimestampTrait;

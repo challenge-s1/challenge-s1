@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
@@ -11,7 +11,30 @@ const store = useStore();
 const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
-const userToken = inject(UserProvierKeys);
+const userToken = store.getters.user;
+const categories = ref([]);
+const selectedCategory = ref('');
+const GetCategories = async () => {
+    await axios.get(`${url}/categories`, {
+        headers: {
+            authorization: 'Bearer ' + userToken.token
+        }
+    }).then((response) => {
+        console.log(response.data);
+        categories.value = response.data;
+        console.log(categories.value);
+    }).catch((error) => {
+        console.log(error);
+    })
+};
+GetCategories();
+
+const filteredProducts = computed(() => {
+    if (selectedCategory.value === '') {
+        return products.value;
+    }
+    return products.value.filter((product) => product.category.name === selectedCategory.value);
+});
 
 // console.log(userToken.value.token.token);
 const GetProduct = async () => {
@@ -28,6 +51,8 @@ const GetProduct = async () => {
 
 };
 GetProduct();
+
+
 
 </script>
 
@@ -55,6 +80,29 @@ GetProduct();
                                     everyone. Come visit us and taste the magic for yourself. We can't wait to share our
                                     sweets with you!
                                 </p>
+
+                                <label for="default-search"
+                                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
+                                <div class="relative">
+                                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <select v-model="selectedCategory">
+                                        <option v-for="category in categories" :key="category.id">{{
+                                            category.name
+                                        }}
+                                        </option>
+                                        <option value="">All</option>
+                                    </select>
+
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -71,7 +119,7 @@ GetProduct();
             <section class="pb-20 bg-blueGray-200 -mt-24">
                 <div class="container mx-auto px-4">
                     <div class="flex flex-wrap">
-                        <template v-for="pastries in products " :key="pastries.id">
+                        <template v-for="pastries in filteredProducts " :key="pastries.id">
                             <div v-if="pastries.Status == false"
                                 class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
                                 <div

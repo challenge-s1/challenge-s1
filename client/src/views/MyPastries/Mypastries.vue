@@ -401,11 +401,11 @@ const EditProduct = async (pastry) => {
                                     <select name="category" id=""
                                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15"
                                         v-model="product.category">
-                                        <option :value="product.category.id" :key="product.category.id"  selected>{{
+                                        <option :value="product.category.id" :key="product.category.id" selected>{{
                                             product.category.name
                                         }}</option>
                                         <option :value="categorie.id" v-for="categorie in categories "
-                                            :key="categorie.id" :selected="categorie.id == product.category.id" >
+                                            :key="categorie.id" :selected="categorie.id == product.category.id">
                                             {{ categorie.name }}
                                         </option>
                                     </select>

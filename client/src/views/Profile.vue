@@ -133,12 +133,19 @@ getUserData();
                             <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                                 <div class="py-6 px-3 mt-32 sm:mt-0">
                                     <UserForm>
+                                        <div></div>
+                                        <Modal
+                                            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center ">
 
-                                        <Modal class="w-10/12">
                                             <template #activator="{ toggleModal }">
+
                                                 <button type="button" @click="toggleModal"
                                                     class="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
                                                     Modify
+                                                </button>
+                                                <button type="button"
+                                                    class="bg-red-500 active:bg-red-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
+                                                    Delete
                                                 </button>
                                             </template>
                                             <template v-slot:title>

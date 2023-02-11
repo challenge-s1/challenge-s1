@@ -4,6 +4,7 @@ import UserFormVue from '../components/UserForm.vue';
 import FormField from '../components/FormField.vue';
 import { inject, reactive, ref } from 'vue';
 
+
 const register = inject('userProvider:register');
 
 const UserData = reactive({
@@ -16,6 +17,7 @@ const UserData = reactive({
     address: '',
     postalcode: null,
     country: '',
+    roles: '',
 })
 
 const errors = ref({
@@ -78,7 +80,9 @@ const onSubmit = function () {
     if (!validate()) {
         return;
     }
+    UserData.roles = UserData.roles.split(" ");
     console.log(UserData);
+    console.log(UserData.roles);
     register(UserData).then((response) => {
         console.log(response);
         errors.value.general = response;
@@ -109,6 +113,26 @@ const onSubmit = function () {
                                 Let's cake together
                             </h2>
                             <UserFormVue @submit="onSubmit">
+                                <label for="">You are : </label>
+                                <div class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
+                                    <input id="roles" type="radio" v-model="UserData.roles" value="ROLE_USER"
+                                        name="roles"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="role"
+                                        class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        User
+                                    </label>
+                                    <img src="@/assets/img/pastrychef.png" style="width: 60px;height: 60px;" alt="" />
+                                    <input id="roles" type="radio" v-model="UserData.roles" value="ROLE_PATISSIER"
+                                        name="roles"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="role"
+                                        class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Pastry chef
+
+                                    </label>
+
+                                </div>
                                 <label for="firstName"
                                     class="block text-xs font-bold text-gray-600 uppercaseblock uppercase mb-2">FisrtName</label>
                                 <FormField id="firstName" as="input" type="text" name="firstName"
