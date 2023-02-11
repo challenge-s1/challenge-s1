@@ -36,7 +36,9 @@
         "symfony/twig-bundle": "6.1.*",
         "symfony/validator": "6.1.*",
         "symfony/yaml": "6.1.*",
-        "vich/uploader-bundle": "^2.0",
+        "vich/uploader-bundle": "^2.0"
+    },
+    "require-dev": {
         "api-platform/schema-generator": "^4.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.21",
@@ -51,9 +53,6 @@
         "symfony/stopwatch": "6.1.*",
         "symfony/var-dumper": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
-    },
-    "require-dev": {
-   
     },
     "config": {
         "optimize-autoloader": true,
@@ -89,8 +88,6 @@
     },
     "scripts": {
         "prepare": [
-            "php bin/console doctrine:database:drop --if-exists --force",
-            "php bin/console doctrine:database:create",
             "php bin/console doctrine:schema:update --force"
         ],
 
