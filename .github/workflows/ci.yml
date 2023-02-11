@@ -120,6 +120,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./api
     # needs: apiPlatform-tests
 
     steps:
