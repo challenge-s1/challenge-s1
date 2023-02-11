@@ -1,11 +1,13 @@
 <script setup>
 import axios from 'axios';
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-import { inject, ref, onBeforeMount, reactive } from 'vue';
+import { inject, ref, onBeforeMount, reactive } from 'vue'
+import { useStore } from "vuex";
 import Alert from '@/components/alert/Alert.vue';
 import Checkout from '@/components/Checkout.vue';
 
 const userToken = inject(UserProvierKeys);
+const store = useStore();
 const cartItems = ref([]);
 const vouchers = ref([]);
 const cartTotalMasterClass = ref(0);
@@ -25,10 +27,12 @@ const getCart = async () => {
     cartTotalMasterClass.value = 0;
     const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/carts`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
-        cartItems.value = response.data['hydra:member'];
+        console.log(response);
+        // cartItems.value = response.data['hydra:member'];
+        cartItems.value = response.data;
         console.log(cartItems.value);
         for (const element of cartItems.value) {
             if (element.cake) {
@@ -80,13 +84,13 @@ const handleSubmit = async (id) => {
 
     console.log(id, quantityByItemCart[id]);
 
-    const reponse = await axios.patch(`https://localhost/users/${userToken.value.token.user.id}/carts/${id}`,
+    const reponse = await axios.patch(`https://localhost/users/${userToken.id}/carts/${id}`,
         {
             quantity: quantityByItemCart[id]
         }, {
         headers: {
             'content-type': 'application/merge-patch+json',
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         alert.open = true;
@@ -102,9 +106,9 @@ const handleSubmit = async (id) => {
 };
 
 const deleteItemCart = async (id) => {
-    const response = await axios.delete(`https://localhost/users/${userToken.value.token.user.id}/carts/${id}`, {
+    const response = await axios.delete(`https://localhost/users/${userToken.id}/carts/${id}`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response);
@@ -197,6 +201,7 @@ const onCheckoutDone = (payload) => {
 
 
                                     <div>
+
                                         <dt class="inline">Masterclass stays in your basket for {{
                                         timerTime[itemCart.id] }}</dt>
                                     </div>

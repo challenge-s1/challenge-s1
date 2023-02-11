@@ -35,7 +35,7 @@
               <router-link
                 class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
                 to="/">
-                Vue Notus
+                Let's Bake
               </router-link>
             </div>
             <div class="w-6/12 flex justify-end">
@@ -48,24 +48,24 @@
           </div>
         </div>
         <!-- Form -->
-        <form class="mt-6 mb-4 md:hidden">
+        <!-- <form class="mt-6 mb-4 md:hidden">
           <div class="mb-3 pt-0">
             <input type="text" placeholder="Search"
               class="border-0 px-3 py-2 h-12 border border-solid border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal" />
           </div>
-        </form>
+        </form> -->
 
         <!-- Divider -->
         <hr class="my-4 md:min-w-full" />
         <!-- Heading -->
         <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
-          Admin Layout Pages
+          Admin
         </h6>
         <!-- Navigation -->
 
         <ul class="md:flex-col md:min-w-full flex flex-col list-none">
           <li class="items-center">
-            <router-link to="" v-slot="{ href, navigate, isActive }">
+            <router-link to="Dashbord" v-slot="{ href, navigate, isActive }">
               <a :href="href" @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
                 isActive
                   ? 'text-emerald-500 hover:text-emerald-600'
@@ -77,7 +77,7 @@
             </router-link>
           </li>
 
-          <li class="items-center">
+          <!-- <li class="items-center">
             <router-link to="" v-slot="{ href, navigate, isActive }">
               <a :href="href" @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
                 isActive
@@ -88,22 +88,22 @@
                 Settings
               </a>
             </router-link>
-          </li>
+          </li> -->
 
           <li class="items-center">
-            <router-link to="" v-slot="{ href, navigate, isActive }">
-              <a :href="href" @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
+            <router-link to="Categories" v-slot="{ navigate, isActive }">
+              <a @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
                 isActive
                   ? 'text-emerald-500 hover:text-emerald-600'
                   : 'text-blueGray-700 hover:text-blueGray-500',
               ]">
                 <i class="fas fa-table mr-2 text-sm" :class="[isActive ? 'opacity-75' : 'text-blueGray-300']"></i>
-                Tables
+                Category
               </a>
             </router-link>
           </li>
 
-          <li class="items-center">
+          <!-- <li class="items-center">
             <router-link to="" v-slot="{ href, navigate, isActive }">
               <a :href="href" @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
                 isActive
@@ -114,18 +114,18 @@
                 Maps
               </a>
             </router-link>
-          </li>
+          </li> -->
         </ul>
 
         <!-- Divider -->
-        <hr class="my-4 md:min-w-full" />
+        <!-- <hr class="my-4 md:min-w-full" /> -->
         <!-- Heading -->
-        <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
+        <!-- <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
           Auth Layout Pages
-        </h6>
+        </h6> -->
         <!-- Navigation -->
 
-        <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+        <!-- <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
           <li class="items-center">
             <router-link class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
               to="/auth/login">
@@ -141,16 +141,16 @@
               Register
             </router-link>
           </li>
-        </ul>
+        </ul> -->
 
         <!-- Divider -->
-        <hr class="my-4 md:min-w-full" />
+        <!-- <hr class="my-4 md:min-w-full" /> -->
         <!-- Heading -->
-        <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
+        <!-- <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
           No Layout Pages
-        </h6>
+        </h6> -->
         <!-- Navigation -->
-
+        <!-- 
         <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
           <li class="items-center">
             <router-link class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
@@ -167,16 +167,16 @@
               Profile Page
             </router-link>
           </li>
-        </ul>
+        </ul> -->
 
         <!-- Divider -->
-        <hr class="my-4 md:min-w-full" />
+        <!-- <hr class="my-4 md:min-w-full" /> -->
         <!-- Heading -->
-        <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
+        <!-- <h6 class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
           Documentation
-        </h6>
+        </h6> -->
         <!-- Navigation -->
-        <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+        <!-- <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
           <li class="inline-flex">
             <a href="https://www.creative-tim.com/learning-lab/tailwind/vue/colors/notus" target="_blank"
               class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold">
@@ -240,7 +240,7 @@
               VueJS
             </a>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </div>
   </nav>

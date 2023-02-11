@@ -26,6 +26,12 @@ class MasterClassFixtures extends Fixture implements DependentFixtureInterface
             $masterClass->setDescription($faker->paragraph(3));
             $masterClass->setPrice($faker->randomFloat(2, 10, 100));
             $masterClass->setMaxNumber($faker->numberBetween(5, 20));
+            $masterClass->setTime($faker->dateTimeBetween('now', '+1 year'));
+            $masterClass->setDate($faker->dateTimeBetween('now', '+1 year'));
+            $masterClass->setAdress($faker->address);
+            $masterClass->setCity($faker->city);
+            $masterClass->setPostalCode(75000);
+            $masterClass->setCountry('France');
             $masterClass->setIsCanceled(false);
             $masterClass->setOwner($faker->randomElement($patissiers));
             $manager->persist($masterClass);

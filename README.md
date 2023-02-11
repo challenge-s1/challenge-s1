@@ -32,3 +32,5 @@ docker-compose exec php php bin/console d:s:u --force
 ```sh
 docker-compose exec php php bin/console doctrine:fixtures:load -n
 ```
+
+docker-compose exec php php bin/console cache:clear

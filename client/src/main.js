@@ -21,6 +21,15 @@ const store = createStore({
         isLoggedIn(state) {
             return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token');
         },
+        isPastrieOwner(state) {
+            return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && state.user.roles[0] == 'ROLE_PATISSIER';
+        },
+        isAdmin(state) {
+            return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && state.user.roles[0] == 'ROLE_ADMIN';
+        },
+        // isTokenExpired(state) {
+        //     return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && store.state.user.token.exp < Date.now() / 1000;
+        // },
         /*isAdmin(state) {
             return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && state.user.roles == 'ROLE_ADMIN';
         }*/
@@ -28,6 +37,12 @@ const store = createStore({
     mutations: {
         addToken(state, token) {
             state.user.token = token;
+        },
+        addId(state, id) {
+            state.user.id = id;
+        },
+        addRoles(state, roles) {
+            state.user.roles = roles;
         },
         /*addUser(state, newUser) {
             console.log(newUser);
