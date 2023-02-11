@@ -17,6 +17,7 @@
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "stof/doctrine-extensions-bundle": "^1.7",
+        "stripe/stripe-php": "^10.5",
         "symfony/asset": "6.1.*",
         "symfony/console": "6.1.*",
         "symfony/dotenv": "6.1.*",
