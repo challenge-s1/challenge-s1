@@ -34,7 +34,7 @@ use App\Entity\Traits\TimestampTrait;
 
         new Get(
             normalizationContext: [
-                'groups' => ['masterClass:details', 'masterClass:read'],
+                'groups' => ['masterClass:details', 'masterClass:read', 'comment_read'],
             ]
         ),
 

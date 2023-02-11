@@ -25,16 +25,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
     operations: [
         new GetCollection(
-            normalizationContext: ['groups' => ['comment_read', 'masterClass:read']]
+            normalizationContext: ['groups' => ['comment_read']]
         ),
         new Post(
             denormalizationContext: ['groups' => ['comment_write']],
         ),
         new Get(
-            normalizationContext: ['groups' => ['comment_read', 'masterClass:read']]
+            normalizationContext: ['groups' => ['comment_read']]
         ),
         new Put(
-            denormalizationContext: ['groups' => ['comment_write']],
+            // denormalizationContext: ['groups' => ['comment_write']],
+            denormalizationContext: ['groups' => ['comment_put']],
             security: 'object.getUserid() == user',
         ),
         new Delete(
@@ -53,7 +54,7 @@ class Comment
     #[Groups(['comment_read', 'masterClass:read', 'reporting_read'])]
     private ?int $id = null;
 
-    #[Groups(['comment_write', 'comment_read', 'masterClass:read', 'reporting_read'])]
+    #[Groups(['comment_write', 'comment_read', 'masterClass:read', 'reporting_read', 'comment_put'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
@@ -70,6 +71,7 @@ class Comment
     private ?MasterClass $masterid = null;
 
     #[ORM\OneToMany(mappedBy: 'commentid', targetEntity: Reporting::class)]
+    #[Groups(['comment_read'])]
     private Collection $reportings;
 
     public function __construct()

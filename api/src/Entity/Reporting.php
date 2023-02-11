@@ -54,7 +54,7 @@ class Reporting
     private ?Comment $commentid = null;
 
     #[ORM\ManyToOne(inversedBy: 'reportings')]
-    #[Groups(['reporting_read'])]
+    #[Groups(['reporting_read', 'comment_read'])]
     #[Blameable(on: 'create')]
     private ?User $userid = null;
 
