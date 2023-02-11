@@ -28,7 +28,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'id' => new Link(
             fromClass: User::class,
             toProperty: 'client',
-        )],
+        )
+    ],
     security: 'is_granted("ROLE_ADMIN") or user.getId() == id',
     operations: [
     new GetCollection(
@@ -61,6 +62,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             new Patch(),
         ]
     )]
+
 class Cart
 {
     #[ORM\Id]
@@ -82,6 +84,7 @@ class Cart
     #[ORM\ManyToOne(inversedBy: 'cartItems')]
     #[Blameable(on: 'create')]
     #[Groups(['pastrie_read', 'pastrie_write'])]
+    // #[Groups(['pastrie_read'])]
     private ?Pastrie $cake = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]

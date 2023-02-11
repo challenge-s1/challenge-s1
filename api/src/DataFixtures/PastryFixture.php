@@ -32,6 +32,7 @@ class PastryFixture extends Fixture implements DependentFixtureInterface
             $pastrie->setOwner($faker->randomElement($patissiers));
             $categoy = $faker->randomElement($categoys);
             $pastrie->setCategory($categoy);
+            $pastrie->setStatus(false);
             $manager->persist($pastrie);
         }
         $manager->flush();

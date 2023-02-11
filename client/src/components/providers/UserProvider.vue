@@ -18,8 +18,9 @@ const user = ref(store.state.user);
 const login = async function (userData) {
     console.log(userData);
 
-    const token = await axios.post('https://localhost/authentication_token', userData).
+    const result = await axios.post('https://localhost/authentication_token', userData).
         then((response) => {
+            console.log(response);
             return response.data;
         }).
         catch((error) => {
@@ -28,16 +29,13 @@ const login = async function (userData) {
             };
         });
 
-    if (token.error) {
-        return token.error;
+    if (result.error) {
+        return result.error;
     }
-    user.value = token.token
-
-    // console.log(user.value);
-    // router.push({ name: "Home" })
-
-
-    store.commit('addToken', token);
+    user.value = result;
+    store.commit('addToken', result.token);
+    store.commit('addId', result.user.id);
+    store.commit('addRoles', result.user.role);
     router.push({ name: "Home" })
 
 }

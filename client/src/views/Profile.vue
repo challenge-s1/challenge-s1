@@ -4,20 +4,24 @@ import Modal from '../components/ModalForm.vue';
 import FormField from '../components/FormField.vue';
 import UserForm from '../components/UserForm.vue';
 import axios from 'axios';
+import { useStore } from "vuex";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 
-const userToken = inject(UserProvierKeys);
-const updateProfile = async(handleClose) => {
+// const userToken = inject(UserProvierKeys);
+const store = useStore();
+const userToken = store.getters.user;
+
+const updateProfile = async (handleClose) => {
     console.log("updateProfile");
     if (!validate()) {
         return;
     }
     userData.value.postalcode = parseInt(userData.value.postalcode);
-    await axios.patch(`https://localhost/users/${userToken.value.token.user.id}`, userData.value,
+    await axios.patch(`https://localhost/users/${userToken.id}`, userData.value,
         {
             headers: {
                 'content-type': 'application/merge-patch+json',
-                authorization: 'Bearer ' + userToken.value.token.token
+                authorization: 'Bearer ' + userToken.token
             }
         })
         .then((response) => {
@@ -86,11 +90,11 @@ const validate = () => {
     return Object.values(errors.value).length == 0;
 }
 const getUserData = async () => {
-    await axios.get(`https://localhost/users/${userToken.value.token.user.id}`, {
-            headers: {
-                authorization: 'Bearer ' + userToken.value.token.token
+    await axios.get(`https://localhost/users/${userToken.id}`, {
+        headers: {
+            authorization: 'Bearer ' + userToken.token
 
-            }
+        }
     })
         .then((response) => {
             console.log(response.data);
@@ -113,7 +117,7 @@ const getUserData = async () => {
         .catch((error) => {
             console.log(error);
         });
-        console.log(user   );
+    console.log(user);
 }
 getUserData();
 
@@ -132,8 +136,8 @@ getUserData();
 
                                         <Modal class="w-10/12">
                                             <template #activator="{ toggleModal }">
-                                                <button type="button" @click="toggleModal" class="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
->
+                                                <button type="button" @click="toggleModal"
+                                                    class="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
                                                     Modify
                                                 </button>
                                             </template>
@@ -142,39 +146,47 @@ getUserData();
                                             </template>
                                             <template #default class="w-full">
                                                 <div class="w-full">
-                                                    <label for="firstName" class="block text-xs font-semibold text-gray-600 uppercase text-left">FisrtName</label> 
+                                                    <label for="firstName"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">FisrtName</label>
                                                     <FormField id="firstName" as="input" type="text" name="firstName"
                                                         placeholder="Prénom" v-model="userData.firstName"
                                                         class=" mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.firstName }}
                                                     </div>
-                                                    <label for="lastName" class="block text-xs font-semibold text-gray-600 uppercase text-left">LastName</label> 
+                                                    <label for="lastName"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">LastName</label>
                                                     <FormField id="lastName" as="input" type="text" name="lastName"
                                                         placeholder="Nom" v-model="userData.lastName"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.lastName }}
                                                     </div>
 
-                                                    <label for="email" class="block text-xs font-semibold text-gray-600 uppercase text-left">City</label> 
-                                                   
+                                                    <label for="email"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">City</label>
+
                                                     <FormField id="city" as="input" type="text" name="city"
                                                         placeholder="City" v-model="userData.city"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.city }}</div>
 
-                                                    <label for="adress" class="block text-xs font-semibold text-gray-600 uppercase text-left">Adress</label> 
+                                                    <label for="adress"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">Adress</label>
 
                                                     <FormField id="address" as="input" type="text" name="text"
                                                         placeholder="Address" v-model="userData.address"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.address }}</div>
-                                                    <label for="postalcode" class="block text-xs font-semibold text-gray-600 uppercase text-left">Postal Code</label>
-                                                    <FormField id="postalcode" as="input" type="number" name="postalcode"
-                                                        placeholder="postal code" v-model="userData.postalcode"
+                                                    <label for="postalcode"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">Postal
+                                                        Code</label>
+                                                    <FormField id="postalcode" as="input" type="number"
+                                                        name="postalcode" placeholder="postal code"
+                                                        v-model="userData.postalcode"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
                                                     <div class=" text-red-500 text-xs italic">{{ errors.postalcode }}
                                                     </div>
-                                                    <label for="country" class="block text-xs font-semibold text-gray-600 uppercase text-left">Country</label>
+                                                    <label for="country"
+                                                        class="block text-xs font-semibold text-gray-600 uppercase text-left">Country</label>
                                                     <FormField id="country" as="input" type="text" name="country"
                                                         placeholder="Country" v-model="userData.country"
                                                         class="mb-3 w-full appearance-none border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:shadow-lg" />
@@ -190,16 +202,18 @@ getUserData();
                                             <template #footer="{ handleClose }">
                                                 <button type="submit" class=" flex p-4 bg-black
                 font-medium justify-center text-white uppercase 
-                focus:outline-none hover:bg-orange-400 w-full hover:shadow-none" @click="updateProfile(handleClose)">Update</button>
+                focus:outline-none hover:bg-orange-400 w-full hover:shadow-none"
+                                                    @click="updateProfile(handleClose)">Update</button>
                                             </template>
                                         </Modal>
                                     </UserForm>
-                                    
+
                                 </div>
                             </div>
                             <div class="w-full lg:w-4/12 px-4 lg:order-1">
                                 <div class="flex justify-center py-4 lg:pt-4 pt-8">
-                                    <div class="mr-4 p-3 text-center" v-if="user.roles && user.roles[0] == 'ROLE_PATISSIER'">
+                                    <div class="mr-4 p-3 text-center"
+                                        v-if="user.roles && user.roles[0] == 'ROLE_PATISSIER'">
                                         <span
                                             class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">TODO</span><span
                                             class="text-sm text-blueGray-400">Subscriber</span>
@@ -230,8 +244,9 @@ getUserData();
                             <div class="flex flex-wrap justify-center">
                                 <div class="w-full lg:w-9/12 px-4">
                                     <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                                        Well you like to eat because you like to bake or you like to bake because you like to eat?
-                                         Either way, you're in the right place.
+                                        Well you like to eat because you like to bake or you like to bake because you
+                                        like to eat?
+                                        Either way, you're in the right place.
                                     </p>
                                 </div>
                             </div>
