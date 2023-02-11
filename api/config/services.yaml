@@ -44,3 +44,9 @@ services:
                   event: lexik_jwt_authentication.on_authentication_success,
                   method: onLoginSuccess,
               }
+
+
+    app.http_kernel.cors_subscriber:
+        class: App\EventListener\HttpKernel\CorsSubscriber
+        tags:
+            - { name: kernel.event_subscriber }
