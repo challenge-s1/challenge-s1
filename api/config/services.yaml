@@ -47,6 +47,6 @@ services:
 
 
     app.http_kernel.cors_subscriber:
-        class: App\EventListener\HttpKernel\CorsSubscriber
+        class: App\EventListener\CorsSubscriber
         tags:
             - { name: kernel.event_subscriber }
