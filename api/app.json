@@ -3,7 +3,7 @@
     "env": {
       "APP_ENV": "prod",
       "APP_SECRET": {"generator": "!ChangeMe!"},
-      "CORS_ALLOW_ORIGIN": "https://comforting-torte-f8b9e5.netlify.app/"
+      "CORS_ALLOW_ORIGIN": "https://comforting-torte-f8b9e5.netlify.app/*"
     },
     "addons": [
       "heroku-postgresql"
