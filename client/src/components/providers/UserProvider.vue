@@ -13,12 +13,12 @@ import { useRouter } from "vue-router";
 import { useStore } from 'vuex';
 const store = useStore();
 const router = useRouter();
-
+const url = (import.meta.env.VITE_API_URL)
 const user = ref(store.state.user);
 const login = async function (userData) {
     console.log(userData);
 
-    const result = await axios.post('https://localhost/authentication_token', userData).
+    const result = await axios.post(`${url}/authentication_token`, userData).
         then((response) => {
             console.log(response);
             return response.data;
@@ -44,7 +44,7 @@ const login = async function (userData) {
 const register = async function (userData) {
     userData.postalcode = parseInt(userData.postalcode);
     console.log(userData);
-    const user = await axios.post('https://localhost/users', userData)
+    const user = await axios.post(`${url}/users`, userData)
         .then((response) => {
             console.log(response);
             return response.data;
