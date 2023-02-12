@@ -38,6 +38,18 @@ class VoucherDiscountRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /**
+    * @return VoucherDiscount[] Returns an array of VoucherDiscount objects
+    */
+    public function findByUserId($id)
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.owner = :val')
+            ->setParameter('val', $id)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    /**
 //     * @return VoucherDiscount[] Returns an array of VoucherDiscount objects

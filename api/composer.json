@@ -17,6 +17,8 @@
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "stof/doctrine-extensions-bundle": "^1.7",
+        "stripe/stripe-php": "^10.5",
+        "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.1.*",
         "symfony/console": "6.1.*",
         "symfony/dotenv": "6.1.*",
@@ -86,8 +88,6 @@
     },
     "scripts": {
         "prepare": [
-            "php bin/console doctrine:database:drop --if-exists --force",
-            "php bin/console doctrine:database:create",
             "php bin/console doctrine:schema:update --force"
         ],
 
@@ -96,7 +96,9 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "php bin/console doctrine:schema:update --force",
+            "php bin/console lexik:jwt:generate-keypair"
         ],
         "post-update-cmd": [
             "@auto-scripts"

@@ -23,3 +23,5 @@ api_platform:
         stateless: true
         cache_headers:
             vary: ["Content-Type", "Authorization", "Origin"]
+    # middlewares:
+    #     - App\Middleware\CorsMiddleware
