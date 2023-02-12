@@ -12,15 +12,16 @@ nelmio_cors:
     paths:
         "^/api/":
             allow_origin: ["*"]
-            a allow_headers:
+            allow_headers:
                 ["Content-Type", "Authorization", "Preload", "Fields"]
-            allow_methods: ["POST", "PUT", "GET", "DELETE"]
+            allow_methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
+            expose_headers: ["Link"]
             max_age: 3600
         "^/":
             origin_regex: true
             allow_origin: ["*"]
             allow_headers:
                 ["Content-Type", "Authorization", "Preload", "Fields"]
-            allow_methods: ["POST", "PUT", "GET", "DELETE"]
+            allow_methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
+            expose_headers: ["Link"]
             max_age: 3600
-            hosts: ['^api\.']
