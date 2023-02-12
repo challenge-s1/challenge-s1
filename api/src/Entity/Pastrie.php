@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\File\File;
 #[ORM\Entity(repositoryClass: PastrieRepository::class)]
 
 #[ApiResource(
-    order: ['created_at' => 'ASC'],
+    order: ['created_at' => 'DESC'],
     types: ['https://schema.org/Pastrie'],
     operations: [
         new GetCollection(

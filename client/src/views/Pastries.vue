@@ -15,17 +15,14 @@ const userToken = store.getters.user;
 const categories = ref([]);
 const selectedCategory = ref('');
 const GetCategories = async () => {
-    await axios.get(`${url}/categories`, {
-        headers: {
-            authorization: 'Bearer ' + userToken.token
-        }
-    }).then((response) => {
-        console.log(response.data);
-        categories.value = response.data;
-        console.log(categories.value);
-    }).catch((error) => {
-        console.log(error);
-    })
+    await axios.get(`${url}/categories`)
+        .then((response) => {
+            console.log(response.data);
+            categories.value = response.data;
+            console.log(categories.value);
+        }).catch((error) => {
+            console.log(error);
+        })
 };
 GetCategories();
 
@@ -80,29 +77,23 @@ GetProduct();
                                     everyone. Come visit us and taste the magic for yourself. We can't wait to share our
                                     sweets with you!
                                 </p>
+                                <div class="relative mt-4 mb-3">
+                                    <div class="bg-white shadow-md rounded p-4 mb-4 flex "
+                                        style="justify-content: space-between">
 
-                                <label for="default-search"
-                                    class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
-                                <div class="relative">
-                                    <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
+                                        <label class="block text-gray-700 mr-4 text-sm font-bold mb-2" for="category">
+                                            Filter by category
+                                        </label>
+                                        <select v-model="selectedCategory"
+                                            class=" ml-4 border-0 px-3 py-3 placeholder-blueGray-300 w-6/12 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring  ease-linear transition-all duration-15">
+                                            <option value="" selected>All</option>
+                                            <option v-for="category in categories" :key="category.id">{{
+                                                category.name
+                                            }}
+                                            </option>
+                                        </select>
                                     </div>
-                                    <select v-model="selectedCategory">
-                                        <option v-for="category in categories" :key="category.id">{{
-                                            category.name
-                                        }}
-                                        </option>
-                                        <option value="">All</option>
-                                    </select>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>

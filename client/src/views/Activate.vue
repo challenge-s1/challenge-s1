@@ -22,3 +22,12 @@ activate();
 
 
 </script>
+<template>
+    <div class="w-full py-40 mt-40">
+        <div class="flex justify-center">
+            <h1 class="text-xl font-bold"> Active your account</h1>
+        </div>
+
+
+    </div>
+</template>

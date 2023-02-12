@@ -152,7 +152,7 @@ const isAdmin = computed({
               href="#" @click="logout">
               Logout
             </a> -->
-            <ul class="flex-col md:flex-row list-none items-center hidden md:flex">
+            <ul class="flex-col md:flex-row list-none items-center  md:flex">
               <user-dropdown />
             </ul>
           </li>

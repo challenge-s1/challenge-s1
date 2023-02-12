@@ -47,7 +47,7 @@ final class UserMailSubscriber implements EventSubscriberInterface
             ->from('letsbake@gmail.com')
             ->to($user->getEmail())
             ->subject('Activate your account')
-            ->html('Click <a href="http://localhost:8000/account/activate/' . $user->getToken() . '">ClicActivate your account</a>')
+            ->html('Click on the link to activate your account <a href="http://localhost:8000/account/activate/' . $user->getToken() . '">HERE</a>')
 
             // ->text(sprintf('Click on the link', $user->getToken(), ' to activate your account'))
         ;

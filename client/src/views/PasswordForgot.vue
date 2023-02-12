@@ -23,7 +23,7 @@ const handleSubmit = () => {
             console.log(error);
         });
     showMessage.value = true;
-  
+
 };
 
 
@@ -36,17 +36,21 @@ const handleSubmit = () => {
     <div class="mt-20 bg-emerald-200" v-if="!open">
        
     </div> -->
-    <div class="container px-6 mx-auto" v-if="showMessage">
-        <div class="flex  text-center md:text-left md:flex-row h-screen justify-evenly md:items-center">
-
-            <div class="bg-white p-10 flex flex-col shadow-xl rounded-xl">
-                <p>a mail was sent to reset your password</p>
-            </div>
-
+    <div class="w-full py-40 mt-40">
+        <div class="flex justify-center">
+            <h1 class="text-xl font-bold"> Reset your password</h1>
         </div>
+        <div class="container px-6 mx-auto" v-if="showMessage">
+            <div class="flex  text-center md:text-left md:flex-row h-screen justify-evenly md:items-center">
+
+                <div class="bg-white p-10 flex flex-col shadow-xl rounded-xl">
+                    <p>a mail was sent to reset your password</p>
+                </div>
+
+            </div>
+        </div>
+
     </div>
-
-
     <Modal :open="open" @close="handleOpen">
         <template #title>
             <h1 class="text-2xl font-semibold text-gray-700">Reset Password</h1>

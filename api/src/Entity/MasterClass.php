@@ -23,7 +23,7 @@ use App\Entity\Traits\TimestampTrait;
 
 #[ORM\Entity(repositoryClass: MasterClassRepository::class)]
 #[ApiResource(
-    order: ['date' => 'ASC'],
+    order: ['date' => 'DESC'],
     operations: [
 
         new GetCollection(

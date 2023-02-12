@@ -28,7 +28,7 @@ class PastryFixture extends Fixture implements DependentFixtureInterface
             $pastrie->setName($faker->sentence(3));
             $pastrie->setDescription($faker->paragraph(3));
             $pastrie->setPrice($faker->randomFloat(2, 10, 100));
-            $pastrie->setPicture('63e4331d72f95_product-1.jpg');
+            $pastrie->setPicture('63e1a24a5362c_Watercolor Cup Cake Bakery Logo (1).png');
             $pastrie->setOwner($faker->randomElement($patissiers));
             $categoy = $faker->randomElement($categoys);
             $pastrie->setCategory($categoy);
