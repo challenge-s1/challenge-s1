@@ -79,9 +79,9 @@ jobs:
     # needs:
     #   - apiPlatform-tests
 
-    defaults:
-      run:
-        working-directory: ./api
+    # defaults:
+    #   run:
+    #     working-directory: ./api
 
     steps:
       - uses: actions/checkout@v3
