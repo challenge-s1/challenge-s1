@@ -23,7 +23,6 @@ jobs:
         image: postgres
         # Provide the password for postgres
         # ${{ env.APP_SECRET }}
-
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: api
@@ -66,8 +65,8 @@ jobs:
 
       - name: Run PHPUnit tests
         working-directory: api
-        needs: postgres
-
+        needs:
+          - postgres
         run: php bin/phpunit
 
   node-test:
