@@ -69,6 +69,7 @@ const getMasterClass = async () => {
         }
         masterClass.value.comments.forEach(comment => {
            if(comment.reportings.length > 0){
+               comment.reported = true;
                comment.reportings.forEach(reporting => {
                    if(reporting.userid.id == user.id){
                        comment.reportedByUser = true;
@@ -208,23 +209,14 @@ const getreasons = async () => {
 
 const getCommentToReport = async (comment) => {
     commentToReport.id = comment.id;
-    // axios.get(`https://localhost/reason_reportings`, {
-    //     headers: {
-    //         Authorization: `Bearer ${user.token}`,
-    //         Accept: 'application/json'
-    //     }
-    // }).then((response) => {
-    //     reasonsList.value = response.data;
-    // }).catch((error) => {
-    //     console.log(error);
-    // })
     handleOpenModalCommentReport();
 }
 
 const reportComment = async()=>{
+    console.log(commentToReport.reason)
     await axios.post(`https://localhost/reportings`, {
         "commentid": `comments/${commentToReport.id}`,
-        "reason": `/reason_reportings/${commentToReport.reason}`
+        "reason": `reason_reportings/${commentToReport.reason}`
 
     }, {
         headers: {
@@ -549,7 +541,7 @@ getreasons();
                                 </footer>
                                 <p class="text-gray-500 dark:text-gray-400">{{ comment.content }}</p>
                                 <div class="flex items-center mt-4 space-x-4">
-                                    <button v-if="!comment.reportedByUser" type="button" @click = "getCommentToReport(comment)"
+                                    <button v-if="!comment.reportedByUser && comment.userid.id != user.id" type="button" @click = "getCommentToReport(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
                                         <svg aria-hidden="true" class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -559,7 +551,8 @@ getreasons();
                                         </svg>
                                         Report
                                     </button>
-                                    <button v-if="comment.userid.id = user.id" type="button" @click="getCommentToUpdate(comment)"
+                                    <!-- <p v-else class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">reported</p> -->
+                                    <button v-if="comment.userid.id == user.id && !comment.reported" type="button" @click="getCommentToUpdate(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6">
@@ -569,14 +562,13 @@ getreasons();
 
                                         Edit
                                     </button>
-                                    <button v-if="comment.userid.id = user.id" type="button" @click="deleteComment(comment)"
+                                    <button v-if="comment.userid.id == user.id && !comment.reported" type="button" @click="deleteComment(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
-
                                         Delete
                                     </button>
                                 </div>
@@ -584,7 +576,7 @@ getreasons();
                         </div>
                     </section>
                     <div class="text-center mt-16"></div>
-                    <h4 class="font-bold"> Reservations</h4>
+                    <h4 v-if="store.getters.user && masterClass.owner.id == store.getters.user.id" class="font-bold"> Reservations</h4>
                     <table v-if="store.getters.user && masterClass.owner.id == store.getters.user.id"
                         class=" w-full table-auto mb-2">
                         <thead class="bg-white border-b">
