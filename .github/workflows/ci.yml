@@ -16,7 +16,7 @@ jobs:
     runs-on:
       ubuntu-latest
       # Service containers to run with `container-job`
-    services:
+    # services:
       # Label used to access the service container
       postgres:
         # Docker Hub image
@@ -49,7 +49,7 @@ jobs:
         working-directory: api
         run: composer install
 
-      - name: Connect to PostgreSQL
+      # - name: Connect to PostgreSQL
         working-directory: api
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data.
@@ -65,9 +65,9 @@ jobs:
 
       - name: Run PHPUnit tests
         working-directory: api
-        needs:
-          - postgres
-        run: php bin/phpunit
+        # needs:
+        #   - postgres
+        run: php vendor/bin/phpunit
 
   node-test:
     name: Tests Node
