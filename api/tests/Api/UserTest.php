@@ -6,13 +6,8 @@ namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
 
-class UserTese extends ApiTestCase
+class UserTest extends ApiTestCase
 {
-
-
-    // private string $jwtToken;
-    // private array $users;
-
     public  function testLogin(): void
     {
         $response = static::createClient()->request('POST', '/authentication_token', ['json' => [
