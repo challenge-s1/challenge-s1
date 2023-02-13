@@ -79,6 +79,17 @@ class CartRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getNbInCartByMasterClass($masterClass): ?int
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.masterClass = :val')
+            ->setParameter('val', $masterClass)
+            ->select('SUM(c.quantity) as nb')
+            ->getQuery()
+            ->getSingleScalarResult();
+        ;
+    }
+
     public function drainCartForUser($idUser): void
     {
         $this->createQueryBuilder('c')

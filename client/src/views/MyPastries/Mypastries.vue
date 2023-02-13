@@ -96,7 +96,6 @@ const GetCategories = async () => {
 };
 GetCategories();
 
-// console.log(userToken.value.token.token);
 const GetProduct = async () => {
     console.log(userToken);
     await axios.get(`${url}/users/${userToken.id}/passtries`, {

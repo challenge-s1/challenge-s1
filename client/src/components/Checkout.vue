@@ -28,16 +28,15 @@ export default defineComponent({
         const checkout = async (handleClose) => {
             if (event.value?.complete) {
                 const token = await stripe.value?.createToken(cardElement.value);
-                console.log(token);
                 const stripeToken = (await stripe.value?.createToken(cardElement.value)).token.id;
                 if (stripeToken) {
                     waitForResponse.value = true;
                 }
-                const response = await axios.post(`${url}/users/${userToken.value.token.user.id}/carts/checkout`, {
+                const response = await axios.post(`${url}/users/${userToken.value.id}/carts/checkout`, {
                     stripeToken: stripeToken
                 }, {
                     headers: {
-                        authorization: 'Bearer ' + userToken.value.token.token
+                        authorization: 'Bearer ' + userToken.value.token
                     }
                 }).then((response) => {
                     waitForResponse.value = false;

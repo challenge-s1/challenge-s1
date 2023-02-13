@@ -53,7 +53,7 @@ const validate1 = () => {
 const GetCategories = async () => {
     await axios.get(`${url}/categories`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         console.log(response.data);
@@ -85,7 +85,7 @@ const AddCategry = async () => {
     }
     await axios.post(`${url}/categories`, data, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         console.log(response.data);
@@ -105,7 +105,7 @@ const EditCategry = async (category) => {
     }
     await axios.put(`${url}/categories/${category.id}`, data, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         console.log(response.data);

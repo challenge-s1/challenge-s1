@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\User;
+use App\Entity\Pastrie;
+use App\Entity\MasterClass;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
@@ -17,33 +19,34 @@ use App\Controller\Cart\GetCartItems;
 use App\Entity\Traits\TimestampTrait;
 use ApiPlatform\Metadata\GetCollection;
 use Gedmo\Mapping\Annotation\Blameable;
+use App\Controller\AddPastrieToCartController;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\AddMasterClassToCartController;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
-#[ApiResource()]
 #[ApiResource(
     uriTemplate: '/users/{id}/carts',
     uriVariables: [
         'id' => new Link(
             fromClass: User::class,
             toProperty: 'client',
-        )
+        ),
     ],
     security: 'is_granted("ROLE_ADMIN") or user.getId() == id',
     operations: [
-    new GetCollection(
-    ),
-    new Post( 
-    ),
-    new Post(
-        name: 'checkout_cart',
-        uriTemplate: '/users/{id}/carts/checkout',
-        controller: StripeController::class,
-        normalizationContext: ['groups' => ['none']],
-        denormalizationContext: ['groups' => ['none']],
-        read: false,
-    )],
+        new GetCollection(
+        ),
+        new Post(
+            name: 'checkout_cart',
+            uriTemplate: '/users/{id}/carts/checkout',
+            controller: StripeController::class,
+            normalizationContext: ['groups' => ['none']],
+            denormalizationContext: ['groups' => ['none']],
+            read: false,
+        )],
+        
+    
         normalizationContext: ['groups' => ['cart_read', 'user_read', 'pastrie_read', 'masterClass:read', 'timestampable']],
         denormalizationContext: ['groups' => ['cart_write', 'user_write', 'pastrie_write', 'masterClass:write', 'timestampable']],
     )]
@@ -61,6 +64,44 @@ use Symfony\Component\Serializer\Annotation\Groups;
             new Delete(),
             new Patch(),
         ]
+    )]
+
+    #[ApiResource(
+        security: 'is_granted("ROLE_USER")',
+        operations: [
+            new Post( 
+                name: 'add_masterclass_cart',
+                uriTemplate: '/carts/masterClass/{mId}',
+                controller: AddMasterClassToCartController::class,
+                normalizationContext: ['groups' => ['none']],
+                denormalizationContext: ['groups' => ['none']],
+                
+                uriVariables: [
+        
+                    'mId' => new Link(
+                        fromClass: MasterClass::class,
+                        toProperty: 'masterClass',
+                    )
+                ],
+                read: false,
+            ),
+            new Post(
+                name: 'add_pastrie_cart',
+                uriTemplate: '/carts/pastrie/{pId}',
+                controller: AddPastrieToCartController::class,
+                normalizationContext: ['groups' => ['none']],
+                denormalizationContext: ['groups' => ['none']],
+                
+                uriVariables: [
+                    'pId' => new Link(
+                        fromClass: Pastrie::class,
+                        toProperty: 'cake',
+                    )
+                ],
+                read: false,
+            ),
+            
+        ],
     )]
 
 class Cart
@@ -82,13 +123,11 @@ class Cart
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'cartItems')]
-    #[Blameable(on: 'create')]
     #[Groups(['pastrie_read', 'pastrie_write'])]
     // #[Groups(['pastrie_read'])]
     private ?Pastrie $cake = null;
 
     #[ORM\ManyToOne(inversedBy: 'carts')]
-    #[Blameable(on: 'create')]
     #[Groups(['masterClass:read'])]
     private ?MasterClass $masterClass = null;
 
