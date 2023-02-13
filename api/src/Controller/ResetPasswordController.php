@@ -46,7 +46,9 @@ class ResetPasswordController extends AbstractController
             ->from('no.reply.lets.bake@gmail.com')
             ->to($user->getEmail())
             ->subject('Reset Password')
-            ->html('Click <a href="http://localhost:8000/reset-password/' . $user->getToken() . '">here for reset your password</a>');
+
+            // ->html('Click <a href="http://localhost:8000/reset-password/' . $user->getToken() . '">here for reset your password</a>');
+            ->html('Click <a href="https://comforting-torte-f8b9e5.netlify.app/reset-password/' . $user->getToken() . '">here for reset your password</a>');
 
         $this->mailer->send($emailSend);
 
