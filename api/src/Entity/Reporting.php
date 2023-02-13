@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\ReportingController;
 use App\Repository\ReportingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimestampTrait;
@@ -24,6 +25,8 @@ use Gedmo\Mapping\Annotation\Blameable;
             normalizationContext: ['groups' => ['reporting_read']]
         ),
         new Post(
+            uriTemplate: '/reportings',
+            controller: ReportingController::class,
             denormalizationContext: ['groups' => ['reporting_write']],
         ),
         new Get(
