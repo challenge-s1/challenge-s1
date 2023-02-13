@@ -2,18 +2,21 @@
 import { defineComponent, ref } from 'vue'
 import { useStripe, StripeElement } from 'vue-use-stripe'
 import axios from 'axios'
+import { useStore } from "vuex";
 import { inject } from 'vue'
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import '@stripe/stripe-js'
 import Modal from '../components/ModalForm.vue';
-const url = (import.meta.env.VITE_API_URL)
-const userToken = store.getters.user
+
 export default defineComponent({
     components: { StripeElement, Modal },
     emits: ["checkout-done"],
     setup(_, { emit }) {
         const event = ref(null)
         const error = ref('')
+        const url = (import.meta.env.VITE_API_URL)
+        const store = useStore();
+        const userToken = store.getters.user
         // const userToken = inject(UserProvierKeys);
         const stripeKey = (import.meta.env.VITE_STRIPE_KEY)
         const waitForResponse = ref(false);
