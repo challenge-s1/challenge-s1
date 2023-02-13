@@ -39,6 +39,16 @@ class ReservationRepository extends ServiceEntityRepository
         }
     }
 
+    public function getNbReservationByMasterClass($id): ?String
+    {
+        return $this->createQueryBuilder('r')
+            ->select('SUM(r.nbPlaces)')
+            ->andWhere('r.masterClass = :val')
+            ->setParameter('val', $id)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Reservation[] Returns an array of Reservation objects
     //     */

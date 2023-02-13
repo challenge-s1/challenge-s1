@@ -25,7 +25,7 @@ const store = createStore({
             return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && state.user.roles[0] == 'ROLE_PATISSIER';
         },
         isAdmin(state) {
-            return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && state.user.roles[0] == 'ROLE_ADMIN';
+            return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') &&  state.user.roles[0] == 'ROLE_ADMIN';
         },
         // isTokenExpired(state) {
         //     return Object.keys(state.user).length != 0 && state.user.hasOwnProperty('token') && store.state.user.token.exp < Date.now() / 1000;

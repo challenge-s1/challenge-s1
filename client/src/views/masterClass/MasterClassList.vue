@@ -1,16 +1,18 @@
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 import { formatDate, formatTime } from "@/composable/dates.js";
+import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
+
 import matserClasse from "@/assets/img/matserClasse.jpg";
 const store = useStore();
 const router = useRouter();
 const url = (import.meta.env.VITE_API_URL)
 const masterClasses = ref([]);
 const user = store.getters.user;
-
+const userToken = inject(UserProvierKeys)
 const today = new Date();
 
 const getMasterClasses = async () => {
@@ -42,9 +44,24 @@ const getMasterClasses = async () => {
 
 };
 
-const addToCart = function (masterClass) {
+const addToCart = async function (masterClass) {
   if (!store.getters.isLoggedIn) {
     router.push({ name: "Login" })
+  } else {
+    console.log(masterClass)
+    await axios.post(`${url}/carts/masterClass/${masterClass.id}`, {},
+      {
+        headers: {
+          authorization: 'Bearer ' + userToken.value.token
+        }})
+      .then((response) => {
+        router.push({ name: "Cart" })
+        console.log(response);
+
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 }
 getMasterClasses();

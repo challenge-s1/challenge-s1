@@ -1,14 +1,14 @@
 <script setup>
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 
+import { useRouter } from "vue-router";
 import { ref, reactive, inject, computed } from "vue";
-import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import router from '../router';
 const store = useStore();
-const route = useRoute();
+const route = useRouter();
 
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
@@ -34,7 +34,6 @@ const filteredProducts = computed(() => {
     return products.value.filter((product) => product.category.name === selectedCategory.value);
 });
 
-// console.log(userToken.value.token.token);
 const GetProduct = async () => {
     await axios.get(`${url}/pastries`)
         .then((response) => {
@@ -50,22 +49,21 @@ const GetProduct = async () => {
 };
 GetProduct();
 
-// const AddCart = async (pastry) => {
-//     // const pasrty = {
-//     //     client_id: `/users/${userToken.id}`,
-//     //     cake_id: `/pastries/${pastry.id}`,
-//     //     quantity: 1,
-//     // };
-//     // await axios.post(`${url}/carts`, pasrty, {
-//     //     headers: {
-//     //         authorization: 'Bearer ' + userToken.token
-//     //     }
-//     // }).then((response) => {
-//     //     router.push({ name: "Cart" })
-//     // }).catch((error) => {
-//     //     console.log(error);
-//     // })
-// };
+const AddCart = async (pastrie) => {
+    await axios.post(`${url}/carts/pastrie/${pastrie.id}`, {},
+        {
+            headers: {
+          authorization: 'Bearer ' + userToken.value.token
+        }
+        }
+    ).then((response) => {
+        route.push({ name: "Cart" })
+        console.log(response);
+    }).
+    catch((error) => {
+        console.log(error);
+    })
+}
 
 
 </script>
@@ -175,7 +173,7 @@ GetProduct();
                                         <p class="text-md font-light mt-2 text-white">
                                             Price : <span class="font-bold">{{ pastries.price }} € </span>
                                         </p>
-                                        <button
+                                        <button @click="AddCart(pastries)"
                                             class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="submit">
                                             <span class="flex flex-row">

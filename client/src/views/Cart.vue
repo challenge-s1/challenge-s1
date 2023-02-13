@@ -25,9 +25,10 @@ const alert = reactive({
 const getCart = async () => {
     cartTotalPastrie.value = 0;
     cartTotalMasterClass.value = 0;
-    const response = await axios.get(`${url}/users/${userToken.value.token.user.id}/carts`, {
+    console.log(userToken.value)
+    const response = await axios.get(`${url}/users/${userToken.value.id}/carts`, {
         headers: {
-            authorization: 'Bearer ' + userToken.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         console.log(response);
@@ -52,9 +53,10 @@ const getCart = async () => {
 const getVoucher = async () => {
     if (cartTotalMasterClass.value > 0) {
         vouchers.value = [];
-        const response = await axios.get(`${url}/users/${userToken.value.token.user.id}/vouchers`, {
+        console.log(userToken.value)
+        const response = await axios.get(`${url}/users/${userToken.value.id}/vouchers`, {
             headers: {
-                authorization: 'Bearer ' + userToken.value.token.token
+                authorization: 'Bearer ' + userToken.value.token
             }
         }).then((response) => {
             const vouchersData = response.data['hydra:member'];
@@ -84,13 +86,13 @@ const handleSubmit = async (id) => {
 
     console.log(id, quantityByItemCart[id]);
 
-    const reponse = await axios.patch(`${url}/users/${userToken.id}/carts/${id}`,
+    const reponse = await axios.patch(`${url}/users/${userToken.value.id}/carts/${id}`,
         {
             quantity: quantityByItemCart[id]
         }, {
         headers: {
             'content-type': 'application/merge-patch+json',
-            authorization: 'Bearer ' + userToken.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         alert.open = true;
@@ -106,9 +108,9 @@ const handleSubmit = async (id) => {
 };
 
 const deleteItemCart = async (id) => {
-    const response = await axios.delete(`${url}/users/${userToken.id}/carts/${id}`, {
+    const response = await axios.delete(`${url}/users/${userToken.value.id}/carts/${id}`, {
         headers: {
-            authorization: 'Bearer ' + userToken.token
+            authorization: 'Bearer ' + userToken.value.token
         }
     }).then((response) => {
         console.log(response);
@@ -131,7 +133,7 @@ const timerTime = ref({});
 
 const timer = (id, date) => {
     const differenceInMinutes = getDifferenceBetweenNowAndDate(date);
-    const departMinutes = 30 - differenceInMinutes;
+    const departMinutes = 5 - differenceInMinutes;
     let temps = departMinutes * 60
 
     setInterval(() => {
