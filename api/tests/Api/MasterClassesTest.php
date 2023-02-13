@@ -8,7 +8,7 @@ use App\Entity\MasterClass;
 
 
 
-class BooksTest extends ApiTestCase
+class MasterClassesTest extends ApiTestCase
 {
     public function testGetCollection(): void
     {
