@@ -98,7 +98,6 @@ GetCategories();
 
 // console.log(userToken.value.token.token);
 const GetProduct = async () => {
-    console.log(userToken);
     await axios.get(`${url}/users/${userToken.id}/passtries`, {
         headers: {
             authorization: 'Bearer ' + userToken.token
@@ -120,7 +119,6 @@ const NotAvailable = async (pastry) => {
     const Statuspasrty = {
         Status: true
     };
-    console.log(Statuspasrty);
     await axios.put(`${url}/pastries/${pastry.id}`, Statuspasrty, {
         headers: {
             authorization: 'Bearer ' + userToken.token
@@ -136,7 +134,6 @@ const Available = async (pastry) => {
     const Statuspasrty = {
         Status: false
     };
-    console.log(Statuspasrty);
     await axios.put(`${url}/pastries/${pastry.id}`, Statuspasrty, {
         headers: {
             authorization: 'Bearer ' + userToken.token
@@ -176,12 +173,12 @@ const EditProduct = async (pastry) => {
             console.log(error);
         });
     }
-    console.log(product.category);
+    console.log(product.category.id);
     const productpasrty = {
         name: product.name,
         description: product.description,
         price: product.price,
-        category: `/categories/${product.category}`,
+        category: `/categories/${product.category.id}`,
         contentUrl: product.contentUrl,
     };
     console.log(productpasrty);
@@ -389,18 +386,22 @@ const EditProduct = async (pastry) => {
                                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15"
                                         placeholder="price" v-model="product.price" />
                                     <div class=" text-red-500 text-xs italic">{{ errors.price }}</div>
-
-                                    <select
-                                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15">
-                                        <option value="" selected>rouge</option>
-                                        <option value="">vert</option>
-                                    </select>
                                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2">
                                         categorie
                                     </label>
-                                    <select name="category" id=""
+
+                                    <select name="category" v-model="product.category.id"
+                                        class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15">
+
+                                        <option :value="categorie.id" v-for="categorie in categories "
+                                            :key="categorie.id" :selected="categorie.id == product.category.id">
+                                            {{ categorie.name }}
+                                        </option>
+                                    </select>
+                                    <!-- <select name="category" id=""
                                         class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-15"
                                         v-model="product.category">
+                                        <option value="" selected>Select a category</option>
                                         <option :value="product.category.id" :key="product.category.id" selected>{{
                                             product.category.name
                                         }}</option>
@@ -408,7 +409,7 @@ const EditProduct = async (pastry) => {
                                             :key="categorie.id" :selected="categorie.id == product.category.id">
                                             {{ categorie.name }}
                                         </option>
-                                    </select>
+                                    </select> -->
                                     <!-- <div class=" text-red-500 text-xs italic">{{ errors.category }}</div> -->
                                     <img alt="..." :src="url + '/' + product.contentUrl"
                                         class="w-full align-middle p-3 rounded-t-lg"

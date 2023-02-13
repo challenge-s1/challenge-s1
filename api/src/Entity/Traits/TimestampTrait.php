@@ -16,7 +16,7 @@ trait TimestampTrait
 
     #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE)]
-    #[Groups(['timestampable'])]
+    #[Groups(['timestampable', 'order_read'])]
     private $created_at;
 
 

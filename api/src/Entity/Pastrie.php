@@ -108,24 +108,24 @@ class Pastrie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['pastrie_read', 'category_read'])]
+    #[Groups(['pastrie_read', 'category_read', 'order_read'])]
     private ?int $id = null;
 
 
     #[ORM\Column(length: 255)]
     // #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
-    #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
+    #[Groups(['pastrie_read', 'pastrie_write', 'category_read', 'order_read'])]
     private ?string $name = null;
 
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
+    #[Groups(['pastrie_read', 'pastrie_write', 'category_read', 'order_read'])]
     // #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
     private ?string $description = null;
 
 
     #[ORM\Column]
-    #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
+    #[Groups(['pastrie_read', 'pastrie_write', 'category_read', 'order_read'])]
     // #[Groups(['pastrie_read', 'pastrie_write', 'category_read'])]
     private ?float $price = null;
 
@@ -150,7 +150,7 @@ class Pastrie
     // #[Groups('pastrie_read', 'user_read')]
     #[ORM\JoinColumn(nullable: false)]
     #[Blameable(on: 'create')]
-    #[Groups(['pastrie_read', 'category_read'])]
+    #[Groups(['pastrie_read', 'category_read', 'order_read'])]
     private ?User $owner = null;
 
 
@@ -159,13 +159,13 @@ class Pastrie
     // #[Groups('pastrie_write', 'pastrie_read', 'category_read')]
     #[ApiProperty(writableLink: true)]
     // #[ApiProperty(identifier: true)]
-    #[Groups(['pastrie_read', 'pastrie_write'])]
+    #[Groups(['pastrie_read', 'pastrie_write', 'order_read'])]
     private ?Category $category = null;
 
     #[ORM\OneToMany(mappedBy: 'cake', targetEntity: Cart::class)]
     private Collection $cartItems;
 
-    #[Groups(['pastrie_read', 'pastrie_write'])]
+    #[Groups(['pastrie_read', 'pastrie_write', 'order_read'])]
     #[ORM\Column(type: 'boolean', nullable: true, options: ['default' => false])]
     private ?bool $Status = false;
 

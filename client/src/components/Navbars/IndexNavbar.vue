@@ -13,7 +13,7 @@ const user = inject(UserProvierKeys);
 const logout = inject('userProvider:logout');
 const navbarOpen = ref(false);
 const userToken = store.getters.user
-console.log(userToken);
+
 
 // const isPastryChef = computed(() => {
 //   return store.getters.user.roles.includes('ROLE_PATISSIER');
@@ -110,6 +110,20 @@ const isAdmin = computed({
               class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
               :to="{ name: 'AddPastries' }">
               Add pastry
+            </router-link>
+          </li>
+          <li v-if="isLoggedIn && isPastrieOwner" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'OrdrePastry' }">
+              Order pastry
+            </router-link>
+          </li>
+          <li v-if="isLoggedIn" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'OrdreClient' }">
+              My Order
             </router-link>
           </li>
         </ul>

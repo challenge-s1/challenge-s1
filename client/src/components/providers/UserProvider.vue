@@ -16,7 +16,6 @@ const router = useRouter();
 const url = (import.meta.env.VITE_API_URL)
 const user = ref(store.state.user);
 const login = async function (userData) {
-    console.log(userData);
 
     const result = await axios.post(`${url}/authentication_token`, userData).
         then((response) => {
