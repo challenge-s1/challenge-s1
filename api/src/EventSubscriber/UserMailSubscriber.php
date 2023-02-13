@@ -44,7 +44,7 @@ final class UserMailSubscriber implements EventSubscriberInterface
         $em->flush();
 
         $message = (new Email())
-            ->from('letsbake@gmail.com')
+            ->from('taguemountkamelia094@gmail.com')
             ->to($user->getEmail())
             ->subject('Activate your account')
             ->html('Click <a href="http://localhost:8000/account/activate/' . $user->getToken() . '">ClicActivate your account</a>')
