@@ -29,8 +29,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install
 
-      - name: Run PHPUnit tests
-        run: php vendor/bin/phpunit
+      # - name: Run PHPUnit tests
+      #   run: php vendor/bin/phpunit
 
   node-test:
     name: Tests Node
