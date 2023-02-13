@@ -76,6 +76,7 @@ const getMasterClassToUpdate = function (masterClass) {
   handleOpenModalUpdate();
 }
 
+
 const updateMasterClass = async () => {
   handleOpenModalUpdate();
   masterClasstoUpdate.date = moment(masterClasstoUpdate.date).format('YYYY-MM-DD');
@@ -104,7 +105,7 @@ const updateMasterClass = async () => {
 
 const cancelMasterClass = async () => {
   handleOpen();
-  await axios.delete(`https://localhost/master-classes/${masterClasstoCancel.value.id}/cancel`, {
+  await axios.delete(`${url}/master-classes/${masterClasstoCancel.value.id}/cancel`, {
     headers: {
       Authorization: `Bearer ${user.token}`
     }

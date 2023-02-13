@@ -44,7 +44,7 @@ class CancelMasterClassController extends AbstractController
             $VoucherDiscount->setPrice($reservation["price"]);
             $em->persist($VoucherDiscount);
             $emailSend = (new Email())
-                ->from('no-reply@gmail.com')
+                ->from('no.reply.lets.bake@gmail.com')
                 ->to($user->getEmail())
                 ->subject('Annulation de votre réservation')
                 // ->htmlTemplate('emails/cancel_reservation.html.twig', [

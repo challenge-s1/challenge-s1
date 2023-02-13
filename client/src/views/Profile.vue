@@ -6,7 +6,7 @@ import UserForm from '../components/UserForm.vue';
 import axios from 'axios';
 import { useStore } from "vuex";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-
+const url = (import.meta.env.VITE_API_URL)
 // const userToken = inject(UserProvierKeys);
 const store = useStore();
 const userToken = store.getters.user;
@@ -17,7 +17,7 @@ const updateProfile = async (handleClose) => {
         return;
     }
     userData.value.postalcode = parseInt(userData.value.postalcode);
-    await axios.patch(`https://localhost/users/${userToken.id}`, userData.value,
+    await axios.patch(`${url}/users/${userToken.id}`, userData.value,
         {
             headers: {
                 'content-type': 'application/merge-patch+json',
@@ -90,7 +90,7 @@ const validate = () => {
     return Object.values(errors.value).length == 0;
 }
 const getUserData = async () => {
-    await axios.get(`https://localhost/users/${userToken.id}`, {
+    await axios.get(`${url}/users/${userToken.id}`, {
         headers: {
             authorization: 'Bearer ' + userToken.token
 
@@ -133,13 +133,20 @@ getUserData();
                             <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                                 <div class="py-6 px-3 mt-32 sm:mt-0">
                                     <UserForm>
+                                        <div></div>
+                                        <Modal
+                                            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center ">
 
-                                        <Modal class="w-10/12">
                                             <template #activator="{ toggleModal }">
+
                                                 <button type="button" @click="toggleModal"
                                                     class="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
                                                     Modify
                                                 </button>
+                                                <!-- <button type="button"
+                                                    class="bg-red-500 active:bg-red-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">
+                                                    Delete
+                                                </button> -->
                                             </template>
                                             <template v-slot:title>
                                                 <h1>Update profile</h1>

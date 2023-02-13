@@ -84,10 +84,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['masterClass:details', 'masterClass:read', 'pastrie_read', 'user_read', 'comment_read', 'reporting_read'])]
+    #[Groups(['masterClass:details', 'masterClass:read', 'pastrie_read', 'user_read', 'comment_read', 'reporting_read', 'order_read'])]
     private ?int $id = null;
 
-    #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details', 'user_cart'])]
+    #[Groups(['user_write', 'user:update', 'user:reset-password', 'masterClass:read', 'masterClass:details', 'user_cart', 'order_read'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -110,30 +110,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'masterClass:read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'masterClass:read', 'pastrie_read', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'masterClass:read', 'pastrie_read', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column]
     private ?int $postalcode = null;
 
-    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'user_update', 'pastrie_read', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
 
-    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read'])]
+    #[Groups(['user_write', 'user_read', 'pastrie_read', 'user_update', 'comment_read', 'reporting_read', 'order_read'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 

@@ -5,7 +5,7 @@ import { inject, ref, onBeforeMount, reactive } from 'vue'
 import { useStore } from "vuex";
 import Alert from '@/components/alert/Alert.vue';
 import Checkout from '@/components/Checkout.vue';
-
+const url = (import.meta.env.VITE_API_URL)
 const userToken = inject(UserProvierKeys);
 const store = useStore();
 const cartItems = ref([]);
@@ -25,7 +25,7 @@ const alert = reactive({
 const getCart = async () => {
     cartTotalPastrie.value = 0;
     cartTotalMasterClass.value = 0;
-    const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/carts`, {
+    const response = await axios.get(`${url}/users/${userToken.value.token.user.id}/carts`, {
         headers: {
             authorization: 'Bearer ' + userToken.token
         }
@@ -52,7 +52,7 @@ const getCart = async () => {
 const getVoucher = async () => {
     if (cartTotalMasterClass.value > 0) {
         vouchers.value = [];
-        const response = await axios.get(`https://localhost/users/${userToken.value.token.user.id}/vouchers`, {
+        const response = await axios.get(`${url}/users/${userToken.value.token.user.id}/vouchers`, {
             headers: {
                 authorization: 'Bearer ' + userToken.value.token.token
             }
@@ -84,7 +84,7 @@ const handleSubmit = async (id) => {
 
     console.log(id, quantityByItemCart[id]);
 
-    const reponse = await axios.patch(`https://localhost/users/${userToken.id}/carts/${id}`,
+    const reponse = await axios.patch(`${url}/users/${userToken.id}/carts/${id}`,
         {
             quantity: quantityByItemCart[id]
         }, {
@@ -106,7 +106,7 @@ const handleSubmit = async (id) => {
 };
 
 const deleteItemCart = async (id) => {
-    const response = await axios.delete(`https://localhost/users/${userToken.id}/carts/${id}`, {
+    const response = await axios.delete(`${url}/users/${userToken.id}/carts/${id}`, {
         headers: {
             authorization: 'Bearer ' + userToken.token
         }
@@ -270,7 +270,7 @@ const onCheckoutDone = (payload) => {
                     </div>
                 </div>
                 <div v-else class="text-lg text-center  text-gray-900 sm:text-3lg m-8">
-                    
+
                     Your cart is empty, please add some items.
                 </div>
             </div>

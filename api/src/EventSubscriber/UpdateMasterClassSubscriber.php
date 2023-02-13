@@ -46,7 +46,7 @@ final class UpdateMasterClassSubscriber implements EventSubscriberInterface
         foreach ($reservations as $reservation) {
             $user = $reservation->getUserId();
             $message = (new Email())
-                ->from('letsbake@gmail.com')
+                ->from('no.reply.lets.bake@gmail.com')
                 ->to($user->getEmail())
                 ->subject('MasterClass informations updated')
                 ->html('<p>The Master class' . ' ' . $masterClass->getTitle() . '' . 'was updated
