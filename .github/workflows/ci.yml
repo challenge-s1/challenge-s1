@@ -30,9 +30,9 @@ jobs:
         # working-directory: api
         run: composer install
 
-      - name: Run PHPUnit tests
-        # working-directory: api
-        run: php vendor/bin/phpunit
+       - name: Run PHPUnit tests
+         run: |
+            ./vendor/bin/phpunit
 
   node-test:
     name: Tests Node
