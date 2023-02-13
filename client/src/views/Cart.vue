@@ -6,7 +6,8 @@ import { useStore } from "vuex";
 import Alert from '@/components/alert/Alert.vue';
 import Checkout from '@/components/Checkout.vue';
 const url = (import.meta.env.VITE_API_URL)
-const userToken = inject(UserProvierKeys);
+// const userToken = inject(UserProvierKeys);
+const userToken = store.getters.user
 const store = useStore();
 const cartItems = ref([]);
 const vouchers = ref([]);
@@ -26,9 +27,9 @@ const getCart = async () => {
     cartTotalPastrie.value = 0;
     cartTotalMasterClass.value = 0;
     console.log(userToken.value)
-    const response = await axios.get(`${url}/users/${userToken.value.id}/carts`, {
+    const response = await axios.get(`${url}/users/${userToken.id}/carts`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response);
@@ -54,9 +55,9 @@ const getVoucher = async () => {
     if (cartTotalMasterClass.value > 0) {
         vouchers.value = [];
         console.log(userToken.value)
-        const response = await axios.get(`${url}/users/${userToken.value.id}/vouchers`, {
+        const response = await axios.get(`${url}/users/${userToken.id}/vouchers`, {
             headers: {
-                authorization: 'Bearer ' + userToken.value.token
+                authorization: 'Bearer ' + userToken.token
             }
         }).then((response) => {
             const vouchersData = response.data['hydra:member'];
@@ -86,13 +87,13 @@ const handleSubmit = async (id) => {
 
     console.log(id, quantityByItemCart[id]);
 
-    const reponse = await axios.patch(`${url}/users/${userToken.value.id}/carts/${id}`,
+    const reponse = await axios.patch(`${url}/users/${userToken.id}/carts/${id}`,
         {
             quantity: quantityByItemCart[id]
         }, {
         headers: {
             'content-type': 'application/merge-patch+json',
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         alert.open = true;
@@ -108,9 +109,9 @@ const handleSubmit = async (id) => {
 };
 
 const deleteItemCart = async (id) => {
-    const response = await axios.delete(`${url}/users/${userToken.value.id}/carts/${id}`, {
+    const response = await axios.delete(`${url}/users/${userToken.id}/carts/${id}`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response);

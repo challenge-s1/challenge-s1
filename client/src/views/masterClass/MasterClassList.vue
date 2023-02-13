@@ -12,7 +12,7 @@ const router = useRouter();
 const url = (import.meta.env.VITE_API_URL)
 const masterClasses = ref([]);
 const user = store.getters.user;
-const userToken = inject(UserProvierKeys)
+const userToken = store.getters.user;
 const today = new Date();
 
 const getMasterClasses = async () => {
@@ -52,8 +52,9 @@ const addToCart = async function (masterClass) {
     await axios.post(`${url}/carts/masterClass/${masterClass.id}`, {},
       {
         headers: {
-          authorization: 'Bearer ' + userToken.value.token
-        }})
+          authorization: 'Bearer ' + userToken.token
+        }
+      })
       .then((response) => {
         router.push({ name: "Cart" })
         console.log(response);

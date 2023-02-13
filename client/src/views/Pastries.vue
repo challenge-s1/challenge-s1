@@ -53,16 +53,16 @@ const AddCart = async (pastrie) => {
     await axios.post(`${url}/carts/pastrie/${pastrie.id}`, {},
         {
             headers: {
-          authorization: 'Bearer ' + userToken.value.token
-        }
+                authorization: 'Bearer ' + userToken.token
+            }
         }
     ).then((response) => {
         route.push({ name: "Cart" })
         console.log(response);
     }).
-    catch((error) => {
-        console.log(error);
-    })
+        catch((error) => {
+            console.log(error);
+        })
 }
 
 

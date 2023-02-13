@@ -7,14 +7,14 @@ import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys
 import '@stripe/stripe-js'
 import Modal from '../components/ModalForm.vue';
 const url = (import.meta.env.VITE_API_URL)
-
+const userToken = store.getters.user
 export default defineComponent({
     components: { StripeElement, Modal },
     emits: ["checkout-done"],
     setup(_, { emit }) {
         const event = ref(null)
         const error = ref('')
-        const userToken = inject(UserProvierKeys);
+        // const userToken = inject(UserProvierKeys);
         const stripeKey = (import.meta.env.VITE_STRIPE_KEY)
         const waitForResponse = ref(false);
         const {
@@ -32,11 +32,11 @@ export default defineComponent({
                 if (stripeToken) {
                     waitForResponse.value = true;
                 }
-                const response = await axios.post(`${url}/users/${userToken.value.id}/carts/checkout`, {
+                const response = await axios.post(`${url}/users/${userToken.id}/carts/checkout`, {
                     stripeToken: stripeToken
                 }, {
                     headers: {
-                        authorization: 'Bearer ' + userToken.value.token
+                        authorization: 'Bearer ' + userToken.token
                     }
                 }).then((response) => {
                     waitForResponse.value = false;
