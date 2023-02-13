@@ -15,7 +15,8 @@ const store = useStore();
 const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
-const userToken = inject(UserProvierKeys);
+// const userToken = inject(UserProvierKeys);
+const userToken = store.getters.user
 const categories = ref([]);
 const showModal = ref(false);
 const showModalAdd = ref(false);
@@ -53,7 +54,7 @@ const validate1 = () => {
 const GetCategories = async () => {
     await axios.get(`${url}/categories`, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response.data);
@@ -85,7 +86,7 @@ const AddCategry = async () => {
     }
     await axios.post(`${url}/categories`, data, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response.data);
@@ -105,7 +106,7 @@ const EditCategry = async (category) => {
     }
     await axios.put(`${url}/categories/${category.id}`, data, {
         headers: {
-            authorization: 'Bearer ' + userToken.value.token
+            authorization: 'Bearer ' + userToken.token
         }
     }).then((response) => {
         console.log(response.data);
@@ -123,7 +124,7 @@ const EditCategry = async (category) => {
 <template>
     <div>
         <Sidebar />
-        <div class="relative md:ml-64 bg-blueGray-100">
+        <div class="relative md:ml-64 bg-blueGray-100" style="margin-top: -4rem;">
             <AdminNavbar />
             <HeaderStats />
             <div class="px-4 md:px-10 mx-auto w-full -m-24">

@@ -4,6 +4,7 @@ import UserFormVue from '../components/UserForm.vue';
 import FormField from '../components/FormField.vue';
 import { inject, reactive, ref } from 'vue';
 
+
 const register = inject('userProvider:register');
 
 const UserData = reactive({
@@ -16,6 +17,7 @@ const UserData = reactive({
     address: '',
     postalcode: null,
     country: '',
+    roles: '',
 })
 
 const errors = ref({
@@ -29,6 +31,7 @@ const errors = ref({
     postalcode: '',
     country: '',
     general: '',
+    roles: '',
 });
 
 const validate = () => {
@@ -67,6 +70,9 @@ const validate = () => {
     if (!UserData.country) {
         errors.value.country = 'Required';
     }
+    if (!UserData.roles) {
+        errors.value.roles = 'Required';
+    }
     console.log(errors.value);
     console.log(Object.values(errors.value));
     console.log(Object.values(errors.value).length);
@@ -78,7 +84,9 @@ const onSubmit = function () {
     if (!validate()) {
         return;
     }
+    UserData.roles = UserData.roles.split(" ");
     console.log(UserData);
+    console.log(UserData.roles);
     register(UserData).then((response) => {
         console.log(response);
         errors.value.general = response;
@@ -92,7 +100,7 @@ const onSubmit = function () {
 </script>
 
 <template>
-    <section class="relative w-full h-full py-40 min-h-screen">
+    <section class="relative w-full h-full py-20 min-h-screen">
         <div class="container mx-auto px-4 h-full">
             <div class="flex content-center items-center justify-center h-full">
                 <div class="w-full lg:w-6/12 px-4">
@@ -109,6 +117,7 @@ const onSubmit = function () {
                                 Let's cake together
                             </h2>
                             <UserFormVue @submit="onSubmit">
+
                                 <label for="firstName"
                                     class="block text-xs font-bold text-gray-600 uppercaseblock uppercase mb-2">FisrtName</label>
                                 <FormField id="firstName" as="input" type="text" name="firstName"
@@ -175,6 +184,28 @@ const onSubmit = function () {
                                     placeholder="Confirm password " v-model="UserData.plainPassword"
                                     class=" border-0 px-3 py-3  text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150 mb-3 appearance-none border-gray-100  placeholder-gray-300   focus:ring-black focus:shadow-lg" />
                                 <div class=" text-red-500 text-xs italic">{{ errors.plainPassword }}</div>
+                                <label for=""
+                                    class="block text-xs font-bold text-gray-600 uppercaseblock uppercase mb-2">You are
+                                    : </label>
+                                <div class=" flex items-center pl-4 border border-gray-200 rounded
+                                    dark:border-gray-700">
+                                    <input id="roles" type="radio" v-model="UserData.roles" value="ROLE_USER"
+                                        name="roles"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="role"
+                                        class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        User
+                                    </label>
+                                    <input id="roles" type="radio" v-model="UserData.roles" value="ROLE_PATISSIER"
+                                        name="roles"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="role"
+                                        class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Pastry chef
+
+                                    </label>
+                                    <div class=" text-red-500 text-xs italic">{{ errors.roles }}</div>
+                                </div>
                                 <div class="flex flex-row justify-around text-center">
                                     <div class="text-red-500 text-sm">
                                         {{ errors.general }}

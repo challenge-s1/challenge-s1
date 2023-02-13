@@ -23,8 +23,10 @@ function toggleModal() {
         <slot name="activator" :open="open" :toggleModal="toggleModal">
             <button type="button" @click="toggleModal">Open Modal</button>
         </slot>
-        <template v-if="open">
+        <template v-if="open"
+            class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
             <div class="overlay" @click="toggleModal"></div>
+
             <div class="modal  min-w-[50%]" :class="class">
                 <div class="modal-title flex items-center justify-between rounded-t-lg bg-white">
                     <div class="grow text-center">

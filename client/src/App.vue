@@ -19,7 +19,8 @@ store.commit('loadStore');
 const isRoot = () => {
   // const name = 'Dashbord' || 'Categories';
   // return router.currentRoute.value.name == name;
-  if (router.currentRoute.value.name == 'Dashbord' || router.currentRoute.value.name == 'Categories') {
+  if (router.currentRoute.value.name == 'Dashbord' || router.currentRoute.value.name == 'Categories' || router.currentRoute.value.name == 'Users' || router.currentRoute.value.name == 'UsersAdd'
+    || router.currentRoute.value.name == 'NewUser') {
     return true;
   } else {
     return false;
