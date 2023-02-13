@@ -7,7 +7,14 @@ import chef2 from "@/assets/img/chef2.jpg";
 import chef3 from "@/assets/img/che3.webp";
 import chef4 from "@/assets/img/chef4.jpeg";
 import product from "@/assets/img/shop/product-1.jpg";
+import { inject, ref, computed } from 'vue';
+import { useStore } from 'vuex';
 
+const store = useStore();
+
+const isLoggedIn = computed({
+    get: () => store.getters.isLoggedIn,
+});
 </script>
 <template>
     <div>
@@ -31,7 +38,7 @@ import product from "@/assets/img/shop/product-1.jpg";
                             So why not treat yourself to something truly special today,
                             and experience the unparalleled bliss of a gourmet pastry.
                         </p>
-                        <div class="mt-12">
+                        <div class="mt-12" v-if="!store.getters.isLoggedIn">
                             <router-link :to="{ name: 'Login' }" target="_blank"
                                 class="get-started text-white font-bold px-6 py-4 rounded outline-none focus:outline-none mr-1 mb-1 bg-red-300 hover:bg-red-600 uppercase text-sm shadow hover:shadow-lg ease-linear transition-all duration-150">
                                 Get started
@@ -130,9 +137,9 @@ import product from "@/assets/img/shop/product-1.jpg";
                 </svg>
             </div>
 
-            <div class="container mx-auto">
+            <div class="container mx-auto" v-if="!store.getters.isLoggedIn">
                 <div
-                    class="flex flex-wrap justify-center bg-white shadow-xl rounded-lg -mt-64 py-16 px-12 relative z-10">
+                    class=" flex flex-wrap justify-center bg-white shadow-xl rounded-lg -mt-64 py-16 px-12 relative z-10">
                     <div class="w-full text-center lg:w-8/12">
                         <p class="text-4xl text-center">
                             <span role="img" aria-label="love">

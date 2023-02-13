@@ -2,8 +2,9 @@
 import IndexDropdown from "@/components/Dropdowns/IndexDropdown.vue";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
 import { inject, ref, computed } from 'vue';
-import {useStore} from 'vuex';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import UserDropdown from "@/components/Dropdowns/UserDropdown.vue";
 
 
 const store = useStore();
@@ -11,6 +12,8 @@ const router = useRouter();
 const user = inject(UserProvierKeys);
 const logout = inject('userProvider:logout');
 const navbarOpen = ref(false);
+const userToken = store.getters.user
+
 
 // const isPastryChef = computed(() => {
 //   return store.getters.user.roles.includes('ROLE_PATISSIER');
@@ -85,14 +88,14 @@ const isAdmin = computed({
             <router-link
               class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
               :to="{ name: 'MasterClassList' }">
-                master pastry 
+              master pastry
             </router-link>
           </li>
-          <li v-if ="store.getters.isLoggedIn && isPastrieOwner" class="flex items-center">
+          <li v-if="store.getters.isLoggedIn && isPastrieOwner" class="flex items-center">
             <router-link
               class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
               :to="{ name: 'PastryChefMasterClass' }">
-                my master pastry
+              my master pastry
             </router-link>
           </li>
           <li v-if="isLoggedIn && isPastrieOwner" class="flex items-center">
@@ -107,6 +110,20 @@ const isAdmin = computed({
               class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
               :to="{ name: 'AddPastries' }">
               Add pastry
+            </router-link>
+          </li>
+          <li v-if="isLoggedIn && isPastrieOwner" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'OrdrePastry' }">
+              Order pastry
+            </router-link>
+          </li>
+          <li v-if="isLoggedIn" class="flex items-center">
+            <router-link
+              class="hover:text-blueGray-500 text-blueGray-700 px-3 py-2 flex items-center text-xs uppercase font-bold"
+              :to="{ name: 'OrdreClient' }">
+              My Order
             </router-link>
           </li>
         </ul>
@@ -141,11 +158,17 @@ const isAdmin = computed({
 
               </router-link>
             </button>
-            <a class="  bg-red-400 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg
+            <h1 class="mr-2 font-bold">
+              {{ userToken.firstname }} {{ userToken.lastname }}
+            </h1>
+            <!-- <a class="  bg-red-400 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg
               outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
               href="#" @click="logout">
               Logout
-            </a>
+            </a> -->
+            <ul class="flex-col md:flex-row list-none items-center  md:flex">
+              <user-dropdown />
+            </ul>
           </li>
         </ul>
       </div>

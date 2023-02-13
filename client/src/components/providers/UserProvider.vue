@@ -16,7 +16,6 @@ const router = useRouter();
 const url = (import.meta.env.VITE_API_URL)
 const user = ref(store.state.user);
 const login = async function (userData) {
-    console.log(userData);
 
     const result = await axios.post(`${url}/authentication_token`, userData).
         then((response) => {
@@ -33,9 +32,13 @@ const login = async function (userData) {
         return result.error;
     }
     user.value = result;
+    console.log(user.value);
     store.commit('addToken', result.token);
     store.commit('addId', result.user.id);
     store.commit('addRoles', result.user.role);
+    store.commit('addfirstname', result.user.firstname);
+    store.commit('addlastname', result.user.lastname);
+
     router.push({ name: "Home" })
 
 }
@@ -65,6 +68,7 @@ const register = async function (userData) {
 const logout = function () {
     user.value = null;
     store.commit('removeUser');
+    router.push({ name: "Home" })
 }
 provide(UserKey, user)
 provide("userProvider:login", login)

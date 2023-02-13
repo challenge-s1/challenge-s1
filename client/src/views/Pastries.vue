@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from "@/components/Navbars/AuthNavbar.vue";
 
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
@@ -11,7 +11,27 @@ const store = useStore();
 const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
-const userToken = inject(UserProvierKeys);
+const userToken = store.getters.user;
+const categories = ref([]);
+const selectedCategory = ref('');
+const GetCategories = async () => {
+    await axios.get(`${url}/categories`)
+        .then((response) => {
+            console.log(response.data);
+            categories.value = response.data;
+            console.log(categories.value);
+        }).catch((error) => {
+            console.log(error);
+        })
+};
+GetCategories();
+
+const filteredProducts = computed(() => {
+    if (selectedCategory.value === '') {
+        return products.value;
+    }
+    return products.value.filter((product) => product.category.name === selectedCategory.value);
+});
 
 // console.log(userToken.value.token.token);
 const GetProduct = async () => {
@@ -28,6 +48,8 @@ const GetProduct = async () => {
 
 };
 GetProduct();
+
+
 
 </script>
 
@@ -55,6 +77,23 @@ GetProduct();
                                     everyone. Come visit us and taste the magic for yourself. We can't wait to share our
                                     sweets with you!
                                 </p>
+                                <div class="relative mt-4 mb-3">
+                                    <div class="bg-white shadow-md rounded p-4 mb-4 flex "
+                                        style="justify-content: space-between">
+
+                                        <label class="block text-gray-700 mr-4 text-sm font-bold mb-2" for="category">
+                                            Filter by category
+                                        </label>
+                                        <select v-model="selectedCategory"
+                                            class=" ml-4 border-0 px-3 py-3 placeholder-blueGray-300 w-6/12 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring  ease-linear transition-all duration-15">
+                                            <option value="" selected>All</option>
+                                            <option v-for="category in categories" :key="category.id">{{
+                                                category.name
+                                            }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,7 +110,7 @@ GetProduct();
             <section class="pb-20 bg-blueGray-200 -mt-24">
                 <div class="container mx-auto px-4">
                     <div class="flex flex-wrap">
-                        <template v-for="pastries in products " :key="pastries.id">
+                        <template v-for="pastries in filteredProducts " :key="pastries.id">
                             <div v-if="pastries.Status == false"
                                 class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
                                 <div

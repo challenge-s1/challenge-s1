@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 import { formatDate, formatTime } from "@/composable/dates.js";
+import matserClasse from "@/assets/img/matserClasse.jpg";
 const store = useStore();
 const router = useRouter();
 const url = (import.meta.env.VITE_API_URL)
@@ -90,9 +91,7 @@ getMasterClasses();
               <div v-if="!masterClass.isCanceled">
                 <div v-if="masterClass.owner.id != user.id">
                   <div class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-red-300">
-                    <img alt="..."
-                      src="https://static.750g.com/images/1200-630/2bb28ae83807e3f46e861587586c6aee/adobestock-182827481.jpeg"
-                      class="w-full align-middle rounded-t-lg" />
+                    <img alt="..." :src="matserClasse" class="w-full align-middle rounded-t-lg" />
                     <blockquote class="relative p-8 mb-4">
                       <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 583 95"
                         class="absolute left-0 w-full block h-95-px -top-94-px">

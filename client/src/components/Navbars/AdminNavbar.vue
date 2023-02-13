@@ -9,6 +9,17 @@
       </a>
 
       <ul class="flex-col md:flex-row list-none items-center hidden md:flex">
+        <button>
+          <router-link :to="{ name: 'Home' }"
+            class="border-red-500 text-white   text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+            type="button">
+            Go to site
+
+          </router-link>
+        </button>
+        <h1 class="mr-2 font-bold flex-col md:flex-row list-none items-center hidden md:flex">
+          {{ userToken.firstname }} {{ userToken.lastname }}
+        </h1>
         <user-dropdown />
       </ul>
     </div>
@@ -16,12 +27,11 @@
   <!-- End Navbar -->
 </template>
 
-<script>
+<script setup>
 import UserDropdown from "@/components/Dropdowns/UserDropdown.vue";
-
-export default {
-  components: {
-    UserDropdown,
-  },
-};
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+const store = useStore();
+const router = useRouter();
+const userToken = store.getters.user
 </script>

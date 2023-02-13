@@ -19,6 +19,12 @@ import MyPastries from '../views/MyPastries/Mypastries.vue'
 import AddPastries from '../views/MyPastries/AddPastries.vue'
 import Categories from '../views/Admin/category/Categories.vue'
 import Dashbord from '../views/Admin/Dashbord.vue'
+import Users from '../views/Admin/users/manageUsers.vue'
+import NewUser from '../views/Admin/users/NewUser.vue'
+import OrdrePastry from '../views/ordrePastry.vue'
+import OrdreClient from '../views/orderClient.vue'
+// import AddUsers from '../views/Admin/users/AddUsers.vue'
+
 import { useStore } from 'vuex';
 
 
@@ -143,7 +149,41 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
-    }
+    },
+    {
+      path: '/admin/users',
+      name: 'Users',
+      component: Users,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin/NewUser',
+      name: 'NewUser',
+      component: NewUser,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/order/pastry',
+      name: 'OrdrePastry',
+      component: OrdrePastry,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/order/client',
+      name: 'OrdreClient',
+      component: OrdreClient,
+      meta: {
+        requiresAuth: true
+      }
+    },
+
+
     // {
     //   path: '/about',
     //   name: 'about',
@@ -164,14 +204,19 @@ router.beforeEach(async (to, from, next) => {
   const store = JSON.parse(localStorage.getItem('store'));
   const user = store.user;
   const loggedIn = user && user.token;
-  const token = localStorage.getItem('token');
-  // console.log(user.token.token);
-  // const logout = function () {
+  // console.log(loggedIn.exp < new Date().getTime( )/3600);
+  //  const logout = function () {
   //   localStorage.removeItem('token');
   //   localStorage.removeItem('store');
   //   window.location.reload();
     
   // }
+  // if (to.matched.some(record => record.meta.requiresAuth) && (token === null )) {
+  //   logout();
+  //   next('/login')
+  // }
+  // console.log(user.token.token);
+ 
   if (authRequired && !loggedIn) {
       return next('/login');
   }

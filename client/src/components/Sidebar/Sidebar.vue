@@ -10,10 +10,16 @@
         <i class="fas fa-bars"></i>
       </button>
       <!-- Brand -->
-      <router-link
+      <!-- <router-link
         class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
         to="/">
         Vue Notus
+      </router-link> -->
+      <router-link :to="{ name: 'Home' }">
+        <a
+          class="text-blueGray-700 text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase">
+          <img src="../../assets/img/logo1.png" class="" style="overflow: hidden;" width="60" height="60" alt="" />
+        </a>
       </router-link>
       <!-- User -->
       <ul class="md:hidden items-center flex flex-wrap list-none">
@@ -89,7 +95,45 @@
               </a>
             </router-link>
           </li> -->
-
+          <li class="items-center">
+            <router-link to="Users" v-slot="{ navigate, isActive }">
+              <a @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
+                isActive
+                  ? 'text-emerald-500 hover:text-emerald-600'
+                  : 'text-blueGray-700 hover:text-blueGray-500',
+              ]">
+                <i class="fas fa-sharp fa-solid fa-users mr-2 text-sm"
+                  :class="[isActive ? 'opacity-75' : 'text-blueGray-300']"></i>
+                Users
+              </a>
+            </router-link>
+          </li>
+          <li class="items-center">
+            <router-link to="NewUser" v-slot="{ navigate, isActive }">
+              <a @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
+                isActive
+                  ? 'text-emerald-500 hover:text-emerald-600'
+                  : 'text-blueGray-700 hover:text-blueGray-500',
+              ]">
+                <i class="fas fa-sharp fa-solid fa-user-plus mr-2 text-sm  "
+                  :class="[isActive ? 'opacity-75' : 'text-blueGray-300']"></i>
+                New User
+              </a>
+            </router-link>
+          </li>
+          <!-- <li class="items-center">
+            <router-link to="AddUsers" v-slot="{ navigate, isActive }">
+              <a @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
+                isActive
+                  ? 'text-emerald-500 hover:text-emerald-600'
+                  : 'text-blueGray-700 hover:text-blueGray-500',
+              ]">
+                <i class="fas fa-sharp fa-solid fa-users mr-2 text-sm"
+                  :class="[isActive ? 'opacity-75' : 'text-blueGray-300']"></i>
+                AddUsers
+              </a>
+            </router-link>
+          </li> -->
           <li class="items-center">
             <router-link to="Categories" v-slot="{ navigate, isActive }">
               <a @click="navigate" class="text-xs uppercase py-3 font-bold block" :class="[
@@ -102,6 +146,7 @@
               </a>
             </router-link>
           </li>
+
 
           <!-- <li class="items-center">
             <router-link to="" v-slot="{ href, navigate, isActive }">
