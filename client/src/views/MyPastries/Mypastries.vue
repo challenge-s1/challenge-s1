@@ -1,7 +1,7 @@
 
 <script setup>
 
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
@@ -12,7 +12,7 @@ import FormField from "../../components/FormField.vue";
 import router from "../../router";
 const categories = ref([]);
 
-
+const selectedCategory = ref('');
 const store = useStore();
 const route = useRoute();
 const url = (import.meta.env.VITE_API_URL)
@@ -196,7 +196,12 @@ const EditProduct = async (pastry) => {
         errors.value.general = error.message;
     })
 };
-
+const filteredProducts = computed(() => {
+    if (selectedCategory.value === '') {
+        return products.value;
+    }
+    return products.value.filter((product) => product.category.name === selectedCategory.value);
+});
 </script>
 
 <template>
@@ -223,7 +228,23 @@ const EditProduct = async (pastry) => {
                                     :to="{ name: 'AddPastries' }">
                                     Add pastry
                                 </router-link>
+                                <div class="relative mt-4 mb-3">
+                                    <div class="bg-white shadow-md rounded p-4 mb-4 flex "
+                                        style="justify-content: space-between">
 
+                                        <label class="block text-gray-700 mr-4 text-sm font-bold mb-2" for="category">
+                                            Filter by category
+                                        </label>
+                                        <select v-model="selectedCategory"
+                                            class=" ml-4 border-0 px-3 py-3 placeholder-blueGray-300 w-6/12 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring  ease-linear transition-all duration-15">
+                                            <option value="" selected>All</option>
+                                            <option v-for="category in categories" :key="category.id">{{
+                                                category.name
+                                            }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -241,7 +262,7 @@ const EditProduct = async (pastry) => {
                 <div class="container mx-auto px-4">
                     <div class="flex flex-wrap" v-if="products.length !== 0">
 
-                        <div v-for="pastries in products " :key="pastries.id"
+                        <div v-for="pastries in filteredProducts " :key="pastries.id"
                             class="w-full md:w-4/12 px-4 mr-auto ml-auto  pt-6  text-center">
                             <div
                                 class="relative flex flex-col min-w-0 break-words  w-full mb-6 shadow-lg rounded-lg bg-orange-400">

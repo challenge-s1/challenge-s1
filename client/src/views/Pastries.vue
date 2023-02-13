@@ -6,9 +6,10 @@ import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-
+import router from '../router';
 const store = useStore();
 const route = useRoute();
+
 const url = (import.meta.env.VITE_API_URL)
 const products = ref([]);
 const userToken = store.getters.user;
@@ -49,6 +50,22 @@ const GetProduct = async () => {
 };
 GetProduct();
 
+// const AddCart = async (pastry) => {
+//     // const pasrty = {
+//     //     client_id: `/users/${userToken.id}`,
+//     //     cake_id: `/pastries/${pastry.id}`,
+//     //     quantity: 1,
+//     // };
+//     // await axios.post(`${url}/carts`, pasrty, {
+//     //     headers: {
+//     //         authorization: 'Bearer ' + userToken.token
+//     //     }
+//     // }).then((response) => {
+//     //     router.push({ name: "Cart" })
+//     // }).catch((error) => {
+//     //     console.log(error);
+//     // })
+// };
 
 
 </script>
@@ -160,7 +177,7 @@ GetProduct();
                                         </p>
                                         <button
                                             class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                            type="button">
+                                            type="submit">
                                             <span class="flex flex-row">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">

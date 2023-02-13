@@ -11,6 +11,7 @@ import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys
 import mypastrie from "@/assets/img/mypastrie.jpeg";
 import router from "../router";
 import { formatDate } from "@/composable/dates.js";
+import Modal from "@/components/Modal.vue";
 
 
 
@@ -20,8 +21,42 @@ const url = (import.meta.env.VITE_API_URL)
 const orders = ref([]);
 // const userToken = inject(UserProvierKeys);
 const userToken = store.getters.user
+const openModalgetorder = ref(false);
+
+const handleOpenModalgetOrder = () => {
+
+    openModalgetorder.value = !openModalgetorder.value;
+    console.log(openModalgetorder.value);
+
+};
+
+const orderData = reactive({
+    id: '',
+    status: '',
+    pastrie: {
+        id: '',
+        name: '',
+        description: '',
+        price: '',
+        created_at: '',
+        owner: {
+            id: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            city: '',
+            address: '',
+            postalcode: '',
+            country: '',
+            roles: '',
+            is_Active: '',
+            createdAt: '',
+            updatedAt: '',
+        }
+    },
 
 
+})
 
 
 // console.log(userToken.value.token.token);
@@ -48,11 +83,93 @@ const orderspastry = computed(() => {
         return order.owner.id == userToken.id
     })
 });
+const openModalgetuser = ref(false);
+const handleOpenModalgetUser = () => {
+
+    openModalgetuser.value = !openModalgetuser.value;
+
+};
+const getUserManage = (order) => {
+    orderData.id = order.id;
+    orderData.status = order.status;
+    orderData.pastrie.id = order.pastrie.id;
+    orderData.pastrie.name = order.pastrie.name;
+    orderData.pastrie.description = order.pastrie.description;
+    orderData.pastrie.price = order.pastrie.price;
+    orderData.pastrie.owner.email = order.pastrie.owner.email;
+    orderData.pastrie.owner.firstName = order.pastrie.owner.firstName;
+    orderData.pastrie.owner.lastName = order.pastrie.owner.lastName;
+    orderData.pastrie.owner.city = order.pastrie.owner.city;
+    orderData.pastrie.owner.address = order.pastrie.owner.address;
+    orderData.pastrie.owner.postalcode = order.pastrie.owner.postalcode;
+    orderData.pastrie.owner.country = order.pastrie.owner.country;
+    console.log(orderData);
+    handleOpenModalgetUser();
+}
 
 </script>
 
 <template>
     <div>
+        <Modal :open="openModalgetuser" @close="handleOpenModalgetUser">
+            <template #title>
+                <h1 class="text-2xl font-semibold text-gray-700">More details :</h1>
+            </template>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> pastry name : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.name }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Description : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.description }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Price : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.price }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass="text-blueGray-500 text-lg leading-relaxed font-bold"> Realized by : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.firstName }} {{ orderData.pastrie.owner.lastName }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Email : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.email }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Adress : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.address }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> City : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.city }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Postal code : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.postalcode }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Country: </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.pastrie.owner.country }}
+                </p>
+            </div>
+        </Modal>
         <main>
 
             <div class="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
@@ -165,7 +282,13 @@ const orderspastry = computed(() => {
                                                     ]">
                                                     Created At
                                                 </th>
-
+                                                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"
+                                                    :class="[
+                                                        color === 'light'
+                                                            ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
+                                                            : 'bg-blueGray-50 text-blueGray-500 border-blueGray-100',
+                                                    ]">
+                                                </th>
                                             </tr>
                                         </template>
                                         <template #tbodyTr>
@@ -212,6 +335,12 @@ const orderspastry = computed(() => {
                                                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                     {{ formatDate(order.created_at) }}
                                                 </td>
+                                                <button type="button" @click="getUserManage(order)"
+                                                    class="bg-white mt-2 text-black hover:bg-white font-bold uppercase text-sm px-6 py-3 rounded-xl  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                                    <span class="flex flex-row">
+                                                        <i class="fas fa-sharp fa-solid fa-arrow-right"></i>
+                                                    </span>
+                                                </button>
                                             </tr>
                                         </template>
                                     </CardTable>

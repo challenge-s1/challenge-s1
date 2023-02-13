@@ -11,6 +11,7 @@ import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys
 import mypastrie from "@/assets/img/mypastrie.jpeg";
 import router from "../router";
 import moment from "moment";
+import Modal from "@/components/Modal.vue";
 
 import { formatDate } from "@/composable/dates.js";
 
@@ -22,7 +23,57 @@ const orders = ref([]);
 // const userToken = inject(UserProvierKeys);
 const userToken = store.getters.user
 
+const orderData = reactive({
+    id: '',
+    status: '',
+    createdAt: '',
+    updatedAt: '',
+    // pastrie: {
+    //     id: '',
+    //     name: '',
+    //     description: '',
+    //     price: '',
+    //     image: '',
+    //     createdAt: '',
+    //     updatedAt: '',
+    //     owner: {
+    //         id: '',
+    //         email: '',
+    //         firstName: '',
+    //         lastName: '',
+    //         city: '',
+    //         address: '',
+    //         postalcode: '',
+    //         country: '',
+    //         roles: '',
+    //         is_Active: '',
+    //         createdAt: '',
+    //         updatedAt: '',
+    //     }
+    // },
+    owner: {
+        id: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        city: '',
+        address: '',
+        postalcode: '',
+        country: '',
+        roles: '',
+        is_Active: '',
+        createdAt: '',
+        updatedAt: '',
+    }
 
+})
+const openModalgetorder = ref(false);
+
+const handleOpenModalgetOrder = () => {
+
+    openModalgetorder.value = !openModalgetorder.value;
+
+};
 
 
 // console.log(userToken.value.token.token);
@@ -69,12 +120,72 @@ const orderspastry = computed(() => {
     })
 });
 
-
+const getUserorder = (order) => {
+    console.log(order);
+    orderData.id = order.id;
+    orderData.status = order.status;
+    orderData.createdAt = order.createdAt;
+    orderData.owner.email = order.owner.email;
+    orderData.owner.firstName = order.owner.firstName;
+    orderData.owner.lastName = order.owner.lastName;
+    orderData.owner.city = order.owner.city;
+    orderData.owner.address = order.owner.address;
+    orderData.owner.postalcode = order.owner.postalcode;
+    orderData.owner.country = order.owner.country;
+    handleOpenModalgetOrder();
+}
 
 </script>
 
 <template>
     <div>
+        <Modal :open="openModalgetorder" @close="handleOpenModalgetOrder">
+            <template #title>
+                <h1 class="text-2xl font-semibold text-gray-700">More details :</h1>
+            </template>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Email : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.email }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> First Name : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.firstName }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Last Name : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.lastName }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass="text-blueGray-500 text-lg leading-relaxed font-bold"> Adress : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.address }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> City : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.city }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Postal Code : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.postalcode }}
+                </p>
+            </div>
+            <div class="flex flex-row mb-2">
+                <h1 lass=" text-blueGray-500 text-lg leading-relaxed font-bold"> Country : </h1>
+                <p class=" text-blueGray-500 text-lg leading-relaxed">
+                    {{ orderData.owner.country }}
+                </p>
+            </div>
+        </Modal>
         <main>
 
             <div class="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
@@ -240,7 +351,7 @@ const orderspastry = computed(() => {
                                                     class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                                     {{ formatDate(order.created_at) }}
                                                 </td>
-                                                <td>
+                                                <td class="flex">
                                                     <button v-if="order.status == true"
                                                         class="bg-emerald-500 mt-2 text-white hover:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded-xl shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                                         disabled>
@@ -268,6 +379,12 @@ const orderspastry = computed(() => {
 
 
                                                             Confirm Livery
+                                                        </span>
+                                                    </button>
+                                                    <button type="button" @click="getUserorder(order)"
+                                                        class="bg-white mt-2 text-black hover:bg-white font-bold uppercase text-sm px-6 py-3 rounded-xl  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150">
+                                                        <span class="flex flex-row">
+                                                            <i class="fas fa-sharp fa-solid fa-arrow-right"></i>
                                                         </span>
                                                     </button>
                                                 </td>
