@@ -13,10 +13,30 @@ on:
 jobs:
   apiPlatform-tests:
     name: Tests API PALTFORM
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./api
+    runs-on:
+      ubuntu-latest
+      # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        # ${{ env.APP_SECRET }}
+
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: api
+          POSTGRES_USER: api-platform
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,10 +47,30 @@ jobs:
           php-version: "8.1"
 
       - name: Install Composer dependencies
+        working-directory: api
         run: composer install
 
+      - name: Connect to PostgreSQL
+        working-directory: api
+        # Runs a script that creates a PostgreSQL table, populates
+        # the table with data, and then retrieves the data.
+        run: |
+          php bin/console doctrine:database:drop --if-exists --force
+          php bin/console doctrine:database:create
+          php bin/console doctrine:schema:update --force
+          php bin/console doctrine:fixtures:load -n
+        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432
+
       # - name: Run PHPUnit tests
-      #   run: php vendor/bin/phpunit
+      #   working-directory: api
+      #   needs: postgres
+
+      #   run: php bin/phpunit
 
   node-test:
     name: Tests Node
@@ -48,11 +88,15 @@ jobs:
         working-directory: client
         run: npm install
 
+      # - name: Run NPM tests
+      #   run: npm run test
+
   publish-docker:
     runs-on: ubuntu-latest
 
-    needs:
-      - apiPlatform-tests
+    # needs:
+    #   - apiPlatform-tests
+    #   # - node-test
 
     steps:
       - uses: actions/checkout@v3
@@ -76,15 +120,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # needs:
-    #   - apiPlatform-tests
-
-    # defaults:
-    #   run:
-    #     working-directory: ./api
+    defaults:
+      run:
+        working-directory: ./api
+    # needs: apiPlatform-tests
 
     steps:
       - uses: actions/checkout@v3
+
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
