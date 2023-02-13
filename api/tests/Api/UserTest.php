@@ -6,7 +6,7 @@ namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
 
-class UserTese extends ApiTestCase
+class UserTest extends ApiTestCase
 {
 
 
