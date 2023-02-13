@@ -16,26 +16,26 @@ jobs:
     runs-on:
       ubuntu-latest
       # Service containers to run with `container-job`
-    # services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        # ${{ env.APP_SECRET }}
-        env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: api
-          POSTGRES_USER: api-platform
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
+    #  services:
+    #   # Label used to access the service container
+    #   postgres:
+    #     # Docker Hub image
+    #     image: postgres
+    #     # Provide the password for postgres
+    #     # ${{ env.APP_SECRET }}
+    #     env:
+    #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    #       POSTGRES_DB: api
+    #       POSTGRES_USER: api-platform
+    #     # Set health checks to wait until postgres has started
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       # Maps tcp port 5432 on service container to the host
+    #       - 5432:5432
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -50,18 +50,18 @@ jobs:
         run: composer install
 
       # - name: Connect to PostgreSQL
-        working-directory: api
-        # Runs a script that creates a PostgreSQL table, populates
-        # the table with data, and then retrieves the data.
-        run: |
-          php bin/console doctrine:schema:update --force
-          php bin/console doctrine:fixtures:load -n
-        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
-        env:
-          # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: localhost
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
+      # working-directory: api
+      # # Runs a script that creates a PostgreSQL table, populates
+      # # the table with data, and then retrieves the data.
+      # run: |
+      #   php bin/console doctrine:schema:update --force
+      #   php bin/console doctrine:fixtures:load -n
+      # # Environment variables used by the `client.js` script to create a new PostgreSQL table.
+      # env:
+      #   # The hostname used to communicate with the PostgreSQL service container
+      #   POSTGRES_HOST: localhost
+      #   # The default PostgreSQL port
+      #   POSTGRES_PORT: 5432
 
       - name: Run PHPUnit tests
         working-directory: api
