@@ -43,7 +43,7 @@ class ResetPasswordController extends AbstractController
         // TODO: send Email
 
         $emailSend = (new Email())
-            ->from('no-reply@gmail.com')
+            ->from('no.reply.lets.bake@gmail.com')
             ->to($user->getEmail())
             ->subject('Reset Password')
             ->html('Click <a href="http://localhost:8000/reset-password/' . $user->getToken() . '">here for reset your password</a>');
