@@ -6,7 +6,7 @@ import UserForm from '../components/UserForm.vue';
 import axios from 'axios';
 import { useStore } from "vuex";
 import { user as UserProvierKeys } from '@/components/providers/UserProviderKeys.js';
-
+const url = (import.meta.env.VITE_API_URL)
 // const userToken = inject(UserProvierKeys);
 const store = useStore();
 const userToken = store.getters.user;
@@ -17,7 +17,7 @@ const updateProfile = async (handleClose) => {
         return;
     }
     userData.value.postalcode = parseInt(userData.value.postalcode);
-    await axios.patch(`https://localhost/users/${userToken.id}`, userData.value,
+    await axios.patch(`${url}/users/${userToken.id}`, userData.value,
         {
             headers: {
                 'content-type': 'application/merge-patch+json',
@@ -90,7 +90,7 @@ const validate = () => {
     return Object.values(errors.value).length == 0;
 }
 const getUserData = async () => {
-    await axios.get(`https://localhost/users/${userToken.id}`, {
+    await axios.get(`${url}/users/${userToken.id}`, {
         headers: {
             authorization: 'Bearer ' + userToken.token
 

@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import Modal from '../components/Modal.vue';
 import axios from 'axios';
-
+const url = (import.meta.env.VITE_API_URL)
 
 const open = ref(true);
 const showMessage = ref(false);
@@ -14,7 +14,7 @@ const handleOpen = () => {
 
 const handleSubmit = () => {
     handleOpen();
-    axios.post('https://localhost/users/reset-password', { email: email.value })
+    axios.post(`${url}/users/reset-password`, { email: email.value })
         .then((response) => {
             console.log(response);
 
@@ -23,7 +23,7 @@ const handleSubmit = () => {
             console.log(error);
         });
     showMessage.value = true;
-  
+
 };
 
 
