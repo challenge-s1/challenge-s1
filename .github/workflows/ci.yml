@@ -32,7 +32,7 @@ jobs:
 
       - name: Run PHPUnit tests
         # working-directory: api
-        run: .vendor/bin/phpunit
+        run: php vendor/bin/phpunit
 
   node-test:
     name: Tests Node
