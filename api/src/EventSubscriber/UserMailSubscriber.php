@@ -44,10 +44,13 @@ final class UserMailSubscriber implements EventSubscriberInterface
         $em->flush();
 
         $message = (new Email())
-            ->from('letsbake@gmail.com')
+            ->from('no.reply.lets.bake@gmail.com')
             ->to($user->getEmail())
             ->subject('Activate your account')
-            ->html('Click on the link to activate your account <a href="http://localhost:8000/account/activate/' . $user->getToken() . '">HERE</a>')
+
+            // ->html('Click <a href="http://localhost:8000/account/activate/' . $user->getToken() . '">ClicActivate your account</a>')
+            ->html('Click <a href="https://comforting-torte-f8b9e5.netlify.app/account/activate/' . $user->getToken() . '">ClicActivate your account</a>')
+
 
             // ->text(sprintf('Click on the link', $user->getToken(), ' to activate your account'))
         ;

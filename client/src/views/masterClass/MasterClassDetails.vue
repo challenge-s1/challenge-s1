@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref,reactive } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
 import { formatDate, formatTime } from "@/composable/dates.js"
@@ -7,7 +7,7 @@ import product from "@/assets/img/shop/product-1.jpg";
 import Modal from "@/components/Modal.vue";
 import { useStore } from 'vuex';
 import { extractIdentifiers } from '@vue/compiler-core';
-
+const url = (import.meta.env.VITE_API_URL)
 
 const store = useStore();
 const route = useRoute();
@@ -47,7 +47,7 @@ const handleOpenModalCommentReport = () => {
 };
 
 const getMasterClass = async () => {
-    await axios.get(`https://localhost/master_classes/${route.params.id}`, {
+    await axios.get(`${url}/master_classes/${route.params.id}`, {
         headers: {
             Accept: 'application/json'
         }
@@ -68,11 +68,11 @@ const getMasterClass = async () => {
             }
         }
         masterClass.value.comments.forEach(comment => {
-           if(comment.reportings.length > 0){
-               comment.reportings.forEach(reporting => {
-                   if(reporting.userid.id == user.id){
-                       comment.reportedByUser = true;
-                   }
+            if (comment.reportings.length > 0) {
+                comment.reportings.forEach(reporting => {
+                    if (reporting.userid.id == user.id) {
+                        comment.reportedByUser = true;
+                    }
                 })
             }
         });
@@ -92,7 +92,7 @@ const getMasterClassToUpdate = function () {
 
 const updateMasterClass = async () => {
     handleOpenModalUpdate();
-    await axios.put(`https://localhost/master_classes/${masterClass.value.id}`, {
+    await axios.put(`${url}/master_classes/${masterClass.value.id}`, {
         "title": masterClass.value.title,
         "description": masterClass.value.description,
         "maxNumber": masterClass.value.maxNumber,
@@ -118,7 +118,7 @@ const updateMasterClass = async () => {
 const cancelMasterClass = async () => {
 
     handleOpen();
-    await axios.delete(`https://localhost/master-classes/${masterClass.value.id}/cancel`, {
+    await axios.delete(`${url}/master-classes/${masterClass.value.id}/cancel`, {
         headers: {
             Authorization: `Bearer ${user.token}`
         }
@@ -144,7 +144,7 @@ const getCommentToUpdate = async (comment) => {
 
 const addComment = async () => {
     console.log(commentContent.value)
-    await axios.post(`https://localhost/comments`, {
+    await axios.post(`${url}/comments`, {
         "content": commentContent.value,
         "masterid": `master_classes/${masterClass.value.id}`
 
@@ -162,9 +162,9 @@ const addComment = async () => {
     })
 }
 
-const updateComment = async () =>{
+const updateComment = async () => {
     console.log(commentToUpdate.content)
-    await axios.put(`https://localhost/comments/${commentToUpdate.id}`, {
+    await axios.put(`${url}/comments/${commentToUpdate.id}`, {
         "content": commentToUpdate.content,
     }, {
         headers: {
@@ -180,8 +180,8 @@ const updateComment = async () =>{
     })
 }
 
-const deleteComment = async(comment) =>{
-    await axios.delete(`https://localhost/comments/${comment.id}`, {
+const deleteComment = async (comment) => {
+    await axios.delete(`${url}/comments/${comment.id}`, {
         headers: {
             Authorization: `Bearer ${user.token}`
         }
@@ -194,7 +194,7 @@ const deleteComment = async(comment) =>{
 }
 
 const getreasons = async () => {
-    axios.get(`https://localhost/reason_reportings`, {
+    axios.get(`${url}/reason_reportings`, {
         headers: {
             Authorization: `Bearer ${user.token}`,
             Accept: 'application/json'
@@ -221,8 +221,8 @@ const getCommentToReport = async (comment) => {
     handleOpenModalCommentReport();
 }
 
-const reportComment = async()=>{
-    await axios.post(`https://localhost/reportings`, {
+const reportComment = async () => {
+    await axios.post(`${url}/reportings`, {
         "commentid": `comments/${commentToReport.id}`,
         "reason": `/reason_reportings/${commentToReport.reason}`
 
@@ -339,7 +339,7 @@ getreasons();
                 <label for="reason">Reason</label>
                 <select name="reason" id="reason" v-model="commentToReport.reason"
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
-                    <option v-for="reason in reasonsList" :value="reason.id">{{reason.name}}</option>
+                    <option v-for="reason in reasonsList" :value="reason.id">{{ reason.name }}</option>
                 </select>
             </div>
             <button type="submit"
@@ -520,7 +520,8 @@ getreasons();
                     <section class="bg-white dark:bg-gray-900 py-8 lg:py-16">
                         <div class="max-w-2xl mx-auto px-4">
                             <div class="flex justify-between items-center mb-6">
-                                <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion (20)</h2>
+                                <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion (20)
+                                </h2>
                             </div>
                             <form @submit.prevent="addComment" class="mb-6">
                                 <div
@@ -532,47 +533,53 @@ getreasons();
                                 </div>
                                 <button type="submit"
                                     class="bg-red-500 mt-2 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-15">
-                                
+
                                     post comment
-                                
+
                                 </button>
                             </form>
-                            <article v-for = "comment in masterClass.comments" class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                            <article v-for="comment in masterClass.comments"
+                                class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900">
                                 <footer class="flex justify-between items-center mb-2">
                                     <div class="flex items-center">
-                                        <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"><img
-                                                class="mr-2 w-6 h-6 rounded-full"
+                                        <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
+                                            <img class="mr-2 w-6 h-6 rounded-full"
                                                 src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                                                alt="Michael Gough">{{comment.userid.firstName}} {{ comment.userid.lastName }}</p>
+                                                alt="Michael Gough">{{ comment.userid.firstName }} {{
+                                                    comment.userid.lastName
+                                                }}</p>
                                     </div>
                                     <!-- Dropdown menu -->
                                 </footer>
                                 <p class="text-gray-500 dark:text-gray-400">{{ comment.content }}</p>
                                 <div class="flex items-center mt-4 space-x-4">
-                                    <button v-if="!comment.reportedByUser" type="button" @click = "getCommentToReport(comment)"
+                                    <button v-if="!comment.reportedByUser" type="button"
+                                        @click="getCommentToReport(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
-                                        <svg aria-hidden="true" class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                        <svg aria-hidden="true" class="mr-1 w-4 h-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                                             </path>
                                         </svg>
                                         Report
                                     </button>
-                                    <button v-if="comment.userid.id = user.id" type="button" @click="getCommentToUpdate(comment)"
+                                    <button v-if="comment.userid.id = user.id" type="button"
+                                        @click="getCommentToUpdate(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-6 h-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
 
                                         Edit
                                     </button>
-                                    <button v-if="comment.userid.id = user.id" type="button" @click="deleteComment(comment)"
+                                    <button v-if="comment.userid.id = user.id" type="button"
+                                        @click="deleteComment(comment)"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-6 h-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
