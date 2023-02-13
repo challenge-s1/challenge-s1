@@ -6,10 +6,11 @@ import { useStore } from "vuex";
 import Alert from '@/components/alert/Alert.vue';
 import Checkout from '@/components/Checkout.vue';
 
-const url = (import.meta.env.VITE_API_URL)
+const url = (import.meta.env.VITE_API_URL);
 // const userToken = inject(UserProvierKeys);
-const userToken = store.getters.user
+
 const store = useStore();
+const userToken = store.getters.user;
 const cartItems = ref([]);
 const vouchers = ref([]);
 const cartTotalMasterClass = ref(0);
