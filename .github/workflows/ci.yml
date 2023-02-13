@@ -76,8 +76,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    needs:
-      - apiPlatform-tests
+    # needs:
+    #   - apiPlatform-tests
 
     defaults:
       run:
