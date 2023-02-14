@@ -51,10 +51,10 @@ class StripeController extends AbstractController
 
         Stripe::setApiKey($_ENV["STRIPE_SECRET"]);
         Charge::create([
-                "amount" => floatval($amountPastrie + $amountMasterClass) * 100,
-                "currency" => "usd",
-                "source" => json_decode($request->getContent())->stripeToken,
-                "description" => "Payment For Let's bake"
+            "amount" => floatval($amountPastrie + $amountMasterClass) * 100,
+            "currency" => "usd",
+            "source" => json_decode($request->getContent())->stripeToken,
+            "description" => "Payment For Let's bake"
         ]);
         foreach ($carts as $cart) {
             if ($cart->getMasterClass() !== null) {
@@ -69,10 +69,9 @@ class StripeController extends AbstractController
                 $order->setOwner($user);
                 $order->setPastrie($cart->getCake());
                 $order->setQuantity($cart->getQuantity());
+                $order->setStatus(false);
                 $this->entityManager->persist($order);
-
             }
-            
         }
         $this->entityManager->flush();
         $this->cartRepository->drainCartForUser($user->getId());
